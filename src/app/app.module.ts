@@ -10,6 +10,7 @@ import { DevelopperComponent } from './developper/developper.component';
 import { TaskEditorComponent } from './task-editor/task-editor.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 @NgModule({
@@ -28,6 +29,7 @@ import { RegistrationComponent } from './registration/registration.component';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
