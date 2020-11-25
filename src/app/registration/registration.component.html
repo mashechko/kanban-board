@@ -1,0 +1,33 @@
+<div class="registration">
+  <h1>Registration</h1>
+  <form [formGroup]="myFirstReactiveForm" (submit)="onSubmit()" class="registration-form">
+    <label for="name">First name</label>
+    <input type="text" id="name" formControlName="name" />
+    <div class="error" *ngIf="isControlInvalid('name')">
+      Имя должно состоять только из букв
+    </div>
+    <br/><br/>
+
+    <label for="lastname">Last name</label>
+    <input type="text" id="lastname" formControlName="lastname" />
+    <div class="error" *ngIf="isControlInvalid('lastname')">
+      Фамилия должна состоять только из букв
+    </div>
+    <br/><br/>
+
+    <label for="email">Email</label>
+    <input type="text" id="email" formControlName="email" />
+    <div class="error" *ngIf="isControlInvalid('email')">
+      Введите валидный адрес почты
+    </div>
+    <br/><br/>
+
+    <label for="photo">Photo</label>
+    <input type="file" id="photo" formControlName="photo" accept="image/jpeg,image/png"/>
+    <div class="error" *ngIf="isControlInvalid('photo')">
+      Только файлы в формате JPEG и PNG
+    </div>
+    <br/><br/>
+    <button type="submit">отправить</button>
+  </form>
+</div>

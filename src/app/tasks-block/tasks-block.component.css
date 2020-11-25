@@ -1,0 +1,59 @@
+.app-tasks-block {
+  padding: 0 20px;
+  display: inline-block;
+}
+
+.header {
+  width: 250px;
+  height: 50px;
+
+  mix-blend-mode: normal;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 20px;
+}
+
+.ready {
+  background: linear-gradient(91.84deg, #4DE89E 0%, #439450 55.56%, #A9C604 100%);
+}
+
+.development {
+  background: linear-gradient(91.84deg, #A06BF7 0%, #B833CD 100%);
+}
+
+.qa {
+  background: linear-gradient(91.84deg, #4441F3 0%, #59CCE6 100%);
+}
+
+.closed {
+  background: linear-gradient(91.84deg, #FB7B33 0%, #F8CA56 100%);
+}
+
+.h-header {
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 24px;
+  line-height: 40px;
+
+  color: #FCF6F6;
+
+  text-align: center;
+  padding-top: 5px;
+}
+
+.button-add-task {
+  width: 250px;
+  height: 50px;
+
+  mix-blend-mode: normal;
+  border: 1px dashed #9F9F9F;
+  box-sizing: border-box;
+  border-radius: 20px;
+  background: transparent;
+}
+
+.button-add-task-text {
+  color: #9F9F9F;
+  font-family: "Roboto Light";
+  font-size: 20px;
+}

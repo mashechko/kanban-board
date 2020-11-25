@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@100;200;300;400;900&display=swap');
+
+.sidebar {
+  background-color: #2F2C2C;
+  height: 100%;
+  padding: 50px 10px;
+}
+
+.sidebar-title {
+  font-family: Montserrat, sans-serif;
+  font-weight: bold;
+  color: white;
+  font-size: 40px;
+}
+
+.sidebar-navigation {
+  padding: 20px 0;
+}
+
+.sidebar-link {
+  font-family: Raleway, sans-serif;
+  color: white;
+  font-size: 17px;
+  text-decoration: none;
+
+  padding: 8px 10px;
+  display: block;
+}
+
+.sidebar-link:hover {
+  font-size: 19px;
+  text-shadow: 2px 2px 2px #b5b5b5;
+}

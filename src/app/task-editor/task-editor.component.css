@@ -1,0 +1,110 @@
+.task-editor {
+  background: #EFF0F3;
+  border-radius: 25px;
+  width: 80%;
+  height: 600px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  margin: auto;
+}
+
+.editor-nav {
+  height: 40px;
+  padding: 10px 10px;
+  text-align: right;
+}
+
+.task-editor-button {
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+
+  background: #FFFFFF;
+  border: 1px solid rgba(135, 135, 135, 0.75);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.editor-head {
+  height: 80px;
+  background: white;
+  border-bottom: 1px solid #C4C4C4;
+  border-top: 1px solid #C4C4C4;
+  display: flex;
+}
+
+.progress, .task-properties, .task-info, .event-log, .add-attachment, .add-comment {
+  display: inline-block;
+  width: 50%;
+  padding: 10px 10px;
+}
+
+.progress, .task-info, .add-attachment {
+  border-right: 1px solid #C4C4C4;
+}
+
+.main-content {
+  height: 400px;
+  display: flex;
+}
+
+.progress, .task-properties {
+  display: inline-block;
+  width: 50%;
+  padding: 10px 10px;
+}
+
+.task-info {
+  background: white;
+  padding: 10px 10px;
+}
+
+.editor-footer {
+  height: 60px;
+  display: flex;
+  background: white;
+  border-top: 1px solid #C4C4C4;
+  border-radius: 0 0 25px 25px;
+}
+
+.task-name, .info-text {
+  font-family: Roboto, sans-serif;
+  font-weight: lighter;
+
+  width: 90%;
+  height: auto;
+  border: 0px;
+}
+
+.task-name:focus, .info-text:focus {
+  border: 1px solid #C4C4C4;
+}
+
+.info-title, .prop-title {
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  color: #BBBBBB;
+  padding: 10px 0;
+}
+.info-text {
+  font-size: 20px;
+  height: 300px;
+  resize: none;
+
+}
+
+.task-name {
+  font-size: 30px;
+}
+
+.property {
+  display: inline-block;
+  padding: 0 15px;
+  border-right: 1px solid #C4C4C4;;
+}
+
+.prop-value {
+  font-family: Montserrat, sans-serif;
+  font-weight: lighter;
+  font-size: 13px;
+}

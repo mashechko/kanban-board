@@ -120,5 +120,8 @@
       }
     }
   },
-  "defaultProject": "kanban-board"
+  "defaultProject": "kanban-board",
+  "cli": {
+    "analytics": false
+  }
 }

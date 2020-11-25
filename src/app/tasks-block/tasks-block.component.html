@@ -1,0 +1,11 @@
+<ng-container *ngFor="let column of columns">
+  <div class="app-tasks-block">
+    <div class="{{column}} header">
+      <h1 class="h-header">{{column |uppercase}}</h1>
+    </div>
+    <app-task></app-task>
+    <button class="button-add-task"><span class="button-add-task-text">+</span></button>
+  </div>
+</ng-container>
+
+
