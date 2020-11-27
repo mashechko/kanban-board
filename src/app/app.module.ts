@@ -11,6 +11,13 @@ import { TaskEditorComponent } from './task-editor/task-editor.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { RegistrationComponent } from './registration/registration.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {AngularFireStorageModule} from '@angular/fire/storage';
+import {AngularFireModule} from '@angular/fire';
+import {environment} from '../environments/environment';
+
+
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
 
 
 @NgModule({
@@ -23,13 +30,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DevelopperComponent,
     TaskEditorComponent,
     RegistrationComponent,
-    RegistrationComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
+    AngularFireStorageModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFirestoreModule,
+    AngularFireAuthModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

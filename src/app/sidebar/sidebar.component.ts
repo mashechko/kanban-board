@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import {Subject} from 'rxjs';
+import {debounceTime, filter, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-sidebar',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SidebarComponent implements OnInit {
 
+  public eventKey: Subject<any> = new Subject<any>();
   constructor() { }
 
   ngOnInit(): void {
+
+    this.eventKey.pipe(
+      debounceTime(500),
+      map(value => value.target.value),
+      filter((value: string) => value.length > 2)
+      )
+        .subscribe(value => console.log(value));
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+
 @Component({
   selector: 'app-developper',
   templateUrl: './developper.component.html',
@@ -13,3 +14,4 @@ export class DevelopperComponent implements OnInit {
   }
 
 }
+

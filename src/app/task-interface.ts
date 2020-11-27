@@ -5,7 +5,7 @@ export interface Task {
   name: string;
   priority: string;
   info: string;
-  createdBy: Dev;
+  createdBy: string;
   created: Date;
   dueDate: Date;
 }
