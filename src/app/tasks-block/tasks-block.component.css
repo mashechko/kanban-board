@@ -52,6 +52,10 @@
   background: transparent;
 }
 
+.button-add-task:focus {
+  outline: none;
+}
+
 .button-add-task-text {
   color: #9F9F9F;
   font-family: "Roboto Light";

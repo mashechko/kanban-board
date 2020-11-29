@@ -18,7 +18,6 @@ export class AuthService {
     private afAuth: AngularFireAuth,
     private afs: AngularFirestore,
   ) {
-    // Get the auth state, then fetch the Firestore user document or return null
     this.user$ = this.afAuth.authState.pipe(
       switchMap(user => {
         // Logged in
@@ -38,7 +37,6 @@ export class AuthService {
   }
 
   private updateUserData(user) {
-    // Sets user data to firestore on login
     const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
 
     const data = {
@@ -53,6 +51,5 @@ export class AuthService {
   }
   async signOut() {
     await this.afAuth.signOut();
-    // this.router.navigate(['/']);
   }
 }

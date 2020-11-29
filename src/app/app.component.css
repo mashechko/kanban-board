@@ -44,11 +44,24 @@
 .head-panel-greeting {
   float: left;
   line-height: 40px;
+  margin: 0 10px;
+}
 
+.head-panel-photo {
+  width: 40px;
+  height: 40px;
+
+  box-sizing: border-box;
+  border-radius: 20px;
+  display: inline-block;
+  float: left;
 }
 
 .not-logged {
-  background: #000000;
+  /*background: #000000;*/
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+
   height: 100vh;
   text-align: center;
   display: flex;
@@ -66,16 +79,14 @@
 }
 
 .not-logged-btn {
-  background: #2F2C2C;
-  padding: 10px 10px;
+  background: #000000;
+  padding: 10px 20px;
   border-radius: 10px;
-  box-shadow: 0px 4px 4px rgba(255, 255, 255, 0.25);
   border: 0px;
-  font-size: 20px;
-  vertical-align: middle;
+  font-size: 17px;
 }
 
 
 .not-logged-outer {
   margin: auto;
-}
+ }

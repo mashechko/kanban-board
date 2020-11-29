@@ -1,5 +1,5 @@
-import { Component, OnInit, Input } from '@angular/core';
-import {Task} from '../task-interface';
+import { Component, OnInit} from '@angular/core';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-task-editor',
@@ -8,9 +8,7 @@ import {Task} from '../task-interface';
 })
 export class TaskEditorComponent implements OnInit {
 
-  constructor() { }
-
-  @Input() task: Task;
+  constructor(public dialogRef: MatDialogRef<TaskEditorComponent>) { }
 
   ngOnInit(): void {
   }

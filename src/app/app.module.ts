@@ -18,6 +18,8 @@ import {environment} from '../environments/environment';
 
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+import {MatButtonModule} from '@angular/material/button';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 @NgModule({
@@ -40,6 +42,11 @@ import { AngularFireAuthModule } from '@angular/fire/auth';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFirestoreModule,
     AngularFireAuthModule,
+    MatButtonModule,
+    MatDialogModule
+  ],
+  entryComponents: [
+    TaskEditorComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -22,16 +22,15 @@ export class CRUDService {
 
   public getData<T>(collectionName: string): Observable<T[]> {
 
-    return this.firestoreService.collection(collectionName, ref => {
-      const query: firestore.Query = ref;
-      return query.where('name', '==', 'Harry Potter');
-    }).snapshotChanges().pipe(
+    return this.firestoreService.collection(collectionName).snapshotChanges().pipe(
       map(actions => actions.map(a => {
         const data = a.payload.doc.data();
         const id = a.payload.doc.id;
         // @ts-ignore
         return { id, ...data } as T;
-      })));
+        take(1);
+      }))
+    );
   }
 }
 

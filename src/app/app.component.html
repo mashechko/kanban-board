@@ -5,6 +5,7 @@
 
   <main>
     <div class="head-panel">
+      <img src="{{(auth.user$ | async).photoURL}}" class="head-panel-photo">
       <div class="head-panel-greeting">Hi, {{(auth.user$ | async).displayName}}</div>
       <button (click)="auth.signOut()" *ngIf="auth.user$ | async" class="head-panel-logout">
         Logout
@@ -15,21 +16,12 @@
   </main>
 </div>
 
-<div>
-  <!-- this header tag displays only when user is logged-in -->
 
-
-  <!-- this div displays only when user is not-logged-in -->
-  <div *ngIf="!(auth.user$ | async)" class="not-logged">
-    <div class="not-logged-outer">
-      <div class="not-logged-greeting">Welcome to MyKanban</div>
-      <button (click)="auth.googleSignin()" class="not-logged-btn">
-        Start with Google
-      </button>
-    </div>
+<div *ngIf="!(auth.user$ | async)" class="not-logged">
+  <div class="not-logged-outer">
+    <div class="not-logged-greeting">Welcome to MyKanban</div>
+    <button (click)="auth.googleSignin()" class="not-logged-btn">Start with Google</button>
   </div>
-
-  <!-- user click this button to logout -->
-  <!-- this button displays only when user is logged-in -->
-
 </div>
+
+

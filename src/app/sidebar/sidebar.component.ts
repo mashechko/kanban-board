@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {Subject} from 'rxjs';
 import {debounceTime, filter, map} from 'rxjs/operators';
+import {TaskService} from '../task.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -10,7 +11,7 @@ import {debounceTime, filter, map} from 'rxjs/operators';
 export class SidebarComponent implements OnInit {
 
   public eventKey: Subject<any> = new Subject<any>();
-  constructor() { }
+  constructor(public tskService: TaskService) { }
 
   ngOnInit(): void {
 
@@ -22,4 +23,7 @@ export class SidebarComponent implements OnInit {
         .subscribe(value => console.log(value));
   }
 
+  public showDialog() {
+    this.tskService.showDialog();
+}
 }
