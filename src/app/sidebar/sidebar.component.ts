@@ -24,6 +24,6 @@ export class SidebarComponent implements OnInit {
   }
 
   public showDialog() {
-    this.tskService.showDialog();
+    this.tskService.showDialog(null);
 }
 }

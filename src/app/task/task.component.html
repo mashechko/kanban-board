@@ -1,11 +1,8 @@
-<div class="task" *ngFor="let task of tasks">
+<div class="task" (click)="showDialog(task)">
   <div class="{{task.priority}}">
     <p class="priority-text">{{task.priority}}</p>
   </div>
   <div class="task-name">
-<!--    <label>-->
-<!--      <input [(ngModel)]="task.name" class="task-name" placeholder="name"/>-->
-<!--    </label>-->
     <p class="task-name">{{task.name}}</p>
   </div>
   <div class="dev-photos">
@@ -13,5 +10,3 @@
     <img src="assets/avatar.jpeg" class="dev-photo">
   </div>
 </div>
-
-<!--<app-task-editor [task]="selectedTask"></app-task-editor>-->

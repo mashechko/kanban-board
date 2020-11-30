@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {TaskService} from '../task.service';
+import {CRUDService} from '../crudservice.service';
+import {Task} from '../task-interface';
 
 @Component({
   selector: 'app-tasks-block',
@@ -7,14 +9,19 @@ import {TaskService} from '../task.service';
   styleUrls: ['./tasks-block.component.css']
 })
 export class TasksBlockComponent implements OnInit {
-
-  public columns: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
-  constructor(public tskService: TaskService) { }
+  @Input() column: string;
+  tasks: unknown[];
+  constructor(public taskService: TaskService,
+              public crud: CRUDService) { }
 
   ngOnInit(): void {
+    this.getTasks(this.column);
   }
-
-  public showDialog() {
-    this.tskService.showDialog();
+  public showDialog(task) {
+    this.taskService.showDialog(task);
+  }
+  public getTasks(status) {
+    this.crud.getElementsByProperty('Tasks', 'status', status)
+      .subscribe(tasks => this.tasks = tasks);
   }
 }

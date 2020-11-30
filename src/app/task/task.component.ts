@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import {TASKS} from '../mock-tasks';
+import {Component, Input, OnInit} from '@angular/core';
+import {TaskService} from '../task.service';
+import {Task} from '../task-interface';
 
 @Component({
   selector: 'app-task',
@@ -7,11 +8,13 @@ import {TASKS} from '../mock-tasks';
   styleUrls: ['./task.component.css']
 })
 export class TaskComponent implements OnInit {
-  tasks = TASKS;
-
-  constructor() { }
+  @Input() task: Task;
+  constructor(public taskService: TaskService) { }
 
   ngOnInit(): void {
   }
 
+  public showDialog(task) {
+    this.taskService.showDialog(task);
+  }
 }

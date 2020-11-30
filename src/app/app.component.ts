@@ -13,15 +13,9 @@ export class AppComponent {
   password: string;
 
   constructor(
-    private crudService: CRUDService,
     public auth: AuthService
   ) {}
-  public createObject(): void {
-    this.crudService.createEntity('test', {name: 'Test 2'}).subscribe(value => console.log(value));
-  }
-  public getObject() {
-    this.crudService.getData('test').subscribe(value => console.log(value));
-  }
+
 }
 
 

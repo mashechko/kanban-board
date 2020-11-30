@@ -27,11 +27,6 @@
   display: block;
 }
 
-button.sidebar-link {
-  background: none;
-  border: none;
-}
-
 .sidebar-link:focus {
   outline: none;
 }

@@ -1,11 +1,10 @@
-import {Dev} from './dev-interface';
-
 export interface Task {
   id: number;
   name: string;
-  priority: string;
   info: string;
+  status?: string;
   createdBy: string;
+  priority?: string;
   created: Date;
   dueDate: Date;
 }
