@@ -82,10 +82,10 @@ export class CRUDService {
         .collection(collectionName)
         .doc(id)
         .set({ ...obj }, { merge: true }),
-    ).pipe();
+    ).pipe(take(1));
   }
 
   public deleteObject(collectionName: string, id: string): Observable<void> {
-    return from(this.firestoreService.collection(collectionName).doc(id).delete()).pipe();
+    return from(this.firestoreService.collection(collectionName).doc(id).delete()).pipe(take(1));
   }
 }

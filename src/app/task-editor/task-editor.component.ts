@@ -1,8 +1,8 @@
-import { AfterContentInit, Component, Inject, OnChanges, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Task } from '../task-interface';
-import { CRUDService } from '../crudservice.service';
+import { CRUDService } from '../services/crudservice.service';
 
 @Component({
   selector: 'app-task-editor',
@@ -10,7 +10,7 @@ import { CRUDService } from '../crudservice.service';
   styleUrls: ['./task-editor.component.css'],
 })
 export class TaskEditorComponent implements OnInit {
-  task: Task = null;
+  public task: Task = null;
 
   formGr: FormGroup;
 

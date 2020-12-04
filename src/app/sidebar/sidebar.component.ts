@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
-import { TaskService } from '../task.service';
+import { TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-sidebar',

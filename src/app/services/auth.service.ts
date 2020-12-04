@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
 import { switchMap } from 'rxjs/operators';
 import firebase from 'firebase';
-import { User } from './user-interface';
+import { User } from '../user-interface';
 import auth = firebase.auth;
 
 @Injectable({
