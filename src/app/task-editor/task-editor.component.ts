@@ -41,6 +41,7 @@ export class TaskEditorComponent implements OnInit {
   public changeStatus(task) {
     const statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
     if (task.status !== statuses[3]) {
+      // eslint-disable-next-line no-param-reassign
       task.status = statuses[statuses.indexOf(task.status) + 1];
       this.crud.updateObject('Tasks', task.id, task);
     }
@@ -62,10 +63,11 @@ export class TaskEditorComponent implements OnInit {
 
       return;
     }
+    this.task.name = this.formGr.controls.name.value;
+    this.task.info = this.formGr.controls.info.value;
+    this.task.dueDate = this.formGr.controls.dueDate.value;
 
-    console.log(this.task);
-    console.log(this.formGr.value);
-    // this.save(this.formGr.value);
+    this.save(this.task);
   }
 
   isControlInvalid(controlName: string): string {

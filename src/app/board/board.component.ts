@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-board',
@@ -8,6 +8,7 @@ import { Component, OnChanges, OnInit } from '@angular/core';
 export class BoardComponent implements OnInit {
   public columns: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
 
+  // eslint-disable-next-line @typescript-eslint/no-useless-constructor,@typescript-eslint/no-empty-function
   constructor() {}
 
   ngOnInit(): void {}

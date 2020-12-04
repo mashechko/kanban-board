@@ -20,7 +20,7 @@ export class SidebarComponent implements OnInit {
         map((value) => value.target.value),
         filter((value: string) => value.length > 2),
       )
-      .subscribe((value) => console.log(value));
+      .subscribe();
   }
 
   public showDialog() {

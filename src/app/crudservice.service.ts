@@ -3,8 +3,8 @@ import { AngularFirestore } from '@angular/fire/firestore';
 import { from, Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
 import firebase from 'firebase';
-import DocumentReference = firebase.firestore.DocumentReference;
 import firestore = firebase.firestore;
+import DocumentReference = firebase.firestore.DocumentReference;
 
 @Injectable({
   providedIn: 'root',
@@ -82,10 +82,10 @@ export class CRUDService {
         .collection(collectionName)
         .doc(id)
         .set({ ...obj }, { merge: true }),
-    ).pipe(take(1));
+    ).pipe();
   }
 
   public deleteObject(collectionName: string, id: string): Observable<void> {
-    return from(this.firestoreService.collection(collectionName).doc(id).delete()).pipe(take(1));
+    return from(this.firestoreService.collection(collectionName).doc(id).delete()).pipe();
   }
 }
