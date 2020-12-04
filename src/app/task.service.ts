@@ -1,32 +1,31 @@
 import { Injectable } from '@angular/core';
-import {TaskEditorComponent} from './task-editor/task-editor.component';
-import {MatDialog} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
+import { TaskEditorComponent } from './task-editor/task-editor.component';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class TaskService {
-
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog) {}
 
   showDialog(task) {
     let taskInfo = {};
     if (typeof task === 'string') {
       taskInfo = {
         status: task,
-        created: new Date()
+        created: new Date(),
       };
     } else {
       taskInfo = task;
     }
     this.dialog.open(TaskEditorComponent, {
       data: {
-        taskInfo
+        taskInfo,
       },
       width: '1200px',
       height: '650px',
       hasBackdrop: false,
-      disableClose: false
+      disableClose: false,
     });
   }
 }

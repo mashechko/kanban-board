@@ -11,6 +11,8 @@
   height: 40px;
   padding: 10px 10px;
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .task-editor-button {
@@ -36,7 +38,17 @@
   display: flex;
 }
 
-.progress, .task-properties, .task-info, .event-log, .add-attachment, .add-comment {
+.progress, .task-properties {
+  display: flex;
+  width: 50%;
+  padding: 10px 10px;
+}
+
+.progress {
+  padding: 20px 10px;
+}
+
+.task-info, .event-log, .add-attachment, .add-comment {
   display: inline-block;
   width: 50%;
   padding: 10px 10px;
@@ -51,29 +63,30 @@
   display: flex;
 }
 
-.progress, .task-properties {
-  display: inline-block;
-  width: 50%;
-  padding: 10px 10px;
-}
 
 .progress-status {
-  display: inline-block;
-  height: 40px;
-  mix-blend-mode: normal;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 10px 0 0 10px;
-
-
   font-family: Montserrat, sans-serif;
   font-weight: bold;
   font-size: 24px;
   line-height: 40px;
 
   color: #FCF6F6;
-
   padding: 0 15px;
-  margin: 10px;
+
+}
+
+.progress-status, .progress-status-next {
+  display: inline-block;
+  height: 40px;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.progress-status-next {
+  width: 40px;
+  border: none;
+  border-radius: 0 10px 10px 0;
+  margin-left: 10px;
 }
 
 .ready {
@@ -114,7 +127,7 @@
   border: 0px;
 }
 
-.task-name:focus, .info-text:focus {
+.task-name:focus, .info-text:focus, input.prop-value:focus {
   border: 1px solid #C4C4C4;
   outline: none;
 }
@@ -147,4 +160,22 @@
   font-family: Montserrat, sans-serif;
   font-weight: lighter;
   font-size: 13px;
+  line-height: 20px;
+}
+
+input.prop-value {
+  border: none;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.flaticon-028-trash, .flaticon-060-diskette, .flaticon-193-cancel {
+  color: #7A7A7A;
+  font-size: 20px;
+}
+
+.flaticon-193-cancel {
+  font-size: 16px;
 }

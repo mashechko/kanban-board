@@ -1,14 +1,17 @@
-<div>
+<form [formGroup]="formGr" (submit)="onSubmit()">
   <div class="task-editor">
     <div class="editor-nav">
-      <button class="task-editor-button" (click)="save(task)"></button>
-      <button class="task-editor-button" (click)="delete(task)"></button>
-      <button [mat-dialog-close]="true" class="task-editor-button"></button>
+      <button class="task-editor-button flaticon-060-diskette" (click)="onSubmit()"></button>
+      <button class="task-editor-button flaticon-028-trash" (click)="delete(task)" *ngIf="task.id"></button>
+      <button class="task-editor-button flaticon-193-cancel" [mat-dialog-close]="true" ></button>
     </div>
     <div class="editor-head">
       <div class="progress">
-        <div class="progress-status {{task.status}} ready">{{task.status | uppercase}}</div>
+        <div class="progress-status {{task.status}}">{{task.status | uppercase}}</div>
+        <div class="progress-status-next {{task.status}}"
+             (click)="changeStatus(task)"></div>
       </div>
+
       <div class="task-properties">
         <div class="property">
           <h1 class="prop-title">TICKET NUMBER</h1>
@@ -16,20 +19,25 @@
         </div>
         <div class="property">
           <h1 class="prop-title">CREATED</h1>
-          <div class="prop-value">{{task.created | date: " d-M-Y"}}</div>
+          <div class="prop-value">{{task.created | date: " d.M.Y"}}</div>
         </div>
         <div class="property">
           <h1 class="prop-title">DUE DATE</h1>
-          <input type="date" class="prop-value" [(ngModel)]="task.dueDate">
+          <input type="date" class="prop-value" formControlName="dueDate">
         </div>
+        <div class="property flaticon-157-flag"
+        (click)="selectStatus(task)"></div>
       </div>
     </div>
     <div class="main-content">
       <div class="task-info">
-        <input class="task-name" placeholder="Task name" [(ngModel)]="task.name" type="text">
+        <input class="task-name {{isControlInvalid('name')}}"
+               placeholder="Task name"
+               type="text"
+               formControlName="name">
         <div class="info">
           <h1 class="info-title">INFO</h1>
-          <textarea class="info-text" placeholder="Add some info here" [(ngModel)]="task.info"></textarea>
+          <textarea class="info-text" placeholder="Add some info here" formControlName="info"></textarea>
         </div>
       </div>
       <div class="event-log">
@@ -45,5 +53,4 @@
       </div>
     </div>
   </div>
-</div>
-
+</form>

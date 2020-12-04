@@ -1,26 +1,27 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AngularFireStorageModule } from '@angular/fire/storage';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFirestoreModule } from '@angular/fire/firestore';
+import { AngularFireAuthModule } from '@angular/fire/auth';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { A11yModule } from '@angular/cdk/a11y';
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { TasksBlockComponent } from './tasks-block/tasks-block.component';
 import { TaskComponent } from './task/task.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
-import { DevelopperComponent } from './developper/developper.component';
 import { TaskEditorComponent } from './task-editor/task-editor.component';
-import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { RegistrationComponent } from './registration/registration.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {AngularFireStorageModule} from '@angular/fire/storage';
-import {AngularFireModule} from '@angular/fire';
-import {environment} from '../environments/environment';
+import { HomeComponent } from './home/home.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
+import { environment } from '../environments/environment';
 
-import { AngularFirestoreModule } from '@angular/fire/firestore';
-import { AngularFireAuthModule } from '@angular/fire/auth';
-import {MatButtonModule} from '@angular/material/button';
-import {MatDialogModule} from '@angular/material/dialog';
-
+import { AppRoutingModule } from './app-routing.module';
 
 @NgModule({
   declarations: [
@@ -29,9 +30,9 @@ import {MatDialogModule} from '@angular/material/dialog';
     TasksBlockComponent,
     TaskComponent,
     SidebarComponent,
-    DevelopperComponent,
     TaskEditorComponent,
-    RegistrationComponent,
+    HomeComponent,
+    WelcomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,12 +44,12 @@ import {MatDialogModule} from '@angular/material/dialog';
     AngularFirestoreModule,
     AngularFireAuthModule,
     MatButtonModule,
-    MatDialogModule
+    MatDialogModule,
+    A11yModule,
+    AppRoutingModule,
   ],
-  entryComponents: [
-    TaskEditorComponent
-  ],
+  entryComponents: [TaskEditorComponent],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

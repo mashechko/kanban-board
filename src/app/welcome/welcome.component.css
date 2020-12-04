@@ -1,0 +1,35 @@
+.not-logged {
+  background-image: url("../../assets/background.jpg");
+  background-size: cover;
+
+  height: 100vh;
+  text-align: center;
+  display: flex;
+}
+
+.not-logged-greeting, .not-logged-btn {
+  font-family: Montserrat, sans-serif;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.not-logged-greeting {
+  font-size: 30px;
+  padding: 20px 0;
+}
+
+.not-logged-btn {
+  background: #000000;
+  padding: 10px 20px;
+  border-radius: 10px;
+  border: 0px;
+  font-size: 17px;
+}
+
+.not-logged-btn:focus {
+  outline: none;
+}
+
+.not-logged-outer {
+  margin: auto;
+}

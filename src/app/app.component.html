@@ -1,27 +1,2 @@
-<div class="container" *ngIf="auth.user$ | async">
-  <aside>
-    <app-sidebar></app-sidebar>
-  </aside>
 
-  <main>
-    <div class="head-panel">
-      <img src="{{(auth.user$ | async).photoURL}}" class="head-panel-photo">
-      <div class="head-panel-greeting">Hi, {{(auth.user$ | async).displayName}}</div>
-      <button (click)="auth.signOut()" *ngIf="auth.user$ | async" class="head-panel-logout">
-        Logout
-      </button>
-    </div>
-
-    <app-board></app-board>
-  </main>
-</div>
-
-
-<div *ngIf="!(auth.user$ | async)" class="not-logged">
-  <div class="not-logged-outer">
-    <div class="not-logged-greeting">Welcome to MyKanban</div>
-    <button (click)="auth.googleSignin()" class="not-logged-btn">Start with Google</button>
-  </div>
-</div>
-
-
+<router-outlet></router-outlet>
