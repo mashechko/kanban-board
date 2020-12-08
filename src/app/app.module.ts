@@ -9,8 +9,9 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatSelectModule } from '@angular/material/select';
 import { A11yModule } from '@angular/cdk/a11y';
+import { NgxTrimModule } from 'ngx-trim';
+import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
@@ -23,9 +24,6 @@ import { WelcomeComponent } from './welcome/welcome.component';
 
 import { environment } from '../environments/environment';
 
-import { AppRoutingModule } from './app-routing.module';
-import { CommentsComponent } from './task-editor/comments/comments.component';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +34,6 @@ import { CommentsComponent } from './task-editor/comments/comments.component';
     TaskEditorComponent,
     HomeComponent,
     WelcomeComponent,
-    CommentsComponent,
   ],
   imports: [
     BrowserModule,
@@ -51,7 +48,7 @@ import { CommentsComponent } from './task-editor/comments/comments.component';
     MatDialogModule,
     A11yModule,
     AppRoutingModule,
-    MatSelectModule,
+    NgxTrimModule,
   ],
   entryComponents: [TaskEditorComponent],
   providers: [],

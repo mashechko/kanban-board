@@ -10,15 +10,12 @@
         <div class="progress-status {{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress-status-next {{task.status}}"
              (click)="changeStatus(task)"></div>
-        <mat-form-field appearance="outline">
-          <mat-label>Select developer</mat-label>
-          <mat-select formControlName="assignedTo">
-            <mat-option>Developer</mat-option>
-            <ng-container *ngFor="let dev of developers">
-              <mat-option value="{{dev.uid}}">{{dev.displayName}}</mat-option>
-            </ng-container>
-          </mat-select>
-        </mat-form-field>
+        <select formControlName="assignedTo" class="select-priority">
+          <option disabled>Select developer</option>
+          <ng-container *ngFor="let dev of developers">
+            <option value="{{dev.uid}}">{{dev.displayName}}</option>
+          </ng-container>
+        </select>
       </div>
 
       <div class="task-properties">
@@ -47,20 +44,28 @@
         <input class="task-name {{isControlInvalid('name')}}"
                placeholder="Task name"
                type="text"
-               formControlName="name">
+               formControlName="name"
+                ngxTrim>
         <div class="info">
           <h1 class="info-title">INFO</h1>
-          <textarea class="info-text" placeholder="Add some info here" formControlName="info"></textarea>
+          <textarea class="info-text {{isControlInvalid('info')}}" placeholder="Add some info here"
+                    formControlName="info" maxlength="1000"></textarea>
         </div>
       </div>
-      <app-comments class="event-log"></app-comments>
+      <div class="event-log">
+        <ng-container *ngIf="task.comments.length" >
+          <ng-container *ngFor="let comment of task.comments">
+            <div class="event-log-comment">{{comment}}</div>
+          </ng-container>
+        </ng-container>
+      </div>
     </div>
     <div class="editor-footer">
       <div class="add-attachment">
-        {{task.createdBy}}
       </div>
       <div class="add-comment">
-
+        <input class="add-comment" placeholder="Add comment..." type="text" id="comment" ngxTrim value="">
+        <button class="add-comment-btn" (click)="addComment()">Add</button>
       </div>
     </div>
   </div>

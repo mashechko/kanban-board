@@ -1,8 +1,10 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { map } from 'rxjs/operators';
 import { Task } from '../task-interface';
 import { CRUDService } from '../services/crudservice.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-task-editor',
@@ -14,17 +16,32 @@ export class TaskEditorComponent implements OnInit {
 
   public developers: object[];
 
+  public user: string;
+
   private statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
 
   formGr: FormGroup;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
-    public dialogRef: MatDialogRef<TaskEditorComponent>,
-    public crud: CRUDService,
+    private dialogRef: MatDialogRef<TaskEditorComponent>,
+    private crud: CRUDService,
     private fb: FormBuilder,
+    private auth: AuthService,
   ) {
     this.task = { ...data.taskInfo };
+  }
+
+  ngOnInit(): void {
+    this.initForm();
+    this.getDevelopers();
+    this.getCurrentUser();
+  }
+
+  private getCurrentUser() {
+    return this.auth.user$.pipe(map((value) => value.displayName)).subscribe((user) => {
+      this.user = user;
+    });
   }
 
   public save(task) {
@@ -32,6 +49,7 @@ export class TaskEditorComponent implements OnInit {
       this.crud.updateObject('Tasks', task.id, task);
       this.dialogRef.close();
     } else {
+      this.addComment(`${this.task.createdBy} created this task`);
       this.crud.createEntity('Tasks', task);
       this.dialogRef.close();
     }
@@ -46,6 +64,7 @@ export class TaskEditorComponent implements OnInit {
     if (task.status !== this.statuses[3]) {
       // eslint-disable-next-line no-param-reassign
       task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
+      this.addComment(`${this.user} changed status to "${task.status}"`);
       this.crud.updateObject('Tasks', task.id, task);
     }
   }
@@ -54,6 +73,16 @@ export class TaskEditorComponent implements OnInit {
     return this.crud.getCollection('users').subscribe((developers: object[]) => {
       this.developers = developers;
     });
+  }
+
+  public addComment(comment?) {
+    if (comment) {
+      this.task.comments.push(comment);
+    } else {
+      const text = (<HTMLInputElement>document.getElementById('comment')).value;
+      this.task.comments.push(`${this.user} commented: ${text}`);
+      (<HTMLInputElement>document.getElementById('comment')).value = '';
+    }
   }
 
   onSubmit() {
@@ -87,15 +116,10 @@ export class TaskEditorComponent implements OnInit {
   private initForm() {
     this.formGr = this.fb.group({
       name: [this.task.name, [Validators.required]],
-      info: this.task.info,
+      info: [this.task.info, Validators.maxLength(1000)],
       dueDate: this.task.dueDate,
       priority: this.task.priority,
       assignedTo: this.task.assignedTo,
     });
-  }
-
-  ngOnInit(): void {
-    this.initForm();
-    this.getDevelopers();
   }
 }

@@ -12,15 +12,12 @@ export class TaskService {
 
   constructor(public dialog: MatDialog, public auth: AuthService) {}
 
-  private getCurrentUser() {
-    return this.auth.user$.pipe(map((value) => value.displayName));
-  }
-
   public createTask(taskStatus, user) {
     const taskInfo = {
       status: taskStatus,
       created: new Date().getTime(),
       createdBy: user,
+      comments: [],
     };
     this.dialog.open(TaskEditorComponent, {
       data: {

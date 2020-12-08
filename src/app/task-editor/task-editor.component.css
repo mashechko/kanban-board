@@ -26,10 +26,6 @@
   border-radius: 10px;
 }
 
-.task-editor-button:focus {
-  outline: none;
-}
-
 .editor-head {
   height: 80px;
   background: white;
@@ -52,6 +48,7 @@
   display: inline-block;
   width: 50%;
   padding: 10px 10px;
+  overflow: scroll;
 }
 
 .progress, .task-info, .add-attachment {
@@ -63,7 +60,6 @@
   display: flex;
 }
 
-
 .progress-status {
   border-radius: 10px 0 0 10px;
   font-family: Montserrat, sans-serif;
@@ -73,7 +69,6 @@
 
   color: #FCF6F6;
   padding: 0 15px;
-
 }
 
 .progress-status, .progress-status-next {
@@ -110,6 +105,14 @@
   padding: 10px 10px;
 }
 
+.event-log-comment {
+  padding: 5px 10px;
+  color: #545454;
+  font-family: Montserrat, sans-serif;
+  font-weight: lighter;
+  font-size: 13px;
+}
+
 .editor-footer {
   height: 60px;
   display: flex;
@@ -118,7 +121,7 @@
   border-radius: 0 0 25px 25px;
 }
 
-.task-name, .info-text {
+.task-name, .info-text, input.add-comment {
   font-family: Roboto, sans-serif;
   font-weight: lighter;
 
@@ -190,6 +193,19 @@ input.prop-value {
 
 }
 
-.select-priority:focus {
+.select-priority:focus, .task-editor-button:focus, input.add-comment:focus, .add-comment-btn:focus {
   outline: none;
+}
+
+input.add-comment {
+  width: 80%;
+}
+
+.add-comment-btn {
+  width: 15%;
+  height: 25px;
+  border: 0px;
+  border-radius: 5px;
+  background: linear-gradient(91.84deg, #A06BF7 0%, #B833CD 100%);
+  color: white;
 }
