@@ -7,4 +7,7 @@ export interface Task {
   priority?: string;
   created: Date;
   dueDate: Date;
+  assignedTo?: string;
+  attachments?: string[];
+  comments?: string[];
 }

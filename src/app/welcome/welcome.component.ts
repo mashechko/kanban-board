@@ -14,7 +14,7 @@ export class WelcomeComponent implements OnInit {
   ngOnInit(): void {}
 
   public login() {
-    of(this.auth.googleSignin()).subscribe(() => {
+    this.auth.googleSignin().subscribe(() => {
       this.router.navigate(['home']);
     });
   }

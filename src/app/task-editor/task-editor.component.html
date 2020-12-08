@@ -10,6 +10,15 @@
         <div class="progress-status {{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress-status-next {{task.status}}"
              (click)="changeStatus(task)"></div>
+        <mat-form-field appearance="outline">
+          <mat-label>Select developer</mat-label>
+          <mat-select formControlName="assignedTo">
+            <mat-option>Developer</mat-option>
+            <ng-container *ngFor="let dev of developers">
+              <mat-option value="{{dev.uid}}">{{dev.displayName}}</mat-option>
+            </ng-container>
+          </mat-select>
+        </mat-form-field>
       </div>
 
       <div class="task-properties">
@@ -19,14 +28,18 @@
         </div>
         <div class="property">
           <h1 class="prop-title">CREATED</h1>
-          <div class="prop-value">{{task.created | date: " d.M.Y"}}</div>
+          <div class="prop-value">{{task.created | date}}</div>
         </div>
         <div class="property">
           <h1 class="prop-title">DUE DATE</h1>
           <input type="date" class="prop-value" formControlName="dueDate">
         </div>
-        <div class="property flaticon-157-flag"
-        (click)="selectStatus(task)"></div>
+        <select formControlName="priority" class="select-priority">
+          <option disabled>Select priority</option>
+          <option value="High Priority">High Priority</option>
+          <option value="Med Priority">Med Priority</option>
+          <option value="Low Priority">Low Priority</option>
+        </select>
       </div>
     </div>
     <div class="main-content">
@@ -40,13 +53,11 @@
           <textarea class="info-text" placeholder="Add some info here" formControlName="info"></textarea>
         </div>
       </div>
-      <div class="event-log">
-
-      </div>
+      <app-comments class="event-log"></app-comments>
     </div>
     <div class="editor-footer">
       <div class="add-attachment">
-
+        {{task.createdBy}}
       </div>
       <div class="add-comment">
 

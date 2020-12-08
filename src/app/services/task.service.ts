@@ -1,23 +1,40 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { map } from 'rxjs/operators';
 import { TaskEditorComponent } from '../task-editor/task-editor.component';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TaskService {
-  constructor(public dialog: MatDialog) {}
+  public user: string;
 
-  showDialog(task) {
-    let taskInfo = {};
-    if (typeof task === 'string') {
-      taskInfo = {
-        status: task,
-        created: new Date(),
-      };
-    } else {
-      taskInfo = task;
-    }
+  constructor(public dialog: MatDialog, public auth: AuthService) {}
+
+  private getCurrentUser() {
+    return this.auth.user$.pipe(map((value) => value.displayName));
+  }
+
+  public createTask(taskStatus, user) {
+    const taskInfo = {
+      status: taskStatus,
+      created: new Date().getTime(),
+      createdBy: user,
+    };
+    this.dialog.open(TaskEditorComponent, {
+      data: {
+        taskInfo,
+      },
+      width: '1200px',
+      height: '650px',
+      hasBackdrop: false,
+      disableClose: false,
+    });
+  }
+
+  public updateTask(task) {
+    const taskInfo = task;
     this.dialog.open(TaskEditorComponent, {
       data: {
         taskInfo,

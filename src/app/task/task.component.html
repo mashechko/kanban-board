@@ -6,7 +6,7 @@
     <p class="task-name">{{task.name}}</p>
   </div>
   <div class="dev-photos">
-    <button class="add-dev"></button>
-    <img src="assets/avatar.jpeg" class="dev-photo">
+    <button class="add-dev" *ngIf="!task.assignedTo"></button>
+    <img src="{{developer}}" class="dev-photo" *ngIf="task.assignedTo">
   </div>
 </div>

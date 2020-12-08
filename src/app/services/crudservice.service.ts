@@ -35,25 +35,6 @@ export class CRUDService {
       );
   }
 
-  public getElementByID<T>(collectionName: string, elID: string): Observable<T[]> {
-    return this.firestoreService
-      .collection(collectionName, (ref) => {
-        const query: firestore.Query = ref;
-        return query.where('id', '==', elID);
-      })
-      .snapshotChanges()
-      .pipe(
-        map((actions) =>
-          actions.map((a) => {
-            const data: any = a.payload.doc.data();
-            const { id } = a.payload.doc;
-            return { id, ...data } as T;
-          }),
-        ),
-        take(1),
-      );
-  }
-
   public getElementsByProperty<T>(
     collectionName: string,
     property: string,

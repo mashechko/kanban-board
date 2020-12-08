@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/auth';
-import { Observable, of } from 'rxjs';
+import { from, Observable, of } from 'rxjs';
 import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, take, tap } from 'rxjs/operators';
 import firebase from 'firebase';
 import { User } from '../user-interface';
 import auth = firebase.auth;
@@ -26,10 +26,14 @@ export class AuthService {
     );
   }
 
-  async googleSignin() {
+  public googleSignin() {
     const provider = new auth.GoogleAuthProvider();
-    const credential = await this.afAuth.signInWithPopup(provider);
-    return this.updateUserData(credential.user);
+    return from(this.afAuth.signInWithPopup(provider)).pipe(
+      tap((userCred: auth.UserCredential) => {
+        this.updateUserData(userCred.user);
+      }),
+      take(1),
+    );
   }
 
   private updateUserData(user) {

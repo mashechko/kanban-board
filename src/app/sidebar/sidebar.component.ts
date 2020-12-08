@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, filter, map } from 'rxjs/operators';
-import { TaskService } from '../services/task.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,8 +10,6 @@ import { TaskService } from '../services/task.service';
 export class SidebarComponent implements OnInit {
   public eventKey: Subject<any> = new Subject<any>();
 
-  constructor(public tskService: TaskService) {}
-
   ngOnInit(): void {
     this.eventKey
       .pipe(
@@ -21,9 +18,5 @@ export class SidebarComponent implements OnInit {
         filter((value: string) => value.length > 2),
       )
       .subscribe();
-  }
-
-  public showDialog() {
-    this.tskService.showDialog(null);
   }
 }

@@ -9,7 +9,9 @@ import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 import { A11yModule } from '@angular/cdk/a11y';
+
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
 import { TasksBlockComponent } from './tasks-block/tasks-block.component';
@@ -22,6 +24,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
+import { CommentsComponent } from './task-editor/comments/comments.component';
 
 @NgModule({
   declarations: [
@@ -33,6 +36,7 @@ import { AppRoutingModule } from './app-routing.module';
     TaskEditorComponent,
     HomeComponent,
     WelcomeComponent,
+    CommentsComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +51,7 @@ import { AppRoutingModule } from './app-routing.module';
     MatDialogModule,
     A11yModule,
     AppRoutingModule,
+    MatSelectModule,
   ],
   entryComponents: [TaskEditorComponent],
   providers: [],

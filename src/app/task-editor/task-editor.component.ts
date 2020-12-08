@@ -12,6 +12,10 @@ import { CRUDService } from '../services/crudservice.service';
 export class TaskEditorComponent implements OnInit {
   public task: Task = null;
 
+  public developers: object[];
+
+  private statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
+
   formGr: FormGroup;
 
   constructor(
@@ -39,20 +43,17 @@ export class TaskEditorComponent implements OnInit {
   }
 
   public changeStatus(task) {
-    const statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
-    if (task.status !== statuses[3]) {
+    if (task.status !== this.statuses[3]) {
       // eslint-disable-next-line no-param-reassign
-      task.status = statuses[statuses.indexOf(task.status) + 1];
+      task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
       this.crud.updateObject('Tasks', task.id, task);
     }
   }
 
-  public selectStatus(task) {
-    this.crud.updateObject('Tasks', task.id, task);
-  }
-
-  ngOnInit(): void {
-    this.initForm();
+  private getDevelopers() {
+    return this.crud.getCollection('users').subscribe((developers: object[]) => {
+      this.developers = developers;
+    });
   }
 
   onSubmit() {
@@ -66,6 +67,8 @@ export class TaskEditorComponent implements OnInit {
     this.task.name = this.formGr.controls.name.value;
     this.task.info = this.formGr.controls.info.value;
     this.task.dueDate = this.formGr.controls.dueDate.value;
+    this.task.priority = this.formGr.controls.priority.value;
+    this.task.assignedTo = this.formGr.controls.assignedTo.value;
 
     this.save(this.task);
   }
@@ -86,6 +89,13 @@ export class TaskEditorComponent implements OnInit {
       name: [this.task.name, [Validators.required]],
       info: this.task.info,
       dueDate: this.task.dueDate,
+      priority: this.task.priority,
+      assignedTo: this.task.assignedTo,
     });
+  }
+
+  ngOnInit(): void {
+    this.initForm();
+    this.getDevelopers();
   }
 }

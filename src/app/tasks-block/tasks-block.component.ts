@@ -1,10 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { takeUntil } from 'rxjs/operators';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { map, takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { TaskService } from '../services/task.service';
 import { CRUDService } from '../services/crudservice.service';
 import { AutoUnsubscribe } from '../auto-unsubscribe';
-import { AutoUnsubscribeBase } from '../auto-unsubscribe-base';
+import { AuthService } from '../services/auth.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -12,23 +12,28 @@ import { AutoUnsubscribeBase } from '../auto-unsubscribe-base';
   templateUrl: './tasks-block.component.html',
   styleUrls: ['./tasks-block.component.css'],
 })
-export class TasksBlockComponent extends AutoUnsubscribeBase implements OnInit {
+export class TasksBlockComponent implements OnInit, OnDestroy {
   @Input() column: string;
 
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
-  tasks: unknown[];
+  public tasks: unknown[];
 
-  constructor(public taskService: TaskService, public crud: CRUDService) {
-    super();
-  }
+  public user: string;
+
+  constructor(
+    private taskService: TaskService,
+    private crud: CRUDService,
+    private auth: AuthService,
+  ) {}
 
   ngOnInit(): void {
     this.getTasks(this.column);
+    this.getCurrentUser();
   }
 
-  public showDialog(task) {
-    this.taskService.showDialog(task);
+  public showDialog(status, user) {
+    this.taskService.createTask(status, user);
   }
 
   public getTasks(status) {
@@ -39,4 +44,12 @@ export class TasksBlockComponent extends AutoUnsubscribeBase implements OnInit {
         this.tasks = tasks;
       });
   }
+
+  private getCurrentUser() {
+    return this.auth.user$.pipe(map((value) => value.displayName)).subscribe((user) => {
+      this.user = user;
+    });
+  }
+
+  ngOnDestroy(): void {}
 }

@@ -6,7 +6,7 @@
   <ng-container *ngFor="let task of tasks">
     <app-task [task]="task"></app-task>
   </ng-container>
-  <button class="button-add-task" (click)="showDialog(column)"><span class="button-add-task-text">+</span></button>
+  <button class="button-add-task" (click)="showDialog(column, user)"><span class="button-add-task-text">+</span></button>
 </div>
 
 
