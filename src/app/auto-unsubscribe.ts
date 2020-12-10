@@ -1,23 +1,14 @@
-import { ComponentDef, ComponentType } from './component-def';
-
 export function AutoUnsubscribe(): Function {
-  return (componentType: ComponentType<any>): void => {
-    const component: ComponentDef<ComponentType<any>> = componentType.ɵcmp;
-
-    if (!component) {
-      throw new Error(`No angular property found for ${componentType.name}`);
-    }
-
-    const cmpOnDestroy: (() => void) | null = component.onDestroy;
-
-    component.onDestroy = function () {
+  return (constructor): void => {
+    const orig = constructor.prototype.ngOnDestroy;
+    // eslint-disable-next-line no-param-reassign,func-names
+    constructor.prototype.ngOnDestroy = function () {
       if (this.unsubscribeStream$) {
         this.unsubscribeStream$.next();
         this.unsubscribeStream$.complete();
       }
-
-      if (cmpOnDestroy !== null) {
-        cmpOnDestroy.apply(this);
+      if (orig) {
+        orig.apply(this);
       }
     };
   };

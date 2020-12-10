@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
@@ -31,6 +31,9 @@ export class TaskEditorComponent implements OnInit {
   ) {
     this.task = { ...data.taskInfo };
   }
+
+  @ViewChild('inputElementComment')
+  public commentElement: ElementRef;
 
   ngOnInit(): void {
     this.initForm();
@@ -78,11 +81,14 @@ export class TaskEditorComponent implements OnInit {
   public addComment(comment?) {
     if (comment) {
       this.task.comments.push(comment);
-    } else {
-      const text = (<HTMLInputElement>document.getElementById('comment')).value;
-      this.task.comments.push(`${this.user} commented: ${text}`);
-      (<HTMLInputElement>document.getElementById('comment')).value = '';
+    } else if (this.commentElement.nativeElement.value.length) {
+      this.task.comments.push(`${this.user} commented: ${this.commentElement.nativeElement.value}`);
+      this.commentElement.nativeElement.value = '';
     }
+  }
+
+  public setDev(dev) {
+    this.task.comments.push(`${this.user} assigned this task to ${dev.displayName}`);
   }
 
   onSubmit() {
@@ -93,6 +99,7 @@ export class TaskEditorComponent implements OnInit {
 
       return;
     }
+
     this.task.name = this.formGr.controls.name.value;
     this.task.info = this.formGr.controls.info.value;
     this.task.dueDate = this.formGr.controls.dueDate.value;
@@ -102,15 +109,12 @@ export class TaskEditorComponent implements OnInit {
     this.save(this.task);
   }
 
-  isControlInvalid(controlName: string): string {
+  isControlInvalid(controlName: string): boolean {
     const control = this.formGr.controls[controlName];
 
     const result = control.invalid && control.touched;
 
-    if (result) {
-      return 'error';
-    }
-    return 'valid';
+    return result;
   }
 
   private initForm() {

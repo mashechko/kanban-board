@@ -23,6 +23,8 @@ import { HomeComponent } from './home/home.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 
 import { environment } from '../environments/environment';
+import { ZoomDirective } from './zoom.directive';
+import { HighlightDirective } from './highlight.directive';
 
 @NgModule({
   declarations: [
@@ -34,6 +36,8 @@ import { environment } from '../environments/environment';
     TaskEditorComponent,
     HomeComponent,
     WelcomeComponent,
+    ZoomDirective,
+    HighlightDirective,
   ],
   imports: [
     BrowserModule,

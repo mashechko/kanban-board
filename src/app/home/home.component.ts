@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
+import { User } from '../user-interface';
 
 @Component({
   selector: 'app-home',
@@ -9,17 +11,27 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  email: string;
+  public user: User;
 
-  password: string;
+  constructor(private auth: AuthService, private router: Router) {}
 
-  constructor(public auth: AuthService, private router: Router) {}
-
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.getUserData();
+  }
 
   public logout() {
     of(this.auth.signOut()).subscribe(() => {
       this.router.navigate(['welcome']);
     });
+  }
+
+  private getUserData() {
+    return this.auth.user$
+      .pipe(
+        map((value) => {
+          this.user = value;
+        }),
+      )
+      .subscribe();
   }
 }

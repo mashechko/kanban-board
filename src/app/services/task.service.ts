@@ -25,8 +25,8 @@ export class TaskService {
       },
       width: '1200px',
       height: '650px',
-      hasBackdrop: false,
-      disableClose: false,
+      hasBackdrop: true,
+      disableClose: true,
     });
   }
 

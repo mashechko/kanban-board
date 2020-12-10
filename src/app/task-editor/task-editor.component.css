@@ -41,7 +41,13 @@
 }
 
 .progress {
-  padding: 20px 10px;
+  padding: 10px 10px;
+  justify-content: space-between;
+}
+
+.progress-status-container{
+  display: flex;
+  padding: 10px 0;
 }
 
 .task-info, .event-log, .add-attachment, .add-comment {
@@ -209,3 +215,4 @@ input.add-comment {
   background: linear-gradient(91.84deg, #A06BF7 0%, #B833CD 100%);
   color: white;
 }
+

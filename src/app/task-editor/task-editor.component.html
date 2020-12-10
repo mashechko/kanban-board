@@ -7,9 +7,11 @@
     </div>
     <div class="editor-head">
       <div class="progress">
-        <div class="progress-status {{task.status}}">{{task.status | uppercase}}</div>
+        <div class="progress-status-container">
+          <div class="progress-status {{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress-status-next {{task.status}}"
              (click)="changeStatus(task)"></div>
+        </div>
         <select formControlName="assignedTo" class="select-priority">
           <option disabled>Select developer</option>
           <ng-container *ngFor="let dev of developers">
@@ -17,7 +19,6 @@
           </ng-container>
         </select>
       </div>
-
       <div class="task-properties">
         <div class="property">
           <h1 class="prop-title">TICKET NUMBER</h1>
@@ -41,14 +42,15 @@
     </div>
     <div class="main-content">
       <div class="task-info">
-        <input class="task-name {{isControlInvalid('name')}}"
+        <input class="task-name" [class.error]="isControlInvalid('name')"
                placeholder="Task name"
                type="text"
                formControlName="name"
                 ngxTrim>
         <div class="info">
           <h1 class="info-title">INFO</h1>
-          <textarea class="info-text {{isControlInvalid('info')}}" placeholder="Add some info here"
+          <textarea class="info-text" [class.error]="isControlInvalid('info')"
+                    placeholder="Add some info here"
                     formControlName="info" maxlength="1000"></textarea>
         </div>
       </div>
@@ -64,7 +66,7 @@
       <div class="add-attachment">
       </div>
       <div class="add-comment">
-        <input class="add-comment" placeholder="Add comment..." type="text" id="comment" ngxTrim value="">
+        <input class="add-comment" placeholder="Add comment..." type="text" id="comment" ngxTrim value="" #inputElementComment>
         <button class="add-comment-btn" (click)="addComment()">Add</button>
       </div>
     </div>
