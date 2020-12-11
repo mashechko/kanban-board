@@ -1,6 +1,4 @@
 .task {
-
-  width: 230px;
   height: auto;
 
   background: #F2F1F1;
@@ -13,10 +11,51 @@
   padding: 10px 10px;
 }
 
+.task__priority__text {
+  font-family: Montserrat, sans-serif;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 15px;
+
+  color: #FCF6F6;
+
+  text-align: center;
+}
+
+.task__name {
+  font-family: Roboto, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 20px;
+
+  align-items: center;
+  padding: 5px 0;
+}
+
+.task__photos {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.task__photos__btn, .task__photos__dev {
+  width: 40px;
+  height: 40px;
+
+  box-sizing: border-box;
+  border-radius: 20px;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.task__photos__btn {
+  border: 1px dashed #9F9F9F;
+  background: transparent;
+}
+
 .Priority {
-    border-radius: 7px;
-    padding: 5px 10px;
-    width: 100px;
+  border-radius: 7px;
+  padding: 5px 10px;
+  width: 100px;
 }
 
 .Low {
@@ -31,49 +70,10 @@
   background: linear-gradient(91.86deg, #F43691 0%, rgba(248, 48, 72, 0.92) 100%);
 }
 
-.priority-text {
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: bold;
-  font-size: 15px;
-
-  color: #FCF6F6;
-
-  text-align: center;
-}
-
-.task-name {
-  font-family: Roboto, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 20px;
-
-  align-items: center;
-  padding: 5px 0;
-
-}
-
-.add-dev, .dev-photo {
-  width: 40px;
-  height: 40px;
-
-  box-sizing: border-box;
-  border-radius: 20px;
-  display: inline-block;
-  margin-left: 10px;
-}
-
-.add-dev {
-  border: 1px dashed #9F9F9F;
-  background: transparent;
-}
-
-.dev-photo {
-  background-image: url("src/assets/avatar.jpeg");
-}
 
 
-.dev-photos {
-  display: flex;
-  justify-content: flex-end;
-}
+
+
+
+
+

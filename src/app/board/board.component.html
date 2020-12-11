@@ -2,6 +2,7 @@
   <ng-container *ngFor="let column of columns">
     <app-tasks-block [column]="column"></app-tasks-block>
   </ng-container>
+  <button class="board__add-task" (click)="showDialog('ready to dev', user)">+ task</button>
 </div>
 
 

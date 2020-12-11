@@ -4,12 +4,14 @@
   </aside>
   <main>
     <div class="head-panel">
-      <img src="{{user.photoURL}}" class="head-panel-photo">
-      <div class="head-panel-greeting">Hi, {{user.displayName}}</div>
-      <button (click)="logout()" class="head-panel-logout">
+      <img src="{{user.photoURL}}" class="head-panel__photo">
+      <div class="head-panel__greeting">Hi, {{user.displayName}}</div>
+      <button (click)="logout()" class="head-panel__btn">
         Logout
       </button>
     </div>
     <app-board></app-board>
   </main>
+
+
 </div>

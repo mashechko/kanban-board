@@ -88,7 +88,7 @@ export class TaskEditorComponent implements OnInit {
   }
 
   public setDev(dev) {
-    this.task.comments.push(`${this.user} assigned this task to ${dev.displayName}`);
+    this.task.comments.push(`${this.user} assigned this task to ${dev.target.value}`);
   }
 
   onSubmit() {

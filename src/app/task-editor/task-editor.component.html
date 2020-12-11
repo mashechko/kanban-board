@@ -12,10 +12,10 @@
         <div class="progress-status-next {{task.status}}"
              (click)="changeStatus(task)"></div>
         </div>
-        <select formControlName="assignedTo" class="select-priority">
+        <select formControlName="assignedTo" class="select-priority" (change)="setDev($event)">
           <option disabled>Select developer</option>
           <ng-container *ngFor="let dev of developers">
-            <option value="{{dev.uid}}">{{dev.displayName}}</option>
+            <option value="{{dev.displayName}}">{{dev.displayName}}</option>
           </ng-container>
         </select>
       </div>

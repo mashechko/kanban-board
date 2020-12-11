@@ -1,22 +1,25 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { AngularFireStorageModule } from '@angular/fire/storage';
+
 import { AngularFireModule } from '@angular/fire';
+import { AngularFireStorageModule } from '@angular/fire/storage';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
 import { AngularFireAuthModule } from '@angular/fire/auth';
+
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgxTrimModule } from 'ngx-trim';
+import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
 import { BoardComponent } from './board/board.component';
-import { TasksBlockComponent } from './tasks-block/tasks-block.component';
-import { TaskComponent } from './task/task.component';
+import { TasksBlockComponent } from './board/tasks-block/tasks-block.component';
+import { TaskComponent } from './board/tasks-block/task/task.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TaskEditorComponent } from './task-editor/task-editor.component';
 import { HomeComponent } from './home/home.component';
@@ -53,6 +56,7 @@ import { HighlightDirective } from './highlight.directive';
     A11yModule,
     AppRoutingModule,
     NgxTrimModule,
+    ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   entryComponents: [TaskEditorComponent],
   providers: [],

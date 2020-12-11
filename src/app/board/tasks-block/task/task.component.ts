@@ -1,10 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { map, take } from 'rxjs/operators';
 import { pipe } from 'rxjs';
-import { TaskService } from '../services/task.service';
-import { Task } from '../task-interface';
-import { CRUDService } from '../services/crudservice.service';
-import { User } from '../user-interface';
+import { TaskService } from '../../../services/task.service';
+import { Task } from '../../../task-interface';
+import { CRUDService } from '../../../services/crudservice.service';
+import { User } from '../../../user-interface';
 
 @Component({
   selector: 'app-task',
@@ -28,7 +28,7 @@ export class TaskComponent implements OnInit {
 
   public getUser(): void {
     this.crud
-      .getElementsByProperty('users', 'uid', this.task.assignedTo)
+      .getElementsByProperty('users', 'displayName', this.task.assignedTo)
       .pipe(
         map((value: User[]) => {
           this.developer = value[0].photoURL;
