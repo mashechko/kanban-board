@@ -24,9 +24,9 @@ export class TaskService {
         taskInfo,
       },
       width: '1200px',
-      height: '700px',
-      hasBackdrop: false,
-      disableClose: false,
+      height: '675px',
+      hasBackdrop: true,
+      disableClose: true,
     });
   }
 
@@ -37,9 +37,9 @@ export class TaskService {
         taskInfo,
       },
       width: '1200px',
-      height: '650px',
-      hasBackdrop: false,
-      disableClose: false,
+      height: '675px',
+      hasBackdrop: true,
+      disableClose: true,
     });
   }
 }
