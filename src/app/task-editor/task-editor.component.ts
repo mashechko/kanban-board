@@ -64,7 +64,7 @@ export class TaskEditorComponent implements OnInit {
   }
 
   public changeStatus(task) {
-    if (task.status !== this.statuses[3]) {
+    if (task.status !== this.statuses[3] && task.id) {
       // eslint-disable-next-line no-param-reassign
       task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
       this.addComment(`${this.user} changed status to "${task.status}"`);

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
-import { TaskService } from '../services/task.service';
-import { AuthService } from '../services/auth.service';
+import { TaskService } from '../../services/task.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-board',

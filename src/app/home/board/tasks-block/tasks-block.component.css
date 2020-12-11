@@ -1,7 +1,7 @@
 .container {
   display: grid;
   max-height: 700px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .block__header {

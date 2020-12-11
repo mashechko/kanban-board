@@ -17,10 +17,10 @@ import { ServiceWorkerModule } from '@angular/service-worker';
 import { AppRoutingModule } from './app-routing.module';
 
 import { AppComponent } from './app.component';
-import { BoardComponent } from './board/board.component';
-import { TasksBlockComponent } from './board/tasks-block/tasks-block.component';
-import { TaskComponent } from './board/tasks-block/task/task.component';
-import { SidebarComponent } from './sidebar/sidebar.component';
+import { BoardComponent } from './home/board/board.component';
+import { TasksBlockComponent } from './home/board/tasks-block/tasks-block.component';
+import { TaskComponent } from './home/board/tasks-block/task/task.component';
+import { SidebarComponent } from './home/sidebar/sidebar.component';
 import { TaskEditorComponent } from './task-editor/task-editor.component';
 import { HomeComponent } from './home/home.component';
 import { WelcomeComponent } from './welcome/welcome.component';
@@ -28,6 +28,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { environment } from '../environments/environment';
 import { ZoomDirective } from './zoom.directive';
 import { HighlightDirective } from './highlight.directive';
+import { TruncatePipe } from './truncate.pipe';
 
 @NgModule({
   declarations: [
@@ -41,6 +42,8 @@ import { HighlightDirective } from './highlight.directive';
     WelcomeComponent,
     ZoomDirective,
     HighlightDirective,
+    TruncatePipe,
+    TruncatePipe,
   ],
   imports: [
     BrowserModule,

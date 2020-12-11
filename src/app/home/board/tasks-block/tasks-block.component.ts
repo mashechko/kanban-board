@@ -1,8 +1,8 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { CRUDService } from '../../services/crudservice.service';
-import { AutoUnsubscribe } from '../../auto-unsubscribe';
+import { CRUDService } from '../../../services/crudservice.service';
+import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 
 @AutoUnsubscribe()
 @Component({

@@ -1,74 +1,68 @@
 <form [formGroup]="formGr">
-  <div class="task-editor">
-    <div class="editor-nav">
-      <button class="task-editor-button flaticon-060-diskette" (click)="onSubmit()"></button>
-      <button class="task-editor-button flaticon-028-trash" (click)="delete(task)" *ngIf="task.id"></button>
-      <button class="task-editor-button flaticon-193-cancel" [mat-dialog-close]="true" ></button>
+  <div class="container">
+
+    <div class="navigation">
+      <button class="navigation__button flaticon-060-diskette" (click)="onSubmit()"></button>
+      <button class="navigation__button flaticon-028-trash" (click)="delete(task)" *ngIf="task.id"></button>
+      <button class="navigation__button flaticon-193-cancel" [mat-dialog-close]="true" ></button>
     </div>
-    <div class="editor-head">
-      <div class="progress">
-        <div class="progress-status-container">
-          <div class="progress-status {{task.status}}">{{task.status | uppercase}}</div>
-        <div class="progress-status-next {{task.status}}"
-             (click)="changeStatus(task)"></div>
-        </div>
-        <select formControlName="assignedTo" class="select-priority" (change)="setDev($event)">
-          <option disabled>Select developer</option>
-          <ng-container *ngFor="let dev of developers">
-            <option value="{{dev.displayName}}">{{dev.displayName}}</option>
-          </ng-container>
-        </select>
+
+    <div class="progress">
+      <div class="progress__status-container">
+        <div class="progress__status {{task.status}}">{{task.status | uppercase}}</div>
+        <div class="progress__next {{task.status}}" (click)="changeStatus(task)"></div>
       </div>
-      <div class="task-properties">
-        <div class="property">
-          <h1 class="prop-title">TICKET NUMBER</h1>
-          <div class="prop-value">{{task.id}}</div>
-        </div>
-        <div class="property">
-          <h1 class="prop-title">CREATED</h1>
-          <div class="prop-value">{{task.created | date}}</div>
-        </div>
-        <div class="property">
-          <h1 class="prop-title">DUE DATE</h1>
-          <input type="date" class="prop-value" formControlName="dueDate">
-        </div>
-        <select formControlName="priority" class="select-priority">
-          <option disabled>Select priority</option>
-          <option value="High Priority">High Priority</option>
-          <option value="Med Priority">Med Priority</option>
-          <option value="Low Priority">Low Priority</option>
-        </select>
-      </div>
-    </div>
-    <div class="main-content">
-      <div class="task-info">
-        <input class="task-name" [class.error]="isControlInvalid('name')"
-               placeholder="Task name"
-               type="text"
-               formControlName="name"
-                ngxTrim>
-        <div class="info">
-          <h1 class="info-title">INFO</h1>
-          <textarea class="info-text" [class.error]="isControlInvalid('info')"
-                    placeholder="Add some info here"
-                    formControlName="info" maxlength="1000"></textarea>
-        </div>
-      </div>
-      <div class="event-log">
-        <ng-container *ngIf="task.comments.length" >
-          <ng-container *ngFor="let comment of task.comments">
-            <div class="event-log-comment">{{comment}}</div>
-          </ng-container>
+      <select formControlName="assignedTo" class="select-priority">
+        <option disabled>Select developer</option>
+        <ng-container *ngFor="let dev of developers">
+          <option value="{{dev.displayName}}">{{dev.displayName}}</option>
         </ng-container>
-      </div>
+      </select>
     </div>
-    <div class="editor-footer">
-      <div class="add-attachment">
+
+    <div class="properties">
+      <div class="property">
+        <h1 class="property__title">TICKET NUMBER</h1>
+        <div class="property__value">{{task.id | truncate}}</div>
       </div>
-      <div class="add-comment">
-        <input class="add-comment" placeholder="Add comment..." type="text" id="comment" ngxTrim value="" #inputElementComment>
-        <button class="add-comment-btn" (click)="addComment()">Add</button>
+      <div class="property">
+        <h1 class="property__title">CREATED</h1>
+        <div class="property__value">{{task.created | date}}</div>
       </div>
+      <div class="property">
+        <h1 class="property__title">DUE DATE</h1>
+        <input type="date" class="property__value" formControlName="dueDate">
+      </div>
+      <select formControlName="priority" class="select-priority">
+        <option disabled>Select priority</option>
+        <option value="High Priority">High Priority</option>
+        <option value="Med Priority">Med Priority</option>
+        <option value="Low Priority">Low Priority</option>
+      </select>
     </div>
+
+    <div class="task-info">
+      <input class="task-info__name" [class.error]="isControlInvalid('name')"
+             placeholder="Task name" type="text" formControlName="name" ngxTrim>
+      <h1 class="task-info__title">INFO</h1>
+      <textarea class="task-info__text" [class.error]="isControlInvalid('info')"
+                placeholder="Add some info here" formControlName="info" maxlength="1000"></textarea>
+    </div>
+
+    <div class="event-log">
+      <ng-container *ngIf="task.comments.length" >
+        <ng-container *ngFor="let comment of task.comments">
+          <div class="event-log__comment">{{comment}}</div>
+        </ng-container>
+      </ng-container>
+    </div>
+
+    <div class="add-attachment"></div>
+
+    <div class="add-comment">
+      <input class="add-comment__text" placeholder="Add comment..." type="text" ngxTrim value="" #inputElementComment>
+      <button class="add-comment__btn" (click)="addComment()">Add</button>
+    </div>
+
   </div>
 </form>
