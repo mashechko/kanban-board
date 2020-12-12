@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { map } from 'rxjs/operators';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service';
+import { Task } from '../../task-interface';
+import { CRUDService } from '../../services/crudservice.service';
 
 @Component({
   selector: 'app-board',
@@ -13,7 +16,13 @@ export class BoardComponent implements OnInit {
 
   public user: string;
 
-  constructor(private taskService: TaskService, private auth: AuthService) {}
+  private droppedTask: Task;
+
+  constructor(
+    private taskService: TaskService,
+    private auth: AuthService,
+    private crud: CRUDService,
+  ) {}
 
   ngOnInit(): void {
     this.getCurrentUser();
@@ -27,5 +36,16 @@ export class BoardComponent implements OnInit {
 
   public showDialog(status, user) {
     this.taskService.createTask(status, user);
+  }
+
+  public handleTask(task) {
+    this.droppedTask = task;
+  }
+
+  public drop(event: CdkDragDrop<any>) {
+    if (event.previousContainer !== event.container) {
+      this.droppedTask.status = event.container.data;
+      this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
+    }
   }
 }

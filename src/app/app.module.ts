@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -43,7 +44,6 @@ import { TruncatePipe } from './truncate.pipe';
     ZoomDirective,
     HighlightDirective,
     TruncatePipe,
-    TruncatePipe,
   ],
   imports: [
     BrowserModule,
@@ -59,6 +59,7 @@ import { TruncatePipe } from './truncate.pipe';
     A11yModule,
     AppRoutingModule,
     NgxTrimModule,
+    DragDropModule,
     ServiceWorkerModule.register('ngsw-worker.js', { enabled: environment.production }),
   ],
   entryComponents: [TaskEditorComponent],

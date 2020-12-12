@@ -12,13 +12,13 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
       state(
         'open',
         style({
-          width: '230px',
+          height: '230px',
         }),
       ),
       state(
         'closed',
         style({
-          width: '40px',
+          height: '50px',
         }),
       ),
       transition('open => closed', [animate('0.3s')]),

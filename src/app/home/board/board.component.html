@@ -1,6 +1,12 @@
-<div class="board">
+<div class="board" cdkDropListGroup>
   <ng-container *ngFor="let column of columns">
-    <app-tasks-block [column]="column"></app-tasks-block>
+    <app-tasks-block
+      [column]="column"
+      cdkDropList
+      [cdkDropListData]="column"
+      (cdkDropListDropped)="drop($event)"
+      (onDrop)="handleTask($event)">
+    </app-tasks-block>
   </ng-container>
   <button class="board__add-task" (click)="showDialog('ready to dev', user)">+ task</button>
 </div>

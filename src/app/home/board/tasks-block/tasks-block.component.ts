@@ -1,6 +1,7 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 
@@ -12,6 +13,9 @@ import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 })
 export class TasksBlockComponent implements OnInit, OnDestroy {
   @Input() column: string;
+
+  // eslint-disable-next-line @angular-eslint/no-output-on-prefix
+  @Output() onDrop = new EventEmitter();
 
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
