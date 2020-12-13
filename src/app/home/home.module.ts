@@ -14,9 +14,11 @@ import { TasksBlockComponent } from './board/tasks-block/tasks-block.component';
 import { TaskComponent } from './board/tasks-block/task/task.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { TaskEditorComponent } from './board/task-editor/task-editor.component';
-import { ZoomDirective } from '../zoom.directive';
+import { ZoomDirective } from '../directives/zoom.directive';
 import { TruncatePipe } from '../truncate.pipe';
-import { CheckDueDateDirective } from '../check-due-date.directive';
+import { CheckDueDateDirective } from '../directives/check-due-date.directive';
+import { TagsComponent } from './board/tags/tags.component';
+import { SetBackgroundDirective } from '../directives/set-background.directive';
 
 @NgModule({
   declarations: [
@@ -26,10 +28,11 @@ import { CheckDueDateDirective } from '../check-due-date.directive';
     BoardComponent,
     TasksBlockComponent,
     TaskComponent,
-
+    TagsComponent,
     ZoomDirective,
     TruncatePipe,
     CheckDueDateDirective,
+    SetBackgroundDirective,
   ],
   imports: [
     CommonModule,
@@ -42,6 +45,6 @@ import { CheckDueDateDirective } from '../check-due-date.directive';
     MatDialogModule,
     ReactiveFormsModule,
   ],
-  exports: [CheckDueDateDirective],
+  exports: [CheckDueDateDirective, SetBackgroundDirective],
 })
 export class HomeModule {}

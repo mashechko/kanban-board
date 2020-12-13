@@ -9,8 +9,11 @@
     <div class="task__footer__due-date" appCheckDueDate="{{task.dueDate}}">{{task.dueDate}}</div>
     <img src="{{devPhotoURL}}" class="task__footer__dev" *ngIf="task.assignedTo; else addDev">
     <ng-template class="task__footer__btn" #addDev>
-      <button class="task__footer__btn">+</button>
+      <div class="task__footer__btn"></div>
     </ng-template>
+  </div>
+  <div class="task__tags" *ngIf="task.tags">
+      <app-tags *ngFor="let tag of task.tags" [tagId]="tag"></app-tags>
   </div>
 
 </div>

@@ -1,22 +1,27 @@
-import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import { Task } from '../../../task-interface';
+import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AuthService } from '../../../services/auth.service';
+import { AutoUnsubscribe } from '../../../auto-unsubscribe';
+import { TagInterface } from '../tags/tag-interface';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-task-editor',
   templateUrl: './task-editor.component.html',
   styleUrls: ['./task-editor.component.css'],
 })
-export class TaskEditorComponent implements OnInit {
+export class TaskEditorComponent implements OnInit, OnDestroy {
   public task: Task = null;
 
   public developers: object[];
 
   public user: string;
+
+  public tags: TagInterface[];
 
   private statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
 
@@ -39,6 +44,7 @@ export class TaskEditorComponent implements OnInit {
     this.initForm();
     this.getDevelopers();
     this.getCurrentUser();
+    this.getTags();
   }
 
   private getCurrentUser() {
@@ -91,6 +97,17 @@ export class TaskEditorComponent implements OnInit {
     this.task.comments.push(`${this.user} assigned this task to ${dev.target.value}`);
   }
 
+  private getTags() {
+    this.crud
+      .getCollection('tags')
+      .pipe(
+        map((value: TagInterface[]) => {
+          this.tags = value;
+        }),
+      )
+      .subscribe();
+  }
+
   onSubmit() {
     const { controls } = this.formGr;
 
@@ -126,4 +143,6 @@ export class TaskEditorComponent implements OnInit {
       assignedTo: this.task.assignedTo,
     });
   }
+
+  ngOnDestroy(): void {}
 }

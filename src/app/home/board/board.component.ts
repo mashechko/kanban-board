@@ -3,7 +3,7 @@ import { map } from 'rxjs/operators';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service';
-import { Task } from '../../task-interface';
+import { Task } from './tasks-block/task/task-interface';
 import { CRUDService } from '../../services/crudservice.service';
 
 @Component({

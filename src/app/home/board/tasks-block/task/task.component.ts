@@ -1,7 +1,7 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { map, take } from 'rxjs/operators';
 import { TaskService } from '../../../../services/task.service';
-import { Task } from '../../../../task-interface';
+import { Task } from './task-interface';
 import { CRUDService } from '../../../../services/crudservice.service';
 import { User } from '../../../../user-interface';
 

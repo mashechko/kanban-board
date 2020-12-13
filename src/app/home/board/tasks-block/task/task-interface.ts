@@ -10,4 +10,5 @@ export interface Task {
   assignedTo?: string;
   attachments?: string[];
   comments?: string[];
+  tags?: string[];
 }
