@@ -5,10 +5,12 @@
   <div class="task__name">
     <p class="task__name">{{task.name}}</p>
   </div>
-  <div class="task__photos">
-    <img src="{{devPhotoURL}}" class="task__photos__dev" *ngIf="task.assignedTo; else addDev">
-    <ng-template class="task__photos__btn" #addDev>
-      <button class="task__photos__btn">+</button>
+  <div class="task__footer">
+    <div class="task__footer__due-date" appCheckDueDate="{{task.dueDate}}">{{task.dueDate}}</div>
+    <img src="{{devPhotoURL}}" class="task__footer__dev" *ngIf="task.assignedTo; else addDev">
+    <ng-template class="task__footer__btn" #addDev>
+      <button class="task__footer__btn">+</button>
     </ng-template>
   </div>
+
 </div>

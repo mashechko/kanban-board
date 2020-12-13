@@ -31,7 +31,7 @@
       </div>
       <div class="property">
         <h1 class="property__title">DUE DATE</h1>
-        <input type="date" class="property__value" formControlName="dueDate">
+        <input type="date" class="property__value" formControlName="dueDate" appCheckDueDate="{{task.dueDate}}">
       </div>
       <select formControlName="priority" class="select-priority">
         <option disabled>Select priority</option>

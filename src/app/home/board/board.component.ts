@@ -45,6 +45,7 @@ export class BoardComponent implements OnInit {
   public drop(event: CdkDragDrop<any>) {
     if (event.previousContainer !== event.container) {
       this.droppedTask.status = event.container.data;
+      this.droppedTask.comments.push(`${this.user} changed status to "${event.container.data}"`);
       this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
     }
   }

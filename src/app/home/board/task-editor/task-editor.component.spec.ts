@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { TaskEditorComponent } from './task-editor.component';
 
 describe('TaskEditorComponent', () => {

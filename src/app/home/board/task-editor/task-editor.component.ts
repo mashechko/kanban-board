@@ -2,9 +2,9 @@ import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
-import { Task } from '../task-interface';
-import { CRUDService } from '../services/crudservice.service';
-import { AuthService } from '../services/auth.service';
+import { Task } from '../../../task-interface';
+import { CRUDService } from '../../../services/crudservice.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-task-editor',

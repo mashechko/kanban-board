@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { map } from 'rxjs/operators';
-import { TaskEditorComponent } from '../task-editor/task-editor.component';
+import { TaskEditorComponent } from '../home/board/task-editor/task-editor.component';
 import { AuthService } from './auth.service';
 
 @Injectable({
