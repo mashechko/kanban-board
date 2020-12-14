@@ -27,6 +27,12 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   formGr: FormGroup;
 
+  public openTagWindow = false;
+
+  public openNewTagWindow = false;
+
+  public tagColors = ['#ee4d4d', '#ff8b3a', '#679f50', '#2f60fd', '#662ffd', '#da71de', '#ff0303'];
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -39,6 +45,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   @ViewChild('inputElementComment')
   public commentElement: ElementRef;
+
+  @ViewChild('inputElementTag')
+  public tagElement: ElementRef;
 
   ngOnInit(): void {
     this.initForm();
@@ -106,6 +115,31 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe();
+  }
+
+  public toggle(window) {
+    if (window === 'TagWindow') {
+      this.openTagWindow = !this.openTagWindow;
+    } else if (window === 'NewTagWindow') {
+      this.openNewTagWindow = !this.openNewTagWindow;
+    }
+  }
+
+  public addTag(tag) {
+    if (this.task.tags.indexOf(tag) === -1) {
+      this.task.tags.push(tag);
+    }
+  }
+
+  public removeTag(tagID) {
+    this.task.tags.splice(this.task.tags.indexOf(tagID), 1);
+  }
+
+  addNewTag(tagColor) {
+    if (this.tagElement.nativeElement.value.length) {
+      const tagName = this.tagElement.nativeElement.value;
+      this.crud.createEntity('tags', { name: tagName, background: tagColor });
+    }
   }
 
   onSubmit() {

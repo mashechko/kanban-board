@@ -26,7 +26,6 @@ export class TagsComponent implements OnInit {
         map((value: TagInterface[]) => {
           // eslint-disable-next-line prefer-destructuring
           this.tag = value[0];
-          console.log(this.tag);
         }),
         take(1),
       )

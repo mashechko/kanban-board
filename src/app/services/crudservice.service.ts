@@ -12,7 +12,11 @@ import DocumentReference = firebase.firestore.DocumentReference;
 export class CRUDService {
   constructor(private firestoreService: AngularFirestore) {}
 
-  public createEntity(collectionName: string, data: {}): Observable<string> {
+  public createEntity(collectionName: string, data): Observable<string> {
+    if (!('id' in data)) {
+      // eslint-disable-next-line no-param-reassign
+      data.id = this.firestoreService.createId();
+    }
     return from(this.firestoreService.collection(collectionName).add(data)).pipe(
       map((value: DocumentReference) => value.id),
       take(1),
@@ -55,6 +59,10 @@ export class CRUDService {
           }),
         ),
       );
+  }
+
+  public getElementByID(collection: string, id: string) {
+    return from(this.firestoreService.collection(collection).doc(id).ref.get());
   }
 
   public updateObject(collectionName: string, id: string, obj: object): Observable<void> {

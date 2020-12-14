@@ -17,6 +17,7 @@ export class TaskService {
       created: new Date().getTime(),
       createdBy: user,
       comments: [],
+      tags: [],
     };
     this.dialog.open(TaskEditorComponent, {
       data: {

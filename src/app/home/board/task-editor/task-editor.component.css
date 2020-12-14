@@ -137,6 +137,44 @@
   background: white;
 }
 
+.task-info__tags {
+  display: flex;
+}
+
+.set-tag {
+  display: block;
+  border: none;
+  margin: 3px;
+}
+
+.set-color-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  margin: 3px;
+  border: none;
+}
+
+.task-info__tag-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  border: 1px dashed grey;
+  background: transparent;
+  margin: 3px;
+
+  font-size: 10px;
+  text-align: center;
+  color: gray;
+}
+
+.task-info__add-tags {
+  position: relative;
+  background: #EFF0F3;
+  padding: 5px;
+  border-radius: 10px;
+}
+
 .task-info__text {
   font-size: 20px;
   height: 300px;
@@ -207,7 +245,7 @@
   border-right: 1px solid #C4C4C4;
 }
 
-.task-info__name:focus, .task-info__text:focus, input.property__value:focus {
+.task-info__name:focus, .task-info__text:focus, input.property__value:focus, .set-tag:focus {
   border: 1px solid #C4C4C4;
   outline: none;
 }
@@ -239,7 +277,7 @@
   border: 1px dashed #C4C4C4;
 }
 
-.select-priority:focus, .navigation__button:focus, head:focus, .add-comment__text:focus, .add-comment__btn:focus {
+.select-priority:focus, .navigation__button:focus, head:focus, .add-comment__text:focus, .add-comment__btn:focus, .task-info__tag-btn:focus {
   outline: none;
 }
 

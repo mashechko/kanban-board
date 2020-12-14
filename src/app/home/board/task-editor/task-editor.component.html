@@ -45,9 +45,25 @@
       <input class="task-info__name" [class.error]="isControlInvalid('name')"
              placeholder="Task name" type="text" formControlName="name" ngxTrim>
       <h1 class="task-info__title">INFO</h1>
-      <ng-container *ngIf="task.tags">
-        <app-tags *ngFor="let tag of task.tags" [tagId]="tag"></app-tags>
-      </ng-container>
+      <div class="task-info__tags">
+        <ng-container *ngIf="task.tags">
+          <app-tags *ngFor="let tag of task.tags" [tagId]="tag" (click)="removeTag(tag)"></app-tags>
+        </ng-container>
+        <button class="task-info__tag-btn" (click)="toggle('TagWindow')">+</button>
+      </div>
+      <div class="task-info__add-tags" *ngIf="openTagWindow">
+        <button class="task-info__tag-btn" (click)="toggle('NewTagWindow')">+</button>
+        <app-tags *ngFor="let tag of tags"
+             (click)="addTag(tag.id)"
+                  [tagId]="tag.id"></app-tags>
+        <div class="task-info__add-tags" *ngIf="openNewTagWindow">
+          <input type="text" class="set-tag" #inputElementTag placeholder="create new tag">
+          <button class="set-color-btn" *ngFor="let color of tagColors"
+                  appSetBackground="{{color}}"
+                  (click)="addNewTag(color)"
+          ></button>
+        </div>
+      </div>
       <textarea class="task-info__text" [class.error]="isControlInvalid('info')"
                 placeholder="Add some info here" formControlName="info" maxlength="1000"></textarea>
     </div>
