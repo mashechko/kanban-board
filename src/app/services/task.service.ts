@@ -18,6 +18,7 @@ export class TaskService {
       createdBy: user,
       comments: [],
       tags: [],
+      priority: 'Low Priority',
     };
     this.dialog.open(TaskEditorComponent, {
       data: {

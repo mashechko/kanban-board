@@ -13,10 +13,6 @@ export class CRUDService {
   constructor(private firestoreService: AngularFirestore) {}
 
   public createEntity(collectionName: string, data): Observable<string> {
-    if (!('id' in data)) {
-      // eslint-disable-next-line no-param-reassign
-      data.id = this.firestoreService.createId();
-    }
     return from(this.firestoreService.collection(collectionName).add(data)).pipe(
       map((value: DocumentReference) => value.id),
       take(1),
@@ -61,10 +57,6 @@ export class CRUDService {
       );
   }
 
-  public getElementByID(collection: string, id: string) {
-    return from(this.firestoreService.collection(collection).doc(id).ref.get());
-  }
-
   public updateObject(collectionName: string, id: string, obj: object): Observable<void> {
     return from(
       this.firestoreService
@@ -76,5 +68,12 @@ export class CRUDService {
 
   public deleteObject(collectionName: string, id: string): Observable<void> {
     return from(this.firestoreService.collection(collectionName).doc(id).delete()).pipe(take(1));
+  }
+
+  public getElementById(collectionName: string, ID: string) {
+    return from(this.firestoreService.collection(collectionName).doc(ID).get()).pipe(
+      map((value) => value.data()),
+      take(1),
+    );
   }
 }

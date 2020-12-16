@@ -11,7 +11,7 @@ import { TagInterface } from './tag-interface';
 export class TagsComponent implements OnInit {
   @Input() tagId: string;
 
-  public tag: TagInterface;
+  public tag;
 
   constructor(private crud: CRUDService) {}
 
@@ -20,15 +20,8 @@ export class TagsComponent implements OnInit {
   }
 
   public getTag(): void {
-    this.crud
-      .getElementsByProperty('tags', 'id', this.tagId)
-      .pipe(
-        map((value: TagInterface[]) => {
-          // eslint-disable-next-line prefer-destructuring
-          this.tag = value[0];
-        }),
-        take(1),
-      )
-      .subscribe();
+    this.crud.getElementById('tags', this.tagId).subscribe((value) => {
+      this.tag = value;
+    });
   }
 }

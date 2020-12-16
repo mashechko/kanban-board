@@ -17,9 +17,9 @@ import { TagInterface } from '../tags/tag-interface';
 export class TaskEditorComponent implements OnInit, OnDestroy {
   public task: Task = null;
 
-  public developers: object[];
-
   public user: string;
+
+  public developers: object[];
 
   public tags: TagInterface[];
 
@@ -51,8 +51,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
-    this.getDevelopers();
     this.getCurrentUser();
+    this.getDevelopers();
     this.getTags();
   }
 
@@ -87,12 +87,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getDevelopers() {
-    return this.crud.getCollection('users').subscribe((developers: object[]) => {
-      this.developers = developers;
-    });
-  }
-
   public addComment(comment?) {
     if (comment) {
       this.task.comments.push(comment);
@@ -100,6 +94,12 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       this.task.comments.push(`${this.user} commented: ${this.commentElement.nativeElement.value}`);
       this.commentElement.nativeElement.value = '';
     }
+  }
+
+  private getDevelopers() {
+    return this.crud.getCollection('users').subscribe((developers: object[]) => {
+      this.developers = developers;
+    });
   }
 
   public setDev(dev) {

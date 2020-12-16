@@ -2,22 +2,25 @@
   <div class="container">
 
     <div class="navigation">
-      <button class="navigation__button flaticon-060-diskette" (click)="onSubmit()"></button>
-      <button class="navigation__button flaticon-028-trash" (click)="delete(task)" *ngIf="task.id"></button>
-      <button class="navigation__button flaticon-193-cancel" [mat-dialog-close]="true" ></button>
+      <ng-container *ngIf="task.id; else saver">
+        <button class="navigation__button flaticon-028-trash" (click)="delete(task)"></button>
+        <button class="navigation__button flaticon-193-cancel" (click)="onSubmit()"></button>
+      </ng-container>
+      <ng-template #saver>
+        <button class="navigation__button flaticon-060-diskette" (click)="onSubmit()"></button>
+        <button class="navigation__button flaticon-193-cancel" [mat-dialog-close]="true" ></button>
+      </ng-template>
     </div>
-
     <div class="progress">
       <div class="progress__status-container">
         <div class="progress__status {{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress__next {{task.status}}" (click)="changeStatus(task)"></div>
       </div>
-      <select formControlName="assignedTo" class="select-priority">
-        <option disabled>Select developer</option>
-        <ng-container *ngFor="let dev of developers">
-          <option value="{{dev.displayName}}">{{dev.displayName}}</option>
-        </ng-container>
-      </select>
+      <mat-select>
+        <!--        <input (keyup)="onKey($event.target.value)"> -->
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let dev of developers" [value]="dev.displayName">{{dev.displayName}}</mat-option>
+      </mat-select>
     </div>
 
     <div class="properties">
@@ -43,10 +46,10 @@
 
     <div class="task-info">
       <input class="task-info__name" [class.error]="isControlInvalid('name')"
-             placeholder="Task name" type="text" formControlName="name" ngxTrim>
+             placeholder="Task name" type="text" formControlName="name" ngxTrim maxlength="20">
       <h1 class="task-info__title">INFO</h1>
       <div class="task-info__tags">
-        <ng-container *ngIf="task.tags">
+        <ng-container *ngIf="task.tags.length">
           <app-tags *ngFor="let tag of task.tags" [tagId]="tag" (click)="removeTag(tag)"></app-tags>
         </ng-container>
         <button class="task-info__tag-btn" (click)="toggle('TagWindow')">+</button>
@@ -79,7 +82,7 @@
     <div class="add-attachment"></div>
 
     <div class="add-comment">
-      <input class="add-comment__text" placeholder="Add comment..." type="text" ngxTrim value="" #inputElementComment>
+      <input class="add-comment__text" placeholder="Add comment..." type="text" ngxTrim value="" #inputElementComment maxlength="100">
       <button class="add-comment__btn" (click)="addComment()">Add</button>
     </div>
 

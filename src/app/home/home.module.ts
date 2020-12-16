@@ -7,6 +7,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgxTrimModule } from 'ngx-trim';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatSelectModule } from '@angular/material/select';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -44,6 +45,7 @@ import { SetBackgroundDirective } from '../directives/set-background.directive';
     DragDropModule,
     MatDialogModule,
     ReactiveFormsModule,
+    MatSelectModule,
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective],
 })
