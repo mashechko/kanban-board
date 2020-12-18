@@ -16,10 +16,10 @@
         <div class="progress__status {{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress__next {{task.status}}" (click)="changeStatus(task)"></div>
       </div>
-      <mat-select>
+      <mat-select formControlName="assignedTo">
         <!--        <input (keyup)="onKey($event.target.value)"> -->
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let dev of developers" [value]="dev.displayName">{{dev.displayName}}</mat-option>
+        <mat-option *ngFor="let dev of developers" [value]="dev.uid">{{dev.displayName}}</mat-option>
       </mat-select>
     </div>
 

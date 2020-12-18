@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { map, take } from 'rxjs/operators';
+import firebase from 'firebase';
 import { TaskService } from '../../../../services/task.service';
 import { Task } from './task-interface';
 import { CRUDService } from '../../../../services/crudservice.service';
@@ -26,14 +27,8 @@ export class TaskComponent implements OnInit {
   }
 
   public getUser(): void {
-    this.crud
-      .getElementsByProperty('users', 'displayName', this.task.assignedTo)
-      .pipe(
-        map((value: User[]) => {
-          this.devPhotoURL = value[0].photoURL;
-        }),
-        take(1),
-      )
-      .subscribe();
+    this.crud.getElementById('users', this.task.assignedTo).subscribe((value: firebase.User) => {
+      this.devPhotoURL = value.photoURL;
+    });
   }
 }

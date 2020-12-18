@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  HostListener,
+  Input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
@@ -21,7 +29,17 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
 
   public tasks: unknown[];
 
+  public isDraggable = true;
+
+  private innerWidth: number;
+
   constructor(private crud: CRUDService) {}
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event) {
+    this.innerWidth = window.innerWidth;
+    this.isDraggable = this.innerWidth >= 1290;
+  }
 
   ngOnInit(): void {
     this.getTasks(this.column);

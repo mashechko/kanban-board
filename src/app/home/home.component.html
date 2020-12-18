@@ -4,8 +4,10 @@
   </aside>
   <main>
     <div class="head-panel">
-      <img *ngIf="user" src="{{user.photoURL}}" class="head-panel__photo">
-      <div class="head-panel__greeting">Hi, {{user.displayName}}</div>
+      <ng-container *ngIf="user">
+        <img src="{{user.photoURL}}" class="head-panel__photo">
+        <div class="head-panel__greeting">Hi, {{user.displayName}}</div>
+      </ng-container>
       <button (click)="logout()" class="head-panel__btn">
         Logout
       </button>
