@@ -6,7 +6,7 @@ import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/cor
 export class CheckDueDateDirective implements OnInit {
   constructor(private el: ElementRef) {}
 
-  @Input('appCheckDueDate') dueDate: string;
+  @Input('appCheckDueDate') dueDate: number;
 
   ngOnInit() {
     this.checkDate();
@@ -14,8 +14,7 @@ export class CheckDueDateDirective implements OnInit {
 
   private checkDate() {
     const currentDate = new Date().getTime();
-    const dueDate = new Date(this.dueDate).getTime();
-    const timeLeft = dueDate - currentDate;
+    const timeLeft = this.dueDate - currentDate;
     if (timeLeft < 0) {
       this.highlight('red');
     } else if (timeLeft < 86400000) {

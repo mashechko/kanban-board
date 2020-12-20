@@ -34,10 +34,11 @@
       </div>
       <div class="property">
         <h1 class="property__title">DUE DATE</h1>
-        <input type="date" class="property__value"
-               formControlName="dueDate"
-               appCheckDueDate="{{task.dueDate}}">
-
+        <mat-form-field>
+          <input matInput [matDatepicker]="dp" formControlName="dueDate" [min]="minDate">
+          <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker #dp></mat-datepicker>
+        </mat-form-field>
       </div>
       <select formControlName="priority" class="select-priority">
         <option disabled>Select priority</option>

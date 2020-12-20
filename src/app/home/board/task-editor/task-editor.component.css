@@ -209,7 +209,7 @@
 .task-info, .event-log {
   height: 400px;
   padding: 10px 10px;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .add-comment {
@@ -305,6 +305,18 @@
   text-align: center;
 }
 
+::ng-deep .mat-form-field {
+  width: 100px;
+  height: 20px;
+  font-family: Montserrat, sans-serif;
+  font-weight: lighter;
+  font-size: 13px;
+}
+
+::ng-deep .mat-form-field-infix {
+  border: none;
+}
+
 .search-dev {
   border: dashed 1px gray;
   width: 200px;
@@ -312,8 +324,6 @@
   border-radius: 5px;
   margin: 5px auto;
 }
-
-
 
 .select-priority {
   width: auto;

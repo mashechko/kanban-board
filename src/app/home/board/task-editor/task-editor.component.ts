@@ -37,6 +37,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   public tagColors = ['#ee4d4d', '#ff8b3a', '#679f50', '#2f60fd', '#662ffd', '#da71de', '#ff0303'];
 
+  public minDate: Date;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -59,6 +61,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     this.getDevelopers();
     this.getTags();
     this.user = this.storeService.user;
+    this.minDate = new Date();
   }
 
   public save(task) {
@@ -166,7 +169,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
     this.task.name = this.formGr.controls.name.value;
     this.task.info = this.formGr.controls.info.value;
-    this.task.dueDate = this.formGr.controls.dueDate.value;
+    this.task.dueDate = this.formGr.controls.dueDate.value.getTime();
     this.task.priority = this.formGr.controls.priority.value;
     this.task.assignedTo = this.formGr.controls.assignedTo.value;
 
@@ -185,7 +188,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     this.formGr = this.fb.group({
       name: [this.task.name, [Validators.required]],
       info: [this.task.info, Validators.maxLength(1000)],
-      dueDate: this.task.dueDate,
+      dueDate: new Date(this.task.dueDate),
       priority: this.task.priority,
       assignedTo: this.task.assignedTo,
     });

@@ -8,6 +8,8 @@ import { A11yModule } from '@angular/cdk/a11y';
 import { NgxTrimModule } from 'ngx-trim';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -46,6 +48,8 @@ import { SetBackgroundDirective } from '../directives/set-background.directive';
     MatDialogModule,
     ReactiveFormsModule,
     MatSelectModule,
+    MatInputModule,
+    MatDatepickerModule,
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
 })
