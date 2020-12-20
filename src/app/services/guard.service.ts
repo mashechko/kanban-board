@@ -3,15 +3,20 @@ import { ActivatedRouteSnapshot, CanActivate, Router } from '@angular/router';
 
 import { map, take, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { StoreService } from './store.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GuardService implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private storeService: StoreService,
+  ) {}
 
   canActivate(route: ActivatedRouteSnapshot) {
-    return this.authService.user$.pipe(
+    return this.storeService.user$.pipe(
       take(1),
       map((value) => !!value),
       tap((isLogged) => {
@@ -19,6 +24,7 @@ export class GuardService implements CanActivate {
           this.router.navigate(['/welcome']);
         }
       }),
+      take(1),
     );
   }
 }

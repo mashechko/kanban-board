@@ -2,11 +2,13 @@ import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@an
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map } from 'rxjs/operators';
+import firebase from 'firebase';
 import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AuthService } from '../../../services/auth.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { TagInterface } from '../tags/tag-interface';
+import { StoreService } from '../../../services/store.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -17,9 +19,11 @@ import { TagInterface } from '../tags/tag-interface';
 export class TaskEditorComponent implements OnInit, OnDestroy {
   public task: Task = null;
 
-  public user: string;
+  public user: firebase.User;
 
-  public developers: object[];
+  public developers: firebase.User[];
+
+  public selectedDevs: firebase.User[];
 
   public tags: TagInterface[];
 
@@ -39,6 +43,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     private crud: CRUDService,
     private fb: FormBuilder,
     private auth: AuthService,
+    private storeService: StoreService,
   ) {
     this.task = { ...data.taskInfo };
   }
@@ -51,15 +56,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initForm();
-    this.getCurrentUser();
     this.getDevelopers();
     this.getTags();
-  }
-
-  private getCurrentUser() {
-    return this.auth.user$.pipe(map((value) => value.displayName)).subscribe((user) => {
-      this.user = user;
-    });
+    this.user = this.storeService.user;
   }
 
   public save(task) {
@@ -82,7 +81,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     if (task.status !== this.statuses[3] && task.id) {
       // eslint-disable-next-line no-param-reassign
       task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
-      this.addComment(`${this.user} changed status to "${task.status}"`);
+      this.addComment(`${this.user.displayName} changed status to "${task.status}"`);
       this.crud.updateObject('Tasks', task.id, task);
     }
   }
@@ -91,19 +90,33 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     if (comment) {
       this.task.comments.push(comment);
     } else if (this.commentElement.nativeElement.value.length) {
-      this.task.comments.push(`${this.user} commented: ${this.commentElement.nativeElement.value}`);
+      this.task.comments.push(
+        `${this.user.displayName} commented: ${this.commentElement.nativeElement.value}`,
+      );
       this.commentElement.nativeElement.value = '';
     }
   }
 
   private getDevelopers() {
-    return this.crud.getCollection('users').subscribe((developers: object[]) => {
+    return this.crud.getCollection('users').subscribe((developers: firebase.User[]) => {
       this.developers = developers;
+      this.selectedDevs = developers;
     });
   }
 
+  public onKey(event) {
+    this.selectedDevs = this.search(event.target.value);
+  }
+
+  search(value: string) {
+    const filter = value.toLowerCase();
+    return this.developers.filter((option: firebase.User) =>
+      option.displayName.toLowerCase().startsWith(filter),
+    );
+  }
+
   public setDev(dev) {
-    this.task.comments.push(`${this.user} assigned this task to ${dev.target.value}`);
+    this.task.comments.push(`${this.user.displayName} assigned this task to ${dev.target.value}`);
   }
 
   private getTags() {

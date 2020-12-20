@@ -17,9 +17,9 @@
         <div class="progress__next {{task.status}}" (click)="changeStatus(task)"></div>
       </div>
       <mat-select formControlName="assignedTo">
-        <!--        <input (keyup)="onKey($event.target.value)"> -->
+        <input class="search-dev" (keyup)="onKey($event)">
         <mat-option>None</mat-option>
-        <mat-option *ngFor="let dev of developers" [value]="dev.uid">{{dev.displayName}}</mat-option>
+        <mat-option *ngFor="let dev of selectedDevs" [value]="dev.uid">{{dev.displayName}}</mat-option>
       </mat-select>
     </div>
 
@@ -34,7 +34,10 @@
       </div>
       <div class="property">
         <h1 class="property__title">DUE DATE</h1>
-        <input type="date" class="property__value" formControlName="dueDate" appCheckDueDate="{{task.dueDate}}">
+        <input type="date" class="property__value"
+               formControlName="dueDate"
+               appCheckDueDate="{{task.dueDate}}">
+
       </div>
       <select formControlName="priority" class="select-priority">
         <option disabled>Select priority</option>
@@ -67,7 +70,7 @@
           ></button>
         </div>
       </div>
-      <textarea class="task-info__text" [class.error]="isControlInvalid('info')"
+      <textarea class="task-info__text"
                 placeholder="Add some info here" formControlName="info" maxlength="1000"></textarea>
     </div>
 

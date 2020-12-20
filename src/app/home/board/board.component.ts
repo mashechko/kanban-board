@@ -5,6 +5,7 @@ import { TaskService } from '../../services/task.service';
 import { AuthService } from '../../services/auth.service';
 import { Task } from './tasks-block/task/task-interface';
 import { CRUDService } from '../../services/crudservice.service';
+import { StoreService } from '../../services/store.service';
 
 @Component({
   selector: 'app-board',
@@ -21,21 +22,16 @@ export class BoardComponent implements OnInit {
   constructor(
     private taskService: TaskService,
     private auth: AuthService,
+    private storeService: StoreService,
     private crud: CRUDService,
   ) {}
 
   ngOnInit(): void {
-    this.getCurrentUser();
+    this.user = this.storeService.user.displayName;
   }
 
-  private getCurrentUser() {
-    return this.auth.user$.pipe(map((value) => value.displayName)).subscribe((user) => {
-      this.user = user;
-    });
-  }
-
-  public showDialog(status, user) {
-    this.taskService.createTask(status, user);
+  public showDialog(status) {
+    this.taskService.createTask(status);
   }
 
   public handleTask(task) {

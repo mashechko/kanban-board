@@ -31,18 +31,11 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
 
   public isDraggable = true;
 
-  private innerWidth: number;
-
   constructor(private crud: CRUDService) {}
-
-  @HostListener('window:resize', ['$event'])
-  onResize(event) {
-    this.innerWidth = window.innerWidth;
-    this.isDraggable = this.innerWidth >= 1290;
-  }
 
   ngOnInit(): void {
     this.getTasks(this.column);
+    this.isDraggable = window.innerWidth >= 1290;
   }
 
   public getTasks(status) {

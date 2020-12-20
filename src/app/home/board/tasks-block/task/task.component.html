@@ -7,7 +7,7 @@
   </div>
   <div class="task__footer">
     <div class="task__footer__due-date" appCheckDueDate="{{task.dueDate}}">{{task.dueDate}}</div>
-    <img src="{{devPhotoURL}}" class="task__footer__dev" *ngIf="task.assignedTo; else addDev">
+    <img src="{{devPhotoURL}}" class="task__footer__dev" *ngIf="devPhotoURL; else addDev">
     <ng-template class="task__footer__btn" #addDev>
       <div class="task__footer__btn"></div>
     </ng-template>

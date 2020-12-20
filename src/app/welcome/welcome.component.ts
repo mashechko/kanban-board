@@ -13,7 +13,7 @@ export class WelcomeComponent implements OnInit {
   ngOnInit(): void {}
 
   public login() {
-    this.auth.googleSignin().subscribe(() => {
+    this.auth.googleSign().subscribe(() => {
       this.router.navigate(['home']);
     });
   }

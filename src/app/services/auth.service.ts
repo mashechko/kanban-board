@@ -5,28 +5,38 @@ import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firest
 import { switchMap, take, tap } from 'rxjs/operators';
 import firebase from 'firebase';
 import { User } from '../user-interface';
+import { StoreService } from './store.service';
 import auth = firebase.auth;
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  user$: Observable<User>;
+  public user$: firebase.User;
 
-  constructor(private afAuth: AngularFireAuth, private afs: AngularFirestore) {
-    this.user$ = this.afAuth.authState.pipe(
-      switchMap((user) => {
-        // Logged in
-        if (user) {
-          return this.afs.doc<User>(`users/${user.uid}`).valueChanges();
-        }
-        // Logged out
-        return of(null);
-      }),
-    );
+  constructor(
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore,
+    private storeService: StoreService,
+  ) {
+    this.afAuth.authState
+      .pipe(
+        tap((user: firebase.User) => {
+          this.storeService.user = user;
+        }),
+        switchMap((user: firebase.User) => {
+          // Logged in
+          if (user) {
+            return this.afs.doc<firebase.User>(`users/${user.uid}`).valueChanges();
+          }
+          // Logged out
+          return of(null);
+        }),
+      )
+      .subscribe();
   }
 
-  public googleSignin() {
+  public googleSign(): Observable<auth.UserCredential> {
     const provider = new auth.GoogleAuthProvider();
     return from(this.afAuth.signInWithPopup(provider)).pipe(
       tap((userCred: auth.UserCredential) => {
@@ -49,7 +59,7 @@ export class AuthService {
     return userRef.set(data, { merge: true });
   }
 
-  async signOut() {
-    await this.afAuth.signOut();
+  public signOut(): Observable<void> {
+    return from(this.afAuth.signOut()).pipe(take(1));
   }
 }

@@ -47,6 +47,6 @@ import { SetBackgroundDirective } from '../directives/set-background.directive';
     ReactiveFormsModule,
     MatSelectModule,
   ],
-  exports: [CheckDueDateDirective, SetBackgroundDirective],
+  exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
 })
 export class HomeModule {}
