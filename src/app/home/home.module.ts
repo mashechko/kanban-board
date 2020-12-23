@@ -10,6 +10,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatIconModule } from '@angular/material/icon';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -22,6 +26,7 @@ import { TruncatePipe } from '../truncate.pipe';
 import { CheckDueDateDirective } from '../directives/check-due-date.directive';
 import { TagsComponent } from './board/tags/tags.component';
 import { SetBackgroundDirective } from '../directives/set-background.directive';
+import { TaskService } from '../services/task.service';
 
 @NgModule({
   declarations: [
@@ -40,17 +45,24 @@ import { SetBackgroundDirective } from '../directives/set-background.directive';
   imports: [
     CommonModule,
     HomeRoutingModule,
-    MatButtonModule,
     FormsModule,
+    ReactiveFormsModule,
+
     A11yModule,
     NgxTrimModule,
     DragDropModule,
+
     MatDialogModule,
-    ReactiveFormsModule,
+    MatButtonModule,
     MatSelectModule,
     MatInputModule,
     MatDatepickerModule,
+    MatDividerModule,
+    MatNativeDateModule,
+    MatProgressBarModule,
+    MatIconModule,
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
+  providers: [TaskService],
 })
 export class HomeModule {}

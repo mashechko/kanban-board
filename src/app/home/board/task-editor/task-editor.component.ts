@@ -1,14 +1,16 @@
 import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { map } from 'rxjs/operators';
+import { map, takeWhile } from 'rxjs/operators';
 import firebase from 'firebase';
+import { combineLatest } from 'rxjs';
 import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AuthService } from '../../../services/auth.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { TagInterface } from '../tags/tag-interface';
 import { StoreService } from '../../../services/store.service';
+import { UploadService } from '../../../services/upload.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -35,9 +37,15 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   public openNewTagWindow = false;
 
+  public showImage = false;
+
   public tagColors = ['#ee4d4d', '#ff8b3a', '#679f50', '#2f60fd', '#662ffd', '#da71de', '#ff0303'];
 
   public minDate: Date;
+
+  public progress: string;
+
+  public imageLinks: string[];
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
@@ -46,6 +54,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private auth: AuthService,
     private storeService: StoreService,
+    private uploadService: UploadService,
   ) {
     this.task = { ...data.taskInfo };
   }
@@ -111,7 +120,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     this.selectedDevs = this.search(event.target.value);
   }
 
-  search(value: string) {
+  private search(value: string) {
     const filter = value.toLowerCase();
     return this.developers.filter((option: firebase.User) =>
       option.displayName.toLowerCase().startsWith(filter),
@@ -138,6 +147,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       this.openTagWindow = !this.openTagWindow;
     } else if (window === 'NewTagWindow') {
       this.openNewTagWindow = !this.openNewTagWindow;
+    } else if (window === 'ImageWindow') {
+      this.showImage = !this.showImage;
     }
   }
 
@@ -158,6 +169,22 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  public onFileSelected(event): void {
+    const file = event.target.files[0];
+    combineLatest(this.uploadService.uploadFileAndGetMetadata('test', file))
+      .pipe(
+        takeWhile(([, link]) => {
+          return !link;
+        }, true),
+      )
+      .subscribe(([percent, link]) => {
+        this.progress = percent;
+        if (link) {
+          this.task.imageLinks.push(link);
+        }
+      });
+  }
+
   onSubmit() {
     const { controls } = this.formGr;
 
@@ -169,7 +196,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
     this.task.name = this.formGr.controls.name.value;
     this.task.info = this.formGr.controls.info.value;
-    this.task.dueDate = this.formGr.controls.dueDate.value.getTime();
+    this.task.dueDate = this.formGr.controls.dueDate.value
+      ? this.formGr.controls.dueDate.value.getTime()
+      : null;
     this.task.priority = this.formGr.controls.priority.value;
     this.task.assignedTo = this.formGr.controls.assignedTo.value;
 
@@ -188,7 +217,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     this.formGr = this.fb.group({
       name: [this.task.name, [Validators.required]],
       info: [this.task.info, Validators.maxLength(1000)],
-      dueDate: new Date(this.task.dueDate),
+      dueDate: this.task.dueDate ? new Date(this.task.dueDate) : null,
       priority: this.task.priority,
       assignedTo: this.task.assignedTo,
     });

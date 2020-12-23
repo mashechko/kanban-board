@@ -11,4 +11,5 @@ export interface Task {
   attachments?: string[];
   comments?: string[];
   tags?: string[];
+  imageLinks?: string[];
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject } from 'rxjs';
+import { ReplaySubject } from 'rxjs';
 import firebase from 'firebase';
 
 @Injectable({

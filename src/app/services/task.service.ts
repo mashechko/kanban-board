@@ -1,10 +1,7 @@
-import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import firebase from 'firebase';
+import { Injectable } from '@angular/core';
 import { TaskEditorComponent } from '../home/board/task-editor/task-editor.component';
-import { AuthService } from './auth.service';
 import { StoreService } from './store.service';
-
 @Injectable({
   providedIn: 'root',
 })
@@ -18,6 +15,7 @@ export class TaskService {
       createdBy: this.storeService.user.displayName,
       comments: [],
       tags: [],
+      imageLinks: [],
       priority: 'Low Priority',
     };
     this.dialog.open(TaskEditorComponent, {

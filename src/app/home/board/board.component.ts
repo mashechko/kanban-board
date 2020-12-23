@@ -34,11 +34,10 @@ export class BoardComponent implements OnInit {
     this.taskService.createTask(status);
   }
 
-  public handleTask(task) {
+  public handleTask(data) {
+    const event = data[0];
+    const task = data[1];
     this.droppedTask = task;
-  }
-
-  public drop(event: CdkDragDrop<any>) {
     if (event.previousContainer !== event.container) {
       this.droppedTask.status = event.container.data;
       this.droppedTask.comments.push(`${this.user} changed status to "${event.container.data}"`);

@@ -4,12 +4,10 @@
       [column]="column"
       cdkDropList
       [cdkDropListData]="column"
-      (cdkDropListDropped)="drop($event)"
-      (onDrop)="handleTask($event)">
+      (onDrop)="handleTask($event)"
+      cdkDropListSortingDisabled
+    >
     </app-tasks-block>
   </ng-container>
   <button class="board__add-task" (click)="showDialog('ready to dev')">+ task</button>
 </div>
-
-
-

@@ -19,14 +19,16 @@ export class TaskComponent implements OnInit {
   constructor(private taskService: TaskService, private crud: CRUDService) {}
 
   ngOnInit(): void {
-    this.getUser();
+    if (this.task.assignedTo) {
+      this.getUserPhoto();
+    }
   }
 
   public showDialog(task) {
     this.taskService.updateTask(task);
   }
 
-  public getUser(): void {
+  public getUserPhoto(): void {
     this.crud.getElementById('users', this.task.assignedTo).subscribe((value: firebase.User) => {
       this.devPhotoURL = value.photoURL;
     });
