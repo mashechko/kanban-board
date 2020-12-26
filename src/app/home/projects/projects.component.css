@@ -1,0 +1,25 @@
+.projects {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-gap: 20px;
+  padding: 20px;
+}
+
+.projects__add-project {
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  border-radius: 15px;
+  border: none;
+  width: 200px;
+  height: 40px;
+  background: #980cb8;
+
+  color: #ffffff;
+  font-family: "Roboto Light", sans-serif;
+  font-size: 20px;
+}
+
+.projects__add-project:focus {
+  outline: none;
+}

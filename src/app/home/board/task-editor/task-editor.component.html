@@ -1,14 +1,15 @@
-<form [formGroup]="formGr" >
+<form [formGroup]="formGr"
+      (keydown.enter)="$event.preventDefault()" >
   <div class="container">
 
     <div class="navigation">
       <ng-container *ngIf="task.id; else saver">
-        <button class="navigation__button flaticon-028-trash" (click)="delete(task)"></button>
-        <button class="navigation__button flaticon-193-cancel" (click)="onSubmit()"></button>
+        <button class="navigation__button flaticon-028-trash no-outline" (click)="delete(task)"></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()"></button>
       </ng-container>
       <ng-template #saver>
-        <button class="navigation__button flaticon-060-diskette" (click)="onSubmit()"></button>
-        <button class="navigation__button flaticon-193-cancel" [mat-dialog-close]="true" ></button>
+        <button class="navigation__button flaticon-060-diskette no-outline" (click)="onSubmit()"></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" [mat-dialog-close]="true" ></button>
       </ng-template>
     </div>
     <div class="progress">
@@ -17,7 +18,7 @@
         <div class="progress__next {{task.status}}" (click)="changeStatus(task)"></div>
       </div>
       <mat-select formControlName="assignedTo">
-        <input class="search-dev" (keyup)="onKey($event)">
+        <input class="search-dev no-outline" (keyup)="onKey($event)">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let dev of selectedDevs" [value]="dev.uid">{{dev.displayName}}</mat-option>
       </mat-select>
@@ -26,7 +27,7 @@
     <div class="properties">
       <div class="property">
         <h1 class="property__title">TICKET NUMBER</h1>
-        <div class="property__value">{{task.id | truncate}}</div>
+        <div class="property__value" *ngIf="task.id">{{task.id | truncate}}</div>
       </div>
       <div class="property">
         <h1 class="property__title">CREATED</h1>
@@ -40,7 +41,7 @@
           <mat-datepicker #dp></mat-datepicker>
         </mat-form-field>
       </div>
-      <select formControlName="priority" class="select-priority">
+      <select formControlName="priority" class="select-priority no-outline">
         <option disabled>Select priority</option>
         <option value="High Priority">High Priority</option>
         <option value="Med Priority">Med Priority</option>
@@ -123,8 +124,8 @@
     </div>
 
     <div class="add-comment">
-      <input class="add-comment__text" placeholder="Add comment..." type="text" ngxTrim value="" #inputElementComment maxlength="100">
-      <button class="add-comment__btn" (click)="addComment()">Add</button>
+      <input class="add-comment__text no-outline" placeholder="Add comment..." type="text" value="" #inputElementComment maxlength="100">
+      <button class="add-comment__btn no-outline" (click)="addComment()">Add</button>
     </div>
 
   </div>

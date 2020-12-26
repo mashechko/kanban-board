@@ -1,0 +1,73 @@
+<form [formGroup]="formGr" >
+  <div class="container">
+
+    <div class="navigation">
+      <ng-container *ngIf="project.id; else saver">
+        <button class="navigation__button flaticon-028-trash no-outline" (click)="delete(project)"></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()"></button>
+      </ng-container>
+      <ng-template #saver>
+        <button class="navigation__button flaticon-060-diskette no-outline" (click)="onSubmit()"></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" [mat-dialog-close]="true" ></button>
+      </ng-template>
+    </div>
+
+    <div class="main-info">
+<!--      <div class="progress__status-container">-->
+<!--        <div class="progress__status {{task.status}}">{{task.status | uppercase}}</div>-->
+<!--        <div class="progress__next {{task.status}}" (click)="changeStatus(task)"></div>-->
+<!--      </div>-->
+<!--      <mat-select formControlName="assignedTo">-->
+<!--        <input class="search-dev" (keyup)="onKey($event)">-->
+<!--        <mat-option>None</mat-option>-->
+<!--        <mat-option *ngFor="let dev of selectedDevs" [value]="dev.uid">{{dev.displayName}}</mat-option>-->
+<!--      </mat-select>-->
+    </div>
+
+    <div class="properties">
+      <div class="property">
+        <h1 class="property__title">PROJECT ID</h1>
+        <div class="property__value">{{project.id | truncate}}</div>
+      </div>
+      <div class="property">
+        <h1 class="property__title">CREATED</h1>
+        <div class="property__value">{{project.created | date}}</div>
+      </div>
+      <div class="property">
+        <h1 class="property__title">CREATED BY</h1>
+        <div class="property__value">{{project.createdBy}}</div>
+      </div>
+    </div>
+
+    <div class="project-info">
+      <input class="project-info__name" [class.error]="isControlInvalid('name')"
+             placeholder="Project name" type="text" formControlName="name" maxlength="20" ngxTrim>
+      <h1 class="project-info__title">INFO</h1>
+      <textarea class="project-info__text"
+                placeholder="Add some info here" formControlName="info" maxlength="1000"></textarea>
+    </div>
+
+    <div class="tasks-info">
+
+    </div>
+
+<!--    <div class="add-attachment">-->
+<!--&lt;!&ndash;      <input type="file"&ndash;&gt;-->
+<!--&lt;!&ndash;             id="file"&ndash;&gt;-->
+<!--&lt;!&ndash;             (change)="onFileSelected($event)"&ndash;&gt;-->
+<!--&lt;!&ndash;             name="image"&ndash;&gt;-->
+<!--&lt;!&ndash;             autocomplete="off"&ndash;&gt;-->
+<!--&lt;!&ndash;             accept="image/*"&ndash;&gt;-->
+<!--&lt;!&ndash;             class="add-attachment__input"&ndash;&gt;-->
+<!--&lt;!&ndash;      />&ndash;&gt;-->
+<!--&lt;!&ndash;      <mat-progress-bar mode="determinate" value="{{progress}}"></mat-progress-bar>&ndash;&gt;-->
+<!--    </div>-->
+
+<!--    <div class="add-comment">-->
+<!--      <input class="add-comment__text" placeholder="Add comment..."
+type="text" ngxTrim value="" #inputElementComment maxlength="100">-->
+<!--      <button class="add-comment__btn" (click)="addComment()">Add</button>-->
+<!--    </div>-->
+
+  </div>
+</form>

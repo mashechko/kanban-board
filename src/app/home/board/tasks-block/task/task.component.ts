@@ -1,10 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { map, take } from 'rxjs/operators';
 import firebase from 'firebase';
-import { TaskService } from '../../../../services/task.service';
+import { DialogService } from '../../../../services/dialog.service';
 import { Task } from './task-interface';
 import { CRUDService } from '../../../../services/crudservice.service';
-import { User } from '../../../../user-interface';
 
 @Component({
   selector: 'app-task',
@@ -16,7 +14,7 @@ export class TaskComponent implements OnInit {
 
   public devPhotoURL: string;
 
-  constructor(private taskService: TaskService, private crud: CRUDService) {}
+  constructor(private dialogService: DialogService, private crud: CRUDService) {}
 
   ngOnInit(): void {
     if (this.task.assignedTo) {
@@ -25,7 +23,7 @@ export class TaskComponent implements OnInit {
   }
 
   public showDialog(task) {
-    this.taskService.updateTask(task);
+    this.dialogService.updateTask(task);
   }
 
   public getUserPhoto(): void {

@@ -1,0 +1,60 @@
+.navigation {
+  height: 40px;
+  padding: 10px 10px;
+  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+
+  grid-area: navigation;
+}
+
+.navigation__button {
+  width: 40px;
+  height: 40px;
+  margin: 0 5px;
+
+  background: #FFFFFF;
+  border: 1px solid rgba(135, 135, 135, 0.75);
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
+}
+
+.flaticon-028-trash, .flaticon-060-diskette, .flaticon-193-cancel {
+  color: #7A7A7A;
+  font-size: 20px;
+}
+
+.flaticon-193-cancel {
+  font-size: 16px;
+}
+
+.error {
+  border: 1px solid red;
+}
+
+.ready {
+  background: linear-gradient(91.84deg, #4DE89E 0%, #439450 55.56%, #A9C604 100%);
+}
+
+.development {
+  background: linear-gradient(91.84deg, #A06BF7 0%, #B833CD 100%);
+}
+
+.qa {
+  background: linear-gradient(91.84deg, #4441F3 0%, #59CCE6 100%);
+}
+
+.closed {
+  background: linear-gradient(91.84deg, #FB7B33 0%, #F8CA56 100%);
+}
+
+::ng-deep .mat-dialog-container {
+  box-shadow: none;
+  background: none;
+}
+
+.no-outline:focus {
+  outline: none;
+}
+
+

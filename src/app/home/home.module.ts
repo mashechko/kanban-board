@@ -26,7 +26,10 @@ import { TruncatePipe } from '../truncate.pipe';
 import { CheckDueDateDirective } from '../directives/check-due-date.directive';
 import { TagsComponent } from './board/tags/tags.component';
 import { SetBackgroundDirective } from '../directives/set-background.directive';
-import { TaskService } from '../services/task.service';
+import { DialogService } from '../services/dialog.service';
+import { ProjectComponent } from './projects/project/project.component';
+import { ProjectsComponent } from './projects/projects.component';
+import { ProjectEditorComponent } from './projects/project-editor/project-editor.component';
 
 @NgModule({
   declarations: [
@@ -41,6 +44,9 @@ import { TaskService } from '../services/task.service';
     TruncatePipe,
     CheckDueDateDirective,
     SetBackgroundDirective,
+    ProjectComponent,
+    ProjectsComponent,
+    ProjectEditorComponent,
   ],
   imports: [
     CommonModule,
@@ -63,6 +69,6 @@ import { TaskService } from '../services/task.service';
     MatIconModule,
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
-  providers: [TaskService],
+  providers: [DialogService],
 })
 export class HomeModule {}

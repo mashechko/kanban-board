@@ -1,4 +1,14 @@
-import { Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterContentInit,
+  ChangeDetectionStrategy,
+  Component,
+  DoCheck,
+  ElementRef,
+  Inject,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { map, takeWhile } from 'rxjs/operators';
@@ -6,7 +16,6 @@ import firebase from 'firebase';
 import { combineLatest } from 'rxjs';
 import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
-import { AuthService } from '../../../services/auth.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { TagInterface } from '../tags/tag-interface';
 import { StoreService } from '../../../services/store.service';
@@ -16,9 +25,10 @@ import { UploadService } from '../../../services/upload.service';
 @Component({
   selector: 'app-task-editor',
   templateUrl: './task-editor.component.html',
-  styleUrls: ['./task-editor.component.css'],
+  styleUrls: ['./task-editor.component.css', '../../styles/editor-style.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskEditorComponent implements OnInit, OnDestroy {
+export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterContentInit {
   public task: Task = null;
 
   public user: firebase.User;
@@ -52,7 +62,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     private dialogRef: MatDialogRef<TaskEditorComponent>,
     private crud: CRUDService,
     private fb: FormBuilder,
-    private auth: AuthService,
     private storeService: StoreService,
     private uploadService: UploadService,
   ) {
@@ -71,6 +80,20 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     this.getTags();
     this.user = this.storeService.user;
     this.minDate = new Date();
+  }
+
+  ngDoCheck() {
+    // setTimeout(() => {
+    //   console.log('close');
+    // }
+    //   , 3000)
+  }
+
+  ngAfterContentInit() {
+    if (!this.task.isChanging) {
+      this.task.isChanging = true;
+      this.crud.updateObject('Tasks', this.task.id, this.task);
+    }
   }
 
   public save(task) {
@@ -123,7 +146,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
   private search(value: string) {
     const filter = value.toLowerCase();
     return this.developers.filter((option: firebase.User) =>
-      option.displayName.toLowerCase().startsWith(filter),
+      option.displayName.toLowerCase().includes(filter),
     );
   }
 
@@ -194,13 +217,11 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.task.name = this.formGr.controls.name.value;
-    this.task.info = this.formGr.controls.info.value;
-    this.task.dueDate = this.formGr.controls.dueDate.value
-      ? this.formGr.controls.dueDate.value.getTime()
-      : null;
-    this.task.priority = this.formGr.controls.priority.value;
-    this.task.assignedTo = this.formGr.controls.assignedTo.value;
+    this.task.name = controls.name.value;
+    this.task.info = controls.info.value;
+    this.task.dueDate = controls.dueDate.value ? controls.dueDate.value.getTime() : null;
+    this.task.priority = controls.priority.value;
+    this.task.assignedTo = controls.assignedTo.value;
 
     this.save(this.task);
   }
@@ -221,7 +242,15 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       priority: this.task.priority,
       assignedTo: this.task.assignedTo,
     });
+    if (this.task.isChanging) {
+      this.formGr.disable();
+    }
   }
 
-  ngOnDestroy(): void {}
+  ngOnDestroy(): void {
+    if (this.task.isChanging) {
+      this.task.isChanging = false;
+      this.crud.updateObject('Tasks', this.task.id, this.task);
+    }
+  }
 }

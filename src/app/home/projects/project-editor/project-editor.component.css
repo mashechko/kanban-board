@@ -1,0 +1,52 @@
+.container {
+  background: #EFF0F3;
+  border-radius: 25px;
+  width: 100%;
+
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+  margin: auto;
+
+  display: grid;
+
+  grid-template-areas:
+      "navigation"
+      "progress"
+      "properties"
+      "task-info"
+      "event-log"
+      "add-attachment"
+      "add-comment";
+}
+
+@media (min-width: 1100px) {
+  .container {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      "navigation navigation"
+      "progress properties"
+      "task-info event-log"
+      "add-attachment add-comment";
+  }
+  .progress, .properties {
+    display: flex;
+    height: 60px;
+  }
+  .progress__status {
+    font-size: 24px;
+  }
+  .property {
+    display: inline-block;
+    padding: 0 15px;
+    border-right: 1px solid #C4C4C4;;
+  }
+  .add-attachment {
+    border-radius: 0 0 0 25px;
+  }
+  .add-comment {
+    border-radius: 0 0 25px 0;
+  }
+  .select-priority {
+    margin: 10px;
+  }
+
+}

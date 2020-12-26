@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs/operators';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { TaskService } from '../../services/task.service';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { DialogService } from '../../services/dialog.service';
 import { AuthService } from '../../services/auth.service';
 import { Task } from './tasks-block/task/task-interface';
 import { CRUDService } from '../../services/crudservice.service';
@@ -20,7 +19,7 @@ export class BoardComponent implements OnInit {
   private droppedTask: Task;
 
   constructor(
-    private taskService: TaskService,
+    private dialogService: DialogService,
     private auth: AuthService,
     private storeService: StoreService,
     private crud: CRUDService,
@@ -31,7 +30,7 @@ export class BoardComponent implements OnInit {
   }
 
   public showDialog(status) {
-    this.taskService.createTask(status);
+    this.dialogService.createTask(status);
   }
 
   public handleTask(data) {

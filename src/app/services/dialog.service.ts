@@ -1,11 +1,12 @@
 import { MatDialog } from '@angular/material/dialog';
 import { Injectable } from '@angular/core';
 import { TaskEditorComponent } from '../home/board/task-editor/task-editor.component';
+import { ProjectEditorComponent } from '../home/projects/project-editor/project-editor.component';
 import { StoreService } from './store.service';
 @Injectable({
   providedIn: 'root',
 })
-export class TaskService {
+export class DialogService {
   constructor(public dialog: MatDialog, private storeService: StoreService) {}
 
   public createTask(taskStatus) {
@@ -17,6 +18,7 @@ export class TaskService {
       tags: [],
       imageLinks: [],
       priority: 'Low Priority',
+      isChanging: false,
     };
     this.dialog.open(TaskEditorComponent, {
       data: {
@@ -34,6 +36,35 @@ export class TaskService {
     this.dialog.open(TaskEditorComponent, {
       data: {
         taskInfo,
+      },
+      width: '1200px',
+      height: '675px',
+      hasBackdrop: true,
+      disableClose: true,
+    });
+  }
+
+  public createProject() {
+    const projectInfo = {
+      created: new Date().getTime(),
+      createdBy: this.storeService.user.displayName,
+    };
+    this.dialog.open(ProjectEditorComponent, {
+      data: {
+        projectInfo,
+      },
+      width: '1200px',
+      height: '675px',
+      hasBackdrop: true,
+      disableClose: true,
+    });
+  }
+
+  public updateProject(project) {
+    const projectInfo = project;
+    this.dialog.open(ProjectEditorComponent, {
+      data: {
+        projectInfo,
       },
       width: '1200px',
       height: '675px',
