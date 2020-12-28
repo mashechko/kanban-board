@@ -32,22 +32,6 @@
   border: 1px solid red;
 }
 
-.ready {
-  background: linear-gradient(91.84deg, #4DE89E 0%, #439450 55.56%, #A9C604 100%);
-}
-
-.development {
-  background: linear-gradient(91.84deg, #A06BF7 0%, #B833CD 100%);
-}
-
-.qa {
-  background: linear-gradient(91.84deg, #4441F3 0%, #59CCE6 100%);
-}
-
-.closed {
-  background: linear-gradient(91.84deg, #FB7B33 0%, #F8CA56 100%);
-}
-
 ::ng-deep .mat-dialog-container {
   box-shadow: none;
   background: none;

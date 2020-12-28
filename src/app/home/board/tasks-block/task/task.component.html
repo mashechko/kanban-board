@@ -1,5 +1,5 @@
 <div class="task" (click)="showDialog(task)">
-  <div class="{{task.priority}}">
+  <div class="priority" appSetBackground="{{task.priority}}">
     <p class="task__priority__text">{{task.priority}}</p>
   </div>
   <div class="task__name">

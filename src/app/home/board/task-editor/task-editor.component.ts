@@ -2,8 +2,8 @@ import {
   AfterContentInit,
   ChangeDetectionStrategy,
   Component,
-  DoCheck,
   ElementRef,
+  HostListener,
   Inject,
   OnDestroy,
   OnInit,
@@ -20,15 +20,15 @@ import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { TagInterface } from '../tags/tag-interface';
 import { StoreService } from '../../../services/store.service';
 import { UploadService } from '../../../services/upload.service';
+import { CommentInterface } from './comment/comment-interface';
 
 @AutoUnsubscribe()
 @Component({
   selector: 'app-task-editor',
   templateUrl: './task-editor.component.html',
   styleUrls: ['./task-editor.component.css', '../../styles/editor-style.css'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterContentInit {
+export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit {
   public task: Task = null;
 
   public user: firebase.User;
@@ -57,6 +57,12 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterCon
 
   public imageLinks: string[];
 
+  private timeoutId;
+
+  private commentId: string;
+
+  public comments: object[];
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -74,34 +80,57 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterCon
   @ViewChild('inputElementTag')
   public tagElement: ElementRef;
 
+  @HostListener('click')
+  handleClick() {
+    this.closeIfInactive();
+  }
+
+  @HostListener('window:keydown')
+  handleKeydown() {
+    this.closeIfInactive();
+  }
+
   ngOnInit(): void {
     this.initForm();
     this.getDevelopers();
+    if (this.task.comments.length) {
+      this.getComments();
+    }
     this.getTags();
     this.user = this.storeService.user;
     this.minDate = new Date();
-  }
-
-  ngDoCheck() {
-    // setTimeout(() => {
-    //   console.log('close');
-    // }
-    //   , 3000)
+    this.closeIfInactive();
   }
 
   ngAfterContentInit() {
-    if (!this.task.isChanging) {
+    if (this.task.id && !this.task.isChanging) {
       this.task.isChanging = true;
       this.crud.updateObject('Tasks', this.task.id, this.task);
     }
   }
 
+  private closeIfInactive() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.timeoutId = setTimeout(() => {
+      this.save(this.task);
+    }, 30000);
+  }
+
   public save(task) {
     if (task.id) {
+      if (this.task.isChanging) {
+        this.task.isChanging = false;
+      }
       this.crud.updateObject('Tasks', task.id, task);
       this.dialogRef.close();
     } else {
-      this.addComment(`${this.task.createdBy} created this task`);
+      this.addComment({
+        content: `${this.task.createdBy} created this task`,
+        type: 'comment',
+        taskId: this.task.id,
+      });
       this.crud.createEntity('Tasks', task);
       this.dialogRef.close();
     }
@@ -116,18 +145,39 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterCon
     if (task.status !== this.statuses[3] && task.id) {
       // eslint-disable-next-line no-param-reassign
       task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
-      this.addComment(`${this.user.displayName} changed status to "${task.status}"`);
+      this.addComment({
+        content: `${this.user.displayName} changed status to ${task.status}`,
+        type: 'status',
+        taskId: this.task.id,
+      });
       this.crud.updateObject('Tasks', task.id, task);
     }
   }
 
+  private getComments() {
+    this.crud
+      .getElementsByProperty('comments', 'taskId', this.task.id)
+      .subscribe((value: CommentInterface[]) => {
+        this.comments = value;
+      });
+  }
+
   public addComment(comment?) {
     if (comment) {
-      this.task.comments.push(comment);
+      this.crud.createEntity('comments', comment).subscribe((value) => {
+        this.commentId = value;
+        this.task.comments.push(this.commentId);
+      });
     } else if (this.commentElement.nativeElement.value.length) {
-      this.task.comments.push(
-        `${this.user.displayName} commented: ${this.commentElement.nativeElement.value}`,
-      );
+      const commentData = {
+        content: this.commentElement.nativeElement.value,
+        type: 'comment',
+        taskId: this.task.id,
+      };
+      this.crud.createEntity('comments', commentData).subscribe((value) => {
+        this.commentId = value;
+        this.task.comments.push(this.commentId);
+      });
       this.commentElement.nativeElement.value = '';
     }
   }
@@ -150,9 +200,9 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterCon
     );
   }
 
-  public setDev(dev) {
-    this.task.comments.push(`${this.user.displayName} assigned this task to ${dev.target.value}`);
-  }
+  // public setDev(dev) {
+  //   this.task.comments.push(`${this.user.displayName} assigned this task to ${dev.target.value}`);
+  // }
 
   private getTags() {
     this.crud
@@ -248,9 +298,10 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy, AfterCon
   }
 
   ngOnDestroy(): void {
-    if (this.task.isChanging) {
-      this.task.isChanging = false;
-      this.crud.updateObject('Tasks', this.task.id, this.task);
-    }
+    // if (this.task.isChanging) {
+    //   this.task.isChanging = false;
+    //   this.crud.updateObject('Tasks', this.task.id, this.task);
+    // }
+    clearTimeout(this.timeoutId);
   }
 }

@@ -30,6 +30,7 @@ import { DialogService } from '../services/dialog.service';
 import { ProjectComponent } from './projects/project/project.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ProjectEditorComponent } from './projects/project-editor/project-editor.component';
+import { CommentComponent } from './board/task-editor/comment/comment.component';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { ProjectEditorComponent } from './projects/project-editor/project-editor
     ProjectComponent,
     ProjectsComponent,
     ProjectEditorComponent,
+    CommentComponent,
   ],
   imports: [
     CommonModule,

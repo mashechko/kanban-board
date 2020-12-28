@@ -1,0 +1,7 @@
+<div *ngIf="comment" class="comment">
+  <p *ngIf="status; else defaultComment">{{context}}<span appSetBackground="{{status}}" class="comment__new-status">{{status}}</span></p>
+  <ng-template #defaultComment>
+    <p>{{comment.content}} {{comment.type}}</p>
+  </ng-template>
+</div>
+

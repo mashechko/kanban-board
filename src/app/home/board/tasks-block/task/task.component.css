@@ -57,20 +57,8 @@
   padding-top: 25px;
 }
 
-.Priority {
+.priority {
   border-radius: 7px;
   padding: 5px 10px;
   width: 100px;
-}
-
-.Low {
-  background: linear-gradient(91.86deg, #3654F4 0%, rgba(48, 200, 248, 0.92) 100%);
-}
-
-.Med {
-  background: linear-gradient(92.24deg, #04C62F -42.63%, rgba(14, 219, 232, 0.92) 100%);
-}
-
-.High {
-  background: linear-gradient(91.86deg, #F43691 0%, rgba(248, 48, 72, 0.92) 100%);
 }

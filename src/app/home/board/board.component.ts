@@ -18,6 +18,8 @@ export class BoardComponent implements OnInit {
 
   private droppedTask: Task;
 
+  private commentId: string;
+
   constructor(
     private dialogService: DialogService,
     private auth: AuthService,
@@ -34,12 +36,19 @@ export class BoardComponent implements OnInit {
   }
 
   public handleTask(data) {
-    const event = data[0];
-    const task = data[1];
+    const [event, task] = data;
     this.droppedTask = task;
     if (event.previousContainer !== event.container) {
       this.droppedTask.status = event.container.data;
-      this.droppedTask.comments.push(`${this.user} changed status to "${event.container.data}"`);
+      const comment = {
+        content: `${this.user} changed status to ${event.container.data}`,
+        type: 'status',
+        taskId: this.droppedTask.id,
+      };
+      this.crud.createEntity('comments', comment).subscribe((value) => {
+        this.commentId = value;
+        this.droppedTask.comments.push(this.commentId);
+      });
       this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
     }
   }
