@@ -13,4 +13,5 @@ export interface Task {
   tags: string[];
   imageLinks: string[];
   isChanging?: boolean;
+  lastModified?: number;
 }

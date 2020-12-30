@@ -39,11 +39,13 @@ export class CRUDService {
     collectionName: string,
     property: string,
     propName: string,
+    orderField?: string,
+    orderAsc: boolean = true,
   ): Observable<T[]> {
     return this.firestoreService
       .collection(collectionName, (ref) => {
         const query: firestore.Query = ref;
-        return query.where(property, '==', propName);
+        return query.where(property, '==', propName).orderBy(orderField, orderAsc ? 'asc' : 'desc');
       })
       .snapshotChanges()
       .pipe(

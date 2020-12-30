@@ -1,10 +1,31 @@
+@media (min-width: 1100px) {
+  .comment {
+    display: flex;
+    justify-content: space-between;
+  }
+}
+
 .comment {
   padding: 5px 0;
+  color: #545454;
+  font-size: 15px;
+
+
+}
+
+.comment__text {
+  max-width: 400px;
+  word-break: break-all;
   font-family: "Roboto Light", sans-serif;
+  font-weight: 400;
 }
 
 .comment__new-status {
   padding: 0 3px;
   border-radius: 4px;
   color: white;
+}
+
+.comment__time {
+  font-weight: 300;
 }

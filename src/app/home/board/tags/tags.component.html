@@ -1,2 +1,34 @@
-<div class="tag" *ngIf="tag" appSetBackground="{{tag.background}}">{{tag.name}}</div>
-
+<div class="add-tag">
+  <button mat-icon-button (click)="toggle('TagWindow')">
+    <mat-icon class="mat-icon-rtl-mirror">
+      {{openTagWindow ? 'expand_more' : 'chevron_right'}}
+    </mat-icon>
+  </button>
+  ADD NEW TAG
+</div>
+<div class="task-info__add-tags" *ngIf="openTagWindow">
+  <div class="add-tag">
+    <button mat-icon-button (click)="toggle('NewTagWindow')">
+      <mat-icon class="mat-icon-rtl-mirror">
+        {{openNewTagWindow ? 'expand_more' : 'chevron_right'}}
+      </mat-icon>
+    </button>NEW
+  </div>
+  <app-tag *ngFor="let tag of tags"
+           [tag]="tag"
+           (click)="onClick.emit(tag)"
+  ></app-tag>
+  <div class="task-info__add-tags" *ngIf="openNewTagWindow">
+    <input type="text" class="set-tag no-outline"
+           #inputElementTag
+           placeholder="create new tag" maxlength="15"
+           (keyup)="onKey($event)"
+    >
+    <button class="set-color-btn no-outline" *ngFor="let color of tagColors"
+            appSetBackground="{{color}}"
+            (click)="changeColor(color)"
+    ></button>
+    <button (click)="addNewTag()">create tag</button>
+    <div *ngIf="tagPreviewText" appSetBackground="{{selectedColor}}" class="tag">{{tagPreviewText}}</div>
+  </div>
+</div>

@@ -31,9 +31,15 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
   }
 
   public getTasks(status) {
-    this.crud.getElementsByProperty('Tasks', 'status', status).subscribe((tasks) => {
-      this.tasks = tasks;
-    });
+    this.crud
+      .getElementsByProperty('Tasks', 'status', status, 'lastModified', false)
+      .subscribe((tasks) => {
+        this.tasks = tasks;
+      });
+  }
+
+  public trackByFn(index, item) {
+    return item.lastModified;
   }
 
   ngOnDestroy(): void {}

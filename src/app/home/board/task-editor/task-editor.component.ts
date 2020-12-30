@@ -1,6 +1,5 @@
 import {
   AfterContentInit,
-  ChangeDetectionStrategy,
   Component,
   ElementRef,
   HostListener,
@@ -11,13 +10,13 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { map, takeWhile } from 'rxjs/operators';
+import { takeWhile } from 'rxjs/operators';
 import firebase from 'firebase';
 import { combineLatest } from 'rxjs';
 import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
-import { TagInterface } from '../tags/tag-interface';
+import { TagInterface } from '../tags/tag/tag-interface';
 import { StoreService } from '../../../services/store.service';
 import { UploadService } from '../../../services/upload.service';
 import { CommentInterface } from './comment/comment-interface';
@@ -37,19 +36,13 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
 
   public selectedDevs: firebase.User[];
 
-  public tags: TagInterface[];
+  public tags: TagInterface[] = [];
 
   private statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
 
   formGr: FormGroup;
 
-  public openTagWindow = false;
-
-  public openNewTagWindow = false;
-
   public showImage = false;
-
-  public tagColors = ['#ee4d4d', '#ff8b3a', '#679f50', '#2f60fd', '#662ffd', '#da71de', '#ff0303'];
 
   public minDate: Date;
 
@@ -77,9 +70,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
   @ViewChild('inputElementComment')
   public commentElement: ElementRef;
 
-  @ViewChild('inputElementTag')
-  public tagElement: ElementRef;
-
   @HostListener('click')
   handleClick() {
     this.closeIfInactive();
@@ -96,7 +86,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     if (this.task.comments.length) {
       this.getComments();
     }
-    this.getTags();
+    // if (this.task.tags.length) {
+    //   this.getTags();
+    // }
     this.user = this.storeService.user;
     this.minDate = new Date();
     this.closeIfInactive();
@@ -109,35 +101,55 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     }
   }
 
-  private closeIfInactive() {
-    if (this.timeoutId) {
-      clearTimeout(this.timeoutId);
-    }
-    this.timeoutId = setTimeout(() => {
-      this.save(this.task);
-    }, 30000);
+  private getDevelopers() {
+    return this.crud.getCollection('users').subscribe((developers: firebase.User[]) => {
+      this.developers = developers;
+      this.selectedDevs = developers;
+    });
   }
 
+  private getComments() {
+    this.crud
+      .getElementsByProperty('comments', 'taskId', this.task.id, 'date')
+      .subscribe((value: CommentInterface[]) => {
+        this.comments = value;
+      });
+  }
+
+  // private getTags() {
+  //   let tag;
+  //   this.task.tags.forEach((tagId) => {
+  //     this.crud.getElementById('tags', tagId).subscribe((value: TagInterface) => {
+  //       tag = value;
+  //       this.tags.push({ id: tagId, ...tag });
+  //     });
+  //   });
+  // }
+
   public save(task) {
+    // eslint-disable-next-line no-param-reassign
+    task.lastModified = new Date().getTime();
     if (task.id) {
-      if (this.task.isChanging) {
-        this.task.isChanging = false;
-      }
+      // eslint-disable-next-line no-param-reassign
+      task.isChanging = false;
       this.crud.updateObject('Tasks', task.id, task);
       this.dialogRef.close();
     } else {
-      this.addComment({
-        content: `${this.task.createdBy} created this task`,
-        type: 'comment',
-        taskId: this.task.id,
+      this.crud.createEntity('Tasks', task).subscribe((value) => {
+        this.addComment({
+          content: `${this.task.createdBy} created this task`,
+          type: 'comment',
+          taskId: value,
+          date: new Date().getTime(),
+        });
       });
-      this.crud.createEntity('Tasks', task);
       this.dialogRef.close();
     }
   }
 
   public delete(task) {
     this.crud.deleteObject('Tasks', task.id);
+    this.task.id = null;
     this.dialogRef.close();
   }
 
@@ -149,17 +161,10 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
         content: `${this.user.displayName} changed status to ${task.status}`,
         type: 'status',
         taskId: this.task.id,
+        date: new Date().getTime(),
       });
       this.crud.updateObject('Tasks', task.id, task);
     }
-  }
-
-  private getComments() {
-    this.crud
-      .getElementsByProperty('comments', 'taskId', this.task.id)
-      .subscribe((value: CommentInterface[]) => {
-        this.comments = value;
-      });
   }
 
   public addComment(comment?) {
@@ -167,12 +172,14 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       this.crud.createEntity('comments', comment).subscribe((value) => {
         this.commentId = value;
         this.task.comments.push(this.commentId);
+        this.crud.updateObject('Tasks', comment.taskId, this.task);
       });
     } else if (this.commentElement.nativeElement.value.length) {
       const commentData = {
-        content: this.commentElement.nativeElement.value,
+        content: `${this.user.displayName} commented: ${this.commentElement.nativeElement.value}`,
         type: 'comment',
         taskId: this.task.id,
+        date: new Date().getTime(),
       };
       this.crud.createEntity('comments', commentData).subscribe((value) => {
         this.commentId = value;
@@ -180,13 +187,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       });
       this.commentElement.nativeElement.value = '';
     }
-  }
-
-  private getDevelopers() {
-    return this.crud.getCollection('users').subscribe((developers: firebase.User[]) => {
-      this.developers = developers;
-      this.selectedDevs = developers;
-    });
   }
 
   public onKey(event) {
@@ -200,46 +200,34 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     );
   }
 
-  // public setDev(dev) {
-  //   this.task.comments.push(`${this.user.displayName} assigned this task to ${dev.target.value}`);
-  // }
-
-  private getTags() {
-    this.crud
-      .getCollection('tags')
-      .pipe(
-        map((value: TagInterface[]) => {
-          this.tags = value;
-        }),
-      )
-      .subscribe();
+  public setDev(dev) {
+    let devName: string;
+    this.crud.getElementById('users', dev.value).subscribe((value: firebase.User) => {
+      devName = value.displayName;
+      const commentData = {
+        content: `${this.user.displayName} assigned this task to ${devName}`,
+        type: 'comment',
+        taskId: this.task.id,
+        date: new Date().getTime(),
+      };
+      this.addComment(commentData);
+    });
   }
 
   public toggle(window) {
-    if (window === 'TagWindow') {
-      this.openTagWindow = !this.openTagWindow;
-    } else if (window === 'NewTagWindow') {
-      this.openNewTagWindow = !this.openNewTagWindow;
-    } else if (window === 'ImageWindow') {
+    if (window === 'ImageWindow') {
       this.showImage = !this.showImage;
     }
   }
 
   public addTag(tag) {
-    if (this.task.tags.indexOf(tag) === -1) {
-      this.task.tags.push(tag);
+    if (this.task.tags.indexOf(tag.id) === -1) {
+      this.task.tags.push(tag.id);
     }
   }
 
   public removeTag(tagID) {
     this.task.tags.splice(this.task.tags.indexOf(tagID), 1);
-  }
-
-  addNewTag(tagColor) {
-    if (this.tagElement.nativeElement.value.length) {
-      const tagName = this.tagElement.nativeElement.value;
-      this.crud.createEntity('tags', { name: tagName, background: tagColor });
-    }
   }
 
   public onFileSelected(event): void {
@@ -297,11 +285,20 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     }
   }
 
+  private closeIfInactive() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+    }
+    this.timeoutId = setTimeout(() => {
+      this.save(this.task);
+    }, 600000000);
+  }
+
   ngOnDestroy(): void {
-    // if (this.task.isChanging) {
-    //   this.task.isChanging = false;
-    //   this.crud.updateObject('Tasks', this.task.id, this.task);
-    // }
+    if (this.task.id) {
+      this.task.isChanging = false;
+      this.crud.updateObject('Tasks', this.task.id, this.task);
+    }
     clearTimeout(this.timeoutId);
   }
 }

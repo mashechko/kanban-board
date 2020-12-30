@@ -3,4 +3,5 @@ export interface CommentInterface {
   content: string;
   type: string;
   taskId: string;
+  date: Date;
 }

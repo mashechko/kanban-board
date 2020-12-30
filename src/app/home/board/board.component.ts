@@ -44,10 +44,12 @@ export class BoardComponent implements OnInit {
         content: `${this.user} changed status to ${event.container.data}`,
         type: 'status',
         taskId: this.droppedTask.id,
+        date: new Date().getTime(),
       };
       this.crud.createEntity('comments', comment).subscribe((value) => {
         this.commentId = value;
         this.droppedTask.comments.push(this.commentId);
+        this.droppedTask.lastModified = new Date().getTime();
       });
       this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
     }

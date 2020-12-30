@@ -1,9 +1,9 @@
-import { Directive, ElementRef, Input, OnInit } from '@angular/core';
+import { Directive, DoCheck, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 
 @Directive({
   selector: '[appSetBackground]',
 })
-export class SetBackgroundDirective implements OnInit {
+export class SetBackgroundDirective implements OnInit, OnChanges {
   constructor(private el: ElementRef) {}
 
   @Input('appSetBackground') status: string;
@@ -11,6 +11,10 @@ export class SetBackgroundDirective implements OnInit {
   private color: string;
 
   ngOnInit() {
+    this.setColor(this.status);
+  }
+
+  ngOnChanges() {
     this.setColor(this.status);
   }
 
@@ -38,7 +42,7 @@ export class SetBackgroundDirective implements OnInit {
         this.color = 'linear-gradient(91.86deg, #F43691 0%, rgba(248, 48, 72, 0.92) 100%)';
         break;
       default:
-        this.color = 'transparent';
+        this.color = this.status;
     }
     this.el.nativeElement.style.background = this.color;
   }

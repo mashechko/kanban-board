@@ -1,3 +1,33 @@
+.add-tag {
+  font-family: Montserrat, sans-serif;
+  font-size: 13px;
+  font-weight: bold;
+  color: #BBBBBB;
+  display: inline-block;
+}
+
+.task-info__add-tags {
+  position: relative;
+  background: #EFF0F3;
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.set-tag {
+  display: block;
+  border: none;
+  margin: 3px;
+}
+
+
+.set-color-btn {
+  width: 20px;
+  height: 20px;
+  border-radius: 5px;
+  margin: 3px;
+  border: none;
+}
+
 .tag {
   border-radius: 10px;
   padding: 3px 5px;

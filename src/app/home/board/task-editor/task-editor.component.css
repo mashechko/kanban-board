@@ -122,35 +122,6 @@
   background: white;
 }
 
-.add-tag {
-  font-family: Montserrat, sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  color: #BBBBBB;
-  display: inline-block;
-}
-
-.set-tag {
-  display: block;
-  border: none;
-  margin: 3px;
-}
-
-.set-color-btn {
-  width: 20px;
-  height: 20px;
-  border-radius: 5px;
-  margin: 3px;
-  border: none;
-}
-
-.task-info__add-tags {
-  position: relative;
-  background: #EFF0F3;
-  padding: 5px;
-  border-radius: 10px;
-}
-
 .task-info__text {
   font-size: 20px;
   height: 300px;
@@ -163,7 +134,7 @@
 
 .task-info__name, .task-info__text, .add-comment__text {
   font-family: Roboto, sans-serif;
-  font-weight: lighter;
+  font-weight: 400;
 
   width: 90%;
   border: none;
@@ -172,14 +143,6 @@
 .event-log {
   grid-area: event-log;
   background: #EFF0F3;
-}
-
-.event-log__comment {
-  padding: 10px;
-  color: #545454;
-  font-family: Montserrat, sans-serif;
-  font-weight: lighter;
-  font-size: 13px;
 }
 
 .task-info, .event-log {

@@ -19,8 +19,8 @@ export class CommentComponent implements OnInit {
   }
 
   private checkStatus() {
-    if (this.comment.content.indexOf('ready to development') !== -1) {
-      this.splitContext('ready to development');
+    if (this.comment.content.indexOf('ready to dev') !== -1) {
+      this.splitContext('ready to dev');
     } else if (this.comment.content.indexOf('in development') !== -1) {
       this.splitContext('in development');
     } else if (this.comment.content.indexOf('in qa') !== -1) {

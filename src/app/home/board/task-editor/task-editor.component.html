@@ -17,7 +17,7 @@
         <div class="progress__status" appSetBackground="{{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress__next" appSetBackground="{{task.status}}" (click)="changeStatus(task)"></div>
       </div>
-      <mat-select formControlName="assignedTo">
+      <mat-select formControlName="assignedTo" (selectionChange)="setDev($event)">
         <input class="search-dev no-outline" (keyup)="onKey($event)">
         <mat-option>None</mat-option>
         <mat-option *ngFor="let dev of selectedDevs" [value]="dev.uid">{{dev.displayName}}</mat-option>
@@ -54,37 +54,14 @@
              placeholder="Task name" type="text" formControlName="name" maxlength="20" ngxTrim>
       <h1 class="task-info__title">INFO</h1>
       <div class="task-info__tags">
-        <div *ngIf="task.tags.length">
-          <app-tags *ngFor="let tag of task.tags" [tagId]="tag" (click)="removeTag(tag)"></app-tags>
-        </div>
-        <div class="add-tag">
-          <button mat-icon-button (click)="toggle('TagWindow')">
-            <mat-icon class="mat-icon-rtl-mirror">
-              {{openTagWindow ? 'expand_more' : 'chevron_right'}}
-            </mat-icon>
-          </button>
-          ADD NEW TAG
-        </div>
+        <app-tags (onClick)="addTag($event)"></app-tags>
+<!--        <div *ngIf="tags">-->
+<!--          <app-tag *ngFor="let tag of tags" [tag]="tag" (click)="removeTag(tag)"></app-tag>-->
+<!--        </div>-->
       </div>
-      <div class="task-info__add-tags" *ngIf="openTagWindow">
-        <div class="add-tag">
-          <button mat-icon-button (click)="toggle('NewTagWindow')">
-            <mat-icon class="mat-icon-rtl-mirror">
-              {{openNewTagWindow ? 'expand_more' : 'chevron_right'}}
-            </mat-icon>
-          </button>NEW
-        </div>
-        <app-tags *ngFor="let tag of tags"
-             (click)="addTag(tag.id)"
-                  [tagId]="tag.id"></app-tags>
-        <div class="task-info__add-tags" *ngIf="openNewTagWindow">
-          <input type="text" class="set-tag" #inputElementTag placeholder="create new tag" maxlength="15">
-          <button class="set-color-btn" *ngFor="let color of tagColors"
-                  appSetBackground="{{color}}"
-                  (click)="addNewTag(color)"
-          ></button>
-        </div>
-      </div>
+
+
+
       <textarea class="task-info__text"
                 placeholder="Add some info here" formControlName="info" maxlength="1000"></textarea>
       <div *ngIf="task.imageLinks.length" class="task-info__title">
@@ -106,7 +83,7 @@
     <div class="event-log">
       <ng-container *ngIf="task.comments.length" >
         <ng-container *ngFor="let comment of comments">
-<!--          <div class="event-log__comment">{{comment.content}}</div>-->
+
           <app-comment [comment]="comment"></app-comment>
         </ng-container>
       </ng-container>

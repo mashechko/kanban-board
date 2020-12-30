@@ -24,13 +24,14 @@ import { TaskEditorComponent } from './board/task-editor/task-editor.component';
 import { ZoomDirective } from '../directives/zoom.directive';
 import { TruncatePipe } from '../truncate.pipe';
 import { CheckDueDateDirective } from '../directives/check-due-date.directive';
-import { TagsComponent } from './board/tags/tags.component';
+import { TagComponent } from './board/tags/tag/tag.component';
 import { SetBackgroundDirective } from '../directives/set-background.directive';
 import { DialogService } from '../services/dialog.service';
 import { ProjectComponent } from './projects/project/project.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { ProjectEditorComponent } from './projects/project-editor/project-editor.component';
 import { CommentComponent } from './board/task-editor/comment/comment.component';
+import { TagsComponent } from './board/tags/tags.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,7 @@ import { CommentComponent } from './board/task-editor/comment/comment.component'
     BoardComponent,
     TasksBlockComponent,
     TaskComponent,
-    TagsComponent,
+    TagComponent,
     ZoomDirective,
     TruncatePipe,
     CheckDueDateDirective,
@@ -49,6 +50,7 @@ import { CommentComponent } from './board/task-editor/comment/comment.component'
     ProjectsComponent,
     ProjectEditorComponent,
     CommentComponent,
+    TagsComponent,
   ],
   imports: [
     CommonModule,
