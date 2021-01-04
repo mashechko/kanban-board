@@ -14,4 +14,5 @@ export interface Task {
   imageLinks: string[];
   isChanging?: boolean;
   lastModified?: number;
+  projectId: string;
 }

@@ -13,12 +13,16 @@ const routes: Routes = [
     canActivate: [GuardService],
     children: [
       {
-        path: 'board',
+        path: '',
         component: BoardComponent,
       },
       {
         path: 'projects',
         component: ProjectsComponent,
+      },
+      {
+        path: 'board',
+        component: BoardComponent,
       },
     ],
   },

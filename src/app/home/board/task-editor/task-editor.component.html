@@ -17,10 +17,10 @@
         <div class="progress__status" appSetBackground="{{task.status}}">{{task.status | uppercase}}</div>
         <div class="progress__next no-border" appSetBackground="{{task.status}}" (click)="changeStatus(task)"></div>
       </div>
-      <mat-select formControlName="assignedTo" (selectionChange)="setDev($event)">
-        <input class="search-dev no-outline" (keyup)="onKey($event)">
-        <mat-option>None</mat-option>
-        <mat-option *ngFor="let dev of selectedDevs" [value]="dev.uid">{{dev.displayName}}</mat-option>
+      <mat-select formControlName="projectId" [class.error]="isControlInvalid('projectId')"
+                  (selectionChange)="getDevelopers($event)">
+        <mat-label>Select project</mat-label>
+        <mat-option *ngFor="let project of projects" [value]="project.id">{{project.name}}</mat-option>
       </mat-select>
     </div>
 
@@ -53,6 +53,11 @@
       <input class="task-info__name no-outline gray-border-focus" [class.error]="isControlInvalid('name')"
              placeholder="Task name" type="text" formControlName="name" maxlength="20" ngxTrim>
       <h1 class="editor-title">INFO</h1>
+      <mat-select formControlName="assignedTo" (selectionChange)="setDev($event)">
+        <input class="search-dev no-outline" (keyup)="onKey($event)">
+        <mat-option>None</mat-option>
+        <mat-option *ngFor="let dev of selectedDevs" [value]="dev.uid">{{dev.displayName}}</mat-option>
+      </mat-select>
       <div class="task-info__tags">
         <app-tags (onClick)="addTag($event)"></app-tags>
         <div *ngIf="tags">

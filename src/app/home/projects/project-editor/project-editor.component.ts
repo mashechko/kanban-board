@@ -58,19 +58,56 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  private setProjectToDev(devId: string, projectId: string) {
+    let developer: User;
+    this.crud.getElementById('users', devId).subscribe((value: User) => {
+      developer = value;
+      if (developer.projects && developer.projects.indexOf(projectId) === -1) {
+        developer.projects.push(projectId);
+      } else {
+        developer.projects = [projectId];
+      }
+      this.crud.updateObject('users', devId, developer);
+    });
+  }
+
+  private deleteProjectFromDev(devId: string, projectId: string) {
+    let developer: User;
+    this.crud.getElementById('users', devId).subscribe((value: User) => {
+      developer = value;
+      developer.projects.splice(developer.projects.indexOf(projectId), 1);
+      this.crud.updateObject('users', devId, developer);
+    });
+  }
+
   public save(project) {
+    let projectID: string;
     this.project.lastModified = new Date().getTime();
     if (project.id) {
       this.crud.updateObject('projects', project.id, project);
+      projectID = this.project.id;
       this.dialogRef.close();
+      if (this.project.createdBy === this.currentUser.uid) {
+        this.project.selectedDevs.forEach((devID) => {
+          this.setProjectToDev(devID, projectID);
+        });
+      }
     } else {
-      this.crud.createEntity('projects', project);
+      this.crud.createEntity('projects', project).subscribe((value) => {
+        projectID = value;
+        this.project.selectedDevs.forEach((devID) => {
+          this.setProjectToDev(devID, projectID);
+        });
+      });
       this.dialogRef.close();
     }
   }
 
-  public delete(task) {
-    this.crud.deleteObject('projects', task.id);
+  public delete(project) {
+    project.selectedDevs.forEach((devID) => {
+      this.deleteProjectFromDev(devID, project.id);
+    });
+    this.crud.deleteObject('projects', project.id);
     this.dialogRef.close();
   }
 

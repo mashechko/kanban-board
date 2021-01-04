@@ -21,6 +21,7 @@ import { StoreService } from '../../../services/store.service';
 import { UploadService } from '../../../services/upload.service';
 import { CommentInterface } from './comment/comment-interface';
 import { User } from '../../../user-interface';
+import { Project } from '../../projects/project/project-interface';
 
 @AutoUnsubscribe()
 @Component({
@@ -57,6 +58,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
 
   public comments: object[];
 
+  public projects: Project[];
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -83,12 +86,15 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
 
   ngOnInit(): void {
     this.initForm();
-    this.getDevelopers();
+    this.getProjects();
     if (this.task.comments.length) {
       this.getComments();
     }
     if (this.task.tags.length) {
       this.getTags();
+    }
+    if (this.task.projectId) {
+      this.getDevelopers(this.task.projectId);
     }
     this.user = this.storeService.user;
     this.minDate = new Date();
@@ -102,11 +108,19 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     }
   }
 
-  private getDevelopers() {
-    return this.crud.getCollection('users').subscribe((developers: firebase.User[]) => {
-      this.developers = developers;
-      this.selectedDevs = developers;
+  public getDevelopers(projectId) {
+    let project: Project;
+    this.projects.forEach((value) => {
+      if (value.id === projectId.value) {
+        project = value;
+      }
     });
+    this.crud
+      .getElementsOfArray('users', 'uid', project.selectedDevs)
+      .subscribe((developers: firebase.User[]) => {
+        this.developers = developers;
+        this.selectedDevs = developers;
+      });
   }
 
   private getComments() {
@@ -123,6 +137,12 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       .subscribe((value: TagInterface[]) => {
         this.tags = value;
       });
+  }
+
+  private getProjects() {
+    this.crud.getCollection('projects').subscribe((value: Project[]) => {
+      this.projects = value;
+    });
   }
 
   public save(task) {
@@ -200,17 +220,19 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   public setDev(dev) {
-    let devName: string;
-    this.crud.getElementById('users', dev.value).subscribe((value: firebase.User) => {
-      devName = value.displayName;
-      const commentData = {
-        content: `${this.user.displayName} assigned this task to ${devName}`,
-        type: 'comment',
-        taskId: this.task.id,
-        date: new Date().getTime(),
-      };
-      this.addComment(commentData);
+    let developer: User;
+    this.developers.forEach((value) => {
+      if (value.uid === dev.value) {
+        developer = value;
+      }
     });
+    const commentData = {
+      content: `${this.user.displayName} assigned this task to ${developer.displayName}`,
+      type: 'comment',
+      taskId: this.task.id,
+      date: new Date().getTime(),
+    };
+    this.addComment(commentData);
   }
 
   public setPriority(priprity) {
@@ -270,6 +292,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     this.task.dueDate = controls.dueDate.value ? controls.dueDate.value.getTime() : null;
     this.task.priority = controls.priority.value;
     this.task.assignedTo = controls.assignedTo.value;
+    this.task.projectId = controls.projectId.value;
 
     this.save(this.task);
   }
@@ -286,6 +309,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     this.formGr = this.fb.group({
       name: [this.task.name, [Validators.required]],
       info: [this.task.info, Validators.maxLength(1000)],
+      projectId: [this.task.projectId, [Validators.required]],
       dueDate: this.task.dueDate ? new Date(this.task.dueDate) : null,
       priority: this.task.priority,
       assignedTo: this.task.assignedTo,

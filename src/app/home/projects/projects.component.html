@@ -9,7 +9,7 @@
   <div class="projects__navigation" *ngIf="projects">
     <button class="projects__navigation-btn no-border no-outline"
             [disabled]="!previousItems" (click)="loadPreviousPage()"
-            [class.disabled]="!previousItems">previous</button>
+            [class.disabled]="!previousItems.length">previous</button>
     <button class="projects__navigation-btn no-border no-outline"
             [disabled]="!lastItem" (click)="loadNextPage()"
             [class.disabled]="!lastItem">next</button>

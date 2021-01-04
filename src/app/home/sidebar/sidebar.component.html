@@ -3,9 +3,8 @@
     <h1 class="sidebar-title">MyKanban</h1>
     <div class="sidebar-navigation">
 <!--      <input (keyup)="eventKey.next($event)">-->
-<!--      <a [routerLink]="['/projects']" class="sidebar-link" appZoom="17px">All projects (7)</a>-->
-<!--      <a href="#" class="sidebar-link" appZoom="17px">My projects (3)</a>-->
-<!--      <a href="#" class="sidebar-link" appZoom="17px">Create project</a>-->
+      <a routerLink="projects" class="sidebar-link" appZoom="17px">All projects ({{projectsNumber}})</a>
+      <a routerLink="board" class="sidebar-link" appZoom="17px">Go to board</a>
     </div>
   </ng-container>
 </div>
