@@ -54,7 +54,9 @@
 .progress {
   padding: 10px 10px;
   justify-content: space-between;
-
+  background: white;
+  border-bottom: 1px solid #C4C4C4;
+  border-top: 1px solid #C4C4C4;
   grid-area: progress;
 }
 
@@ -76,7 +78,6 @@
 
 .progress__next {
   width: 40px;
-  border: none;
   border-radius: 0 10px 10px 0;
   margin-left: 10px;
 }
@@ -92,31 +93,6 @@
   height: auto;
 }
 
-.progress, .properties {
-  background: white;
-  border-bottom: 1px solid #C4C4C4;
-  border-top: 1px solid #C4C4C4;
-  padding: 10px 10px;
-}
-
-.property__title, .task-info__title {
-  font-family: Montserrat, sans-serif;
-  font-size: 13px;
-  font-weight: bold;
-  color: #BBBBBB;
-  padding: 10px 0;
-}
-
-.property__value {
-  font-family: Montserrat, sans-serif;
-  font-weight: lighter;
-  font-size: 13px;
-  line-height: 20px;
-
-  border: none;
-  max-width: 115px;
-}
-
 .task-info {
   grid-area: task-info;
   background: white;
@@ -130,6 +106,7 @@
 
 .task-info__name {
   font-size: 30px;
+  border: none;
 }
 
 .task-info__name, .task-info__text, .add-comment__text {
@@ -137,7 +114,6 @@
   font-weight: 400;
 
   width: 90%;
-  border: none;
 }
 
 .event-log {
@@ -171,7 +147,6 @@
 .add-comment__btn {
   width: 15%;
   height: 25px;
-  border: none;
   border-radius: 5px;
   background: linear-gradient(91.84deg, #A06BF7 0%, #B833CD 100%);
   color: white;
@@ -184,61 +159,14 @@
   border-top: 1px solid #C4C4C4;
 }
 
-.progress, .task-info, .add-attachment {
-  border-right: 1px solid #C4C4C4;
-}
-
-.task-info__name:focus, .task-info__text:focus, input.property__value:focus, .set-tag:focus {
-  border: 1px solid #C4C4C4;
-  outline: none;
-}
-
-::ng-deep .mat-select {
-  max-width: 200px;
-  height: 25px;
-  font-size: 16px;
-  text-align: center;
-  padding-top: 13px;
-  border-radius: 10px;
-  border: 1px #C4C4C4 solid;
-  margin: 10px;
-  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
-}
-
-::ng-deep .mat-select-panel {
-  text-align: center;
-}
-
-::ng-deep .mat-form-field {
-  width: 100px;
-  height: 20px;
-  font-family: Montserrat, sans-serif;
-  font-weight: lighter;
-  font-size: 13px;
-}
-
-::ng-deep .mat-form-field-infix {
-  border: none;
-}
-
-::ng-deep .mat-progress-bar {
-  margin-top: 10px;
-  max-width: 200px;
-}
-
-.search-dev {
-  border: dashed 1px gray;
-  width: 200px;
-  height: 30px;
-  border-radius: 5px;
-  margin: 5px auto;
-}
-
 .select-priority {
   width: auto;
   height: 40px;
   font-size: 14px;
   border-radius: 10px;
-  border: 1px #C4C4C4 solid;
   box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+}
+
+.error {
+  border: 1px solid red;
 }

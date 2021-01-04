@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { A11yModule } from '@angular/cdk/a11y';
 import { NgxTrimModule } from 'ngx-trim';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -32,6 +32,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { ProjectEditorComponent } from './projects/project-editor/project-editor.component';
 import { CommentComponent } from './board/task-editor/comment/comment.component';
 import { TagsComponent } from './board/tags/tags.component';
+import { ProjectDevComponent } from './projects/project-dev/project-dev.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { TagsComponent } from './board/tags/tags.component';
     ProjectEditorComponent,
     CommentComponent,
     TagsComponent,
+    ProjectDevComponent,
   ],
   imports: [
     CommonModule,

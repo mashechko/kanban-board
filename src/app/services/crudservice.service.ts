@@ -35,6 +35,28 @@ export class CRUDService {
       );
   }
 
+  public getCollectionWithOrder<T>(
+    collectionName: string,
+    orderField: string,
+    orderAsc: boolean = true,
+  ): Observable<T[]> {
+    return this.firestoreService
+      .collection(collectionName, (ref) => {
+        const query: firestore.Query = ref;
+        return query.orderBy(orderField, orderAsc ? 'asc' : 'desc');
+      })
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data: any = a.payload.doc.data();
+            const { id } = a.payload.doc;
+            return { id, ...data } as T;
+          }),
+        ),
+      );
+  }
+
   public getElementsByProperty<T>(
     collectionName: string,
     property: string,
@@ -59,6 +81,35 @@ export class CRUDService {
       );
   }
 
+  public getElementsOfArray<T>(
+    collectionName: string,
+    property: string,
+    values: string[],
+  ): Observable<T[]> {
+    return this.firestoreService
+      .collection(collectionName, (ref) => {
+        const query: firestore.Query = ref;
+        return query.where(property, 'in', values);
+      })
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data: any = a.payload.doc.data();
+            const { id } = a.payload.doc;
+            return { id, ...data } as T;
+          }),
+        ),
+      );
+  }
+
+  public getElementById(collectionName: string, ID: string) {
+    return from(this.firestoreService.collection(collectionName).doc(ID).get()).pipe(
+      map((value) => value.data()),
+      take(1),
+    );
+  }
+
   public updateObject(collectionName: string, id: string, obj: object): Observable<void> {
     return from(
       this.firestoreService
@@ -72,10 +123,33 @@ export class CRUDService {
     return from(this.firestoreService.collection(collectionName).doc(id).delete()).pipe(take(1));
   }
 
-  public getElementById(collectionName: string, ID: string) {
-    return from(this.firestoreService.collection(collectionName).doc(ID).get()).pipe(
-      map((value) => value.data()),
-      take(1),
-    );
+  public getElementsWithLimit<T>(
+    collectionName: string,
+    order: string,
+    orderAsc: boolean = true,
+    limit: number,
+    startAt?: any,
+  ): Observable<T[]> {
+    return this.firestoreService
+      .collection(collectionName, (ref) => {
+        const query: firestore.Query = ref;
+        if (startAt) {
+          return query
+            .orderBy(order, orderAsc ? 'asc' : 'desc')
+            .startAt(startAt)
+            .limit(limit + 1);
+        }
+        return query.orderBy(order, orderAsc ? 'asc' : 'desc').limit(limit + 1);
+      })
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data: any = a.payload.doc.data();
+            const { id } = a.payload.doc;
+            return { id, ...data } as T;
+          }),
+        ),
+      );
   }
 }

@@ -3,9 +3,8 @@ import { Injectable } from '@angular/core';
 import { TaskEditorComponent } from '../home/board/task-editor/task-editor.component';
 import { ProjectEditorComponent } from '../home/projects/project-editor/project-editor.component';
 import { StoreService } from './store.service';
-@Injectable({
-  providedIn: 'root',
-})
+
+@Injectable()
 export class DialogService {
   constructor(public dialog: MatDialog, private storeService: StoreService) {}
 
@@ -47,7 +46,8 @@ export class DialogService {
   public createProject() {
     const projectInfo = {
       created: new Date().getTime(),
-      createdBy: this.storeService.user.displayName,
+      createdBy: this.storeService.user.uid,
+      selectedDevs: [this.storeService.user.uid],
     };
     this.dialog.open(ProjectEditorComponent, {
       data: {

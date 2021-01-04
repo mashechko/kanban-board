@@ -3,13 +3,25 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { HomeComponent } from './home.component';
 import { GuardService } from '../services/guard.service';
-import { ProjectComponent } from './projects/project/project.component';
 import { BoardComponent } from './board/board.component';
+import { ProjectsComponent } from './projects/projects.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent, canActivate: [GuardService] },
-  // { path: 'board', component: BoardComponent },
-  // { path: 'projects', component: ProjectComponent }
+  {
+    path: '',
+    component: HomeComponent,
+    canActivate: [GuardService],
+    children: [
+      {
+        path: 'board',
+        component: BoardComponent,
+      },
+      {
+        path: 'projects',
+        component: ProjectsComponent,
+      },
+    ],
+  },
 ];
 
 @NgModule({

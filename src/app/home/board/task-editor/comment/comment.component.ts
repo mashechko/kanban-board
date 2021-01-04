@@ -27,6 +27,12 @@ export class CommentComponent implements OnInit {
       this.splitContext('in qa');
     } else if (this.comment.content.indexOf('closed') !== -1) {
       this.splitContext('closed');
+    } else if (this.comment.content.indexOf('Low Priority') !== -1) {
+      this.splitContext('Low Priority');
+    } else if (this.comment.content.indexOf('Med Priority') !== -1) {
+      this.splitContext('Med Priority');
+    } else if (this.comment.content.indexOf('High Priority') !== -1) {
+      this.splitContext('High Priority');
     }
   }
 

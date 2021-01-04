@@ -20,6 +20,7 @@ import { TagInterface } from '../tags/tag/tag-interface';
 import { StoreService } from '../../../services/store.service';
 import { UploadService } from '../../../services/upload.service';
 import { CommentInterface } from './comment/comment-interface';
+import { User } from '../../../user-interface';
 
 @AutoUnsubscribe()
 @Component({
@@ -30,7 +31,7 @@ import { CommentInterface } from './comment/comment-interface';
 export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit {
   public task: Task = null;
 
-  public user: firebase.User;
+  public user: User;
 
   public developers: firebase.User[];
 
@@ -86,9 +87,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     if (this.task.comments.length) {
       this.getComments();
     }
-    // if (this.task.tags.length) {
-    //   this.getTags();
-    // }
+    if (this.task.tags.length) {
+      this.getTags();
+    }
     this.user = this.storeService.user;
     this.minDate = new Date();
     this.closeIfInactive();
@@ -116,15 +117,13 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       });
   }
 
-  // private getTags() {
-  //   let tag;
-  //   this.task.tags.forEach((tagId) => {
-  //     this.crud.getElementById('tags', tagId).subscribe((value: TagInterface) => {
-  //       tag = value;
-  //       this.tags.push({ id: tagId, ...tag });
-  //     });
-  //   });
-  // }
+  private getTags() {
+    this.crud
+      .getElementsOfArray('tags', 'id', this.task.tags)
+      .subscribe((value: TagInterface[]) => {
+        this.tags = value;
+      });
+  }
 
   public save(task) {
     // eslint-disable-next-line no-param-reassign
@@ -212,6 +211,17 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       };
       this.addComment(commentData);
     });
+  }
+
+  public setPriority(priprity) {
+    console.log(priprity);
+    const commentData = {
+      content: `${this.user.displayName} changed task priority to ${priprity.target.value}`,
+      type: 'status',
+      taskId: this.task.id,
+      date: new Date().getTime(),
+    };
+    this.addComment(commentData);
   }
 
   public toggle(window) {

@@ -37,7 +37,7 @@
   justify-content: space-between;
 }
 
-.task__footer__btn, .task__footer__dev {
+.task__footer__dev, .task__footer__btn {
   width: 40px;
   height: 40px;
 

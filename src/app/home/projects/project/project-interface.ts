@@ -4,4 +4,6 @@ export interface Project {
   info: string;
   createdBy: string;
   created: Date;
+  selectedDevs: string[];
+  lastModified?: number;
 }

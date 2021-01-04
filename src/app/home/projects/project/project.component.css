@@ -11,8 +11,32 @@
   font-family: Montserrat, sans-serif;
   font-size: 20px;
   font-weight: bold;
+  padding: 10px 0;
 }
 
 .project__info {
-  padding: 10px 0;
+  font-family: Montserrat, sans-serif;
+  color: gray;
+  font-size: 14px;
+}
+
+.project__developers {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dev-photo{
+  width: 40px;
+  height: 40px;
+
+  box-sizing: border-box;
+  border-radius: 20px;
+  display: inline-block;
+  margin-left: 10px;
+}
+
+.dev-more {
+  padding: 10px;
+  line-height: 20px;
+  color: gray;
 }

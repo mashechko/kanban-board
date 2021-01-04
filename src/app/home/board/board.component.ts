@@ -50,8 +50,8 @@ export class BoardComponent implements OnInit {
         this.commentId = value;
         this.droppedTask.comments.push(this.commentId);
         this.droppedTask.lastModified = new Date().getTime();
+        this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
       });
-      this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
     }
   }
 }

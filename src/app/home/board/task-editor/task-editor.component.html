@@ -12,10 +12,10 @@
         <button class="navigation__button flaticon-193-cancel no-outline" [mat-dialog-close]="true" ></button>
       </ng-template>
     </div>
-    <div class="progress">
+    <div class="progress right-border">
       <div class="progress__status-container">
         <div class="progress__status" appSetBackground="{{task.status}}">{{task.status | uppercase}}</div>
-        <div class="progress__next" appSetBackground="{{task.status}}" (click)="changeStatus(task)"></div>
+        <div class="progress__next no-border" appSetBackground="{{task.status}}" (click)="changeStatus(task)"></div>
       </div>
       <mat-select formControlName="assignedTo" (selectionChange)="setDev($event)">
         <input class="search-dev no-outline" (keyup)="onKey($event)">
@@ -26,22 +26,22 @@
 
     <div class="properties">
       <div class="property">
-        <h1 class="property__title">TICKET NUMBER</h1>
-        <div class="property__value" *ngIf="task.id">{{task.id | truncate}}</div>
+        <h1 class="editor-title">TICKET NUMBER</h1>
+        <div class="property__value no-border" *ngIf="task.id">{{task.id | truncate}}</div>
       </div>
       <div class="property">
-        <h1 class="property__title">CREATED</h1>
-        <div class="property__value">{{task.created | date}}</div>
+        <h1 class="editor-title">CREATED</h1>
+        <div class="property__value no-border">{{task.created | date}}</div>
       </div>
       <div class="property">
-        <h1 class="property__title">DUE DATE</h1>
+        <h1 class="editor-title no-outline gray-border-focus">DUE DATE</h1>
         <mat-form-field>
           <input matInput [matDatepicker]="dp" formControlName="dueDate" [min]="minDate" >
           <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
           <mat-datepicker #dp></mat-datepicker>
         </mat-form-field>
       </div>
-      <select formControlName="priority" class="select-priority no-outline">
+      <select formControlName="priority" class="select-priority no-outline gray-border" (change)="setPriority($event)">
         <option disabled>Select priority</option>
         <option value="High Priority">High Priority</option>
         <option value="Med Priority">Med Priority</option>
@@ -49,22 +49,22 @@
       </select>
     </div>
 
-    <div class="task-info">
-      <input class="task-info__name" [class.error]="isControlInvalid('name')"
+    <div class="task-info right-border">
+      <input class="task-info__name no-outline gray-border-focus" [class.error]="isControlInvalid('name')"
              placeholder="Task name" type="text" formControlName="name" maxlength="20" ngxTrim>
-      <h1 class="task-info__title">INFO</h1>
+      <h1 class="editor-title">INFO</h1>
       <div class="task-info__tags">
         <app-tags (onClick)="addTag($event)"></app-tags>
-<!--        <div *ngIf="tags">-->
-<!--          <app-tag *ngFor="let tag of tags" [tag]="tag" (click)="removeTag(tag)"></app-tag>-->
-<!--        </div>-->
+        <div *ngIf="tags">
+          <app-tag *ngFor="let tag of tags" [tag]="tag" (click)="removeTag(tag)"></app-tag>
+        </div>
       </div>
 
 
 
-      <textarea class="task-info__text"
+      <textarea class="task-info__text no-outline gray-border-focus no-border"
                 placeholder="Add some info here" formControlName="info" maxlength="1000"></textarea>
-      <div *ngIf="task.imageLinks.length" class="task-info__title">
+      <div *ngIf="task.imageLinks.length" class="editor-title">
         <button mat-icon-button (click)="toggle('ImageWindow')">
           <mat-icon class="mat-icon-rtl-mirror">
             {{showImage ? 'expand_more' : 'chevron_right'}}
@@ -89,7 +89,7 @@
       </ng-container>
     </div>
 
-    <div class="add-attachment">
+    <div class="add-attachment right-border">
       <input type="file"
              id="file"
              (change)="onFileSelected($event)"
@@ -102,8 +102,9 @@
     </div>
 
     <div class="add-comment">
-      <input class="add-comment__text no-outline" placeholder="Add comment..." type="text" value="" #inputElementComment maxlength="100">
-      <button class="add-comment__btn no-outline" (click)="addComment()">Add</button>
+      <input class="add-comment__text no-outline no-border"
+             placeholder="Add comment..." type="text" value="" #inputElementComment maxlength="100">
+      <button class="add-comment__btn no-outline no-border" (click)="addComment()">Add</button>
     </div>
 
   </div>

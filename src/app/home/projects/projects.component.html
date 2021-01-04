@@ -1,5 +1,19 @@
 <div class="projects">
-  <app-project></app-project>
+  <mat-select (selectionChange)="changeSorting($event)">
+    <mat-label>Sort by</mat-label>
+    <mat-option value="name">sort by name</mat-option>
+    <mat-option value="created">sort by date</mat-option>
+    <mat-option value="lastModified">sort by last modification</mat-option>
+  </mat-select>
+  <app-project *ngFor="let project of projects; trackBy:trackByFn" [project]="project"></app-project>
+  <div class="projects__navigation" *ngIf="projects">
+    <button class="projects__navigation-btn no-border no-outline"
+            [disabled]="!previousItems" (click)="loadPreviousPage()"
+            [class.disabled]="!previousItems">previous</button>
+    <button class="projects__navigation-btn no-border no-outline"
+            [disabled]="!lastItem" (click)="loadNextPage()"
+            [class.disabled]="!lastItem">next</button>
+  </div>
   <button class="projects__add-project" (click)="showDialog()">Create new project</button>
 </div>
 
