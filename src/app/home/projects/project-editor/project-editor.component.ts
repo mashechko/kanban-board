@@ -1,13 +1,13 @@
 import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import firebase from 'firebase';
+import { NotificationsService } from 'angular2-notifications';
 import { Project } from '../project/project-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { StoreService } from '../../../services/store.service';
-import { UploadService } from '../../../services/upload.service';
-import { HomeComponent } from '../../home.component';
 import { User } from '../../../user-interface';
+import { noWhitespaceValidator } from '../../trim-validator';
 
 @Component({
   selector: 'app-project-editor',
@@ -31,6 +31,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     private crud: CRUDService,
     private fb: FormBuilder,
     private storeService: StoreService,
+    private notification: NotificationsService,
   ) {
     this.project = { ...data.projectInfo };
   }
@@ -52,9 +53,23 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.project.selectedDevs = event.value;
   }
 
-  public dropNotification() {
+  public dropNotification(content, type) {
     if (this.currentUser.uid !== this.project.createdBy) {
-      console.log('only creator can add developers');
+      const title = 'Warning';
+
+      const temp = {
+        type,
+        title: 'Warning',
+        content,
+        timeOut: 5000,
+        showProgressBar: true,
+        pauseOnHover: true,
+        clickToClose: true,
+        animate: 'fromRight',
+      };
+
+      // @ts-ignore
+      this.notification.create(title, content, type, temp);
     }
   }
 
@@ -104,11 +119,15 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
   }
 
   public delete(project) {
-    project.selectedDevs.forEach((devID) => {
-      this.deleteProjectFromDev(devID, project.id);
-    });
-    this.crud.deleteObject('projects', project.id);
-    this.dialogRef.close();
+    if (this.currentUser.uid === this.project.createdBy) {
+      project.selectedDevs.forEach((devID) => {
+        this.deleteProjectFromDev(devID, project.id);
+      });
+      this.crud.deleteObject('projects', project.id);
+      this.dialogRef.close();
+    } else {
+      this.dropNotification('Only project creator can delete project', 'warn');
+    }
   }
 
   onSubmit() {
@@ -137,7 +156,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
 
   private initForm() {
     this.formGr = this.fb.group({
-      name: [this.project.name, [Validators.required]],
+      name: [this.project.name, [Validators.required, noWhitespaceValidator]],
       info: [this.project.info, Validators.maxLength(1000)],
       selectedDevs: [this.project.selectedDevs],
     });

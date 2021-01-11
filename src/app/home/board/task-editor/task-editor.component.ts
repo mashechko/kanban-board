@@ -1,5 +1,4 @@
 import {
-  AfterContentInit,
   Component,
   ElementRef,
   HostListener,
@@ -9,10 +8,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { takeWhile } from 'rxjs/operators';
 import firebase from 'firebase';
 import { combineLatest } from 'rxjs';
+import { NotificationsService } from 'angular2-notifications';
 import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
@@ -22,6 +22,7 @@ import { UploadService } from '../../../services/upload.service';
 import { CommentInterface } from './comment/comment-interface';
 import { User } from '../../../user-interface';
 import { Project } from '../../projects/project/project-interface';
+import { noWhitespaceValidator } from '../../trim-validator';
 
 @AutoUnsubscribe()
 @Component({
@@ -29,7 +30,7 @@ import { Project } from '../../projects/project/project-interface';
   templateUrl: './task-editor.component.html',
   styleUrls: ['./task-editor.component.css', '../../styles/editor-style.css'],
 })
-export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit {
+export class TaskEditorComponent implements OnInit, OnDestroy {
   public task: Task = null;
 
   public user: User;
@@ -60,6 +61,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
 
   public projects: Project[];
 
+  private openBy: string;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -67,6 +70,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     private fb: FormBuilder,
     private storeService: StoreService,
     private uploadService: UploadService,
+    private notification: NotificationsService,
   ) {
     this.task = { ...data.taskInfo };
   }
@@ -84,27 +88,17 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     this.closeIfInactive();
   }
 
+  @HostListener('window:beforeunload', ['$event'])
+  unloadHandler(event: Event) {}
+
   ngOnInit(): void {
+    this.user = this.storeService.user;
     this.initForm();
     this.getProjects();
-    if (this.task.comments.length) {
-      this.getComments();
-    }
-    if (this.task.tags.length) {
-      this.getTags();
-    }
-    if (this.task.projectId) {
-      this.getDevelopers(this.task.projectId);
-    }
-    this.user = this.storeService.user;
     this.minDate = new Date();
     this.closeIfInactive();
-  }
-
-  ngAfterContentInit() {
-    if (this.task.id && !this.task.isChanging) {
-      this.task.isChanging = true;
-      this.crud.updateObject('Tasks', this.task.id, this.task);
+    if (this.task.comments.length) {
+      this.getComments();
     }
   }
 
@@ -113,14 +107,14 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     this.projects.forEach((value) => {
       if (value.id === projectId.value) {
         project = value;
+        this.crud
+          .getElementsOfArray('users', 'uid', project.selectedDevs)
+          .subscribe((developers: firebase.User[]) => {
+            this.developers = developers;
+            this.selectedDevs = developers;
+          });
       }
     });
-    this.crud
-      .getElementsOfArray('users', 'uid', project.selectedDevs)
-      .subscribe((developers: firebase.User[]) => {
-        this.developers = developers;
-        this.selectedDevs = developers;
-      });
   }
 
   private getComments() {
@@ -131,17 +125,12 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       });
   }
 
-  private getTags() {
-    this.crud
-      .getElementsOfArray('tags', 'id', this.task.tags)
-      .subscribe((value: TagInterface[]) => {
-        this.tags = value;
-      });
-  }
-
   private getProjects() {
     this.crud.getCollection('projects').subscribe((value: Project[]) => {
       this.projects = value;
+      if (this.task.projectId) {
+        this.getDevelopers({ value: this.task.projectId });
+      }
     });
   }
 
@@ -149,8 +138,10 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     // eslint-disable-next-line no-param-reassign
     task.lastModified = new Date().getTime();
     if (task.id) {
-      // eslint-disable-next-line no-param-reassign
-      task.isChanging = false;
+      if (this.user.uid === this.task.openBy) {
+        this.task.openBy = null;
+        this.task.isChanging = false;
+      }
       this.crud.updateObject('Tasks', task.id, task);
       this.dialogRef.close();
     } else {
@@ -167,22 +158,57 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   public delete(task) {
-    this.crud.deleteObject('Tasks', task.id);
-    this.task.id = null;
-    this.dialogRef.close();
+    if (this.task.openBy === this.user.uid) {
+      this.deleteComments();
+      if (task.imageLinks.lastModified) {
+        this.deleteImages();
+      }
+      this.crud.deleteObject('Tasks', task.id);
+      this.task.id = null;
+      this.dialogRef.close();
+    } else {
+      this.dropNotification('You cannot delete this task while other user is modifying it', 'warn');
+    }
   }
 
-  public changeStatus(task) {
-    if (task.status !== this.statuses[3] && task.id) {
-      // eslint-disable-next-line no-param-reassign
-      task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
-      this.addComment({
-        content: `${this.user.displayName} changed status to ${task.status}`,
-        type: 'status',
-        taskId: this.task.id,
-        date: new Date().getTime(),
-      });
-      this.crud.updateObject('Tasks', task.id, task);
+  private deleteComments() {
+    this.comments.forEach((comment: CommentInterface) => {
+      this.crud.deleteObject('comments', comment.id);
+    });
+  }
+
+  private deleteImages() {
+    this.task.imageLinks.forEach((link) => {});
+  }
+
+  public changeStatus(task, direction) {
+    if (task.id) {
+      if (this.task.openBy !== this.user.uid) {
+        this.dropNotification(
+          'You cannot change task status while other user is modifying it',
+          'warn',
+        );
+      } else if (direction === 'next' && task.status !== this.statuses[3]) {
+        // eslint-disable-next-line no-param-reassign
+        task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
+        this.addComment({
+          content: `${this.user.displayName} changed status to ${task.status}`,
+          type: 'status',
+          taskId: this.task.id,
+          date: new Date().getTime(),
+        });
+        this.crud.updateObject('Tasks', task.id, task);
+      } else if (direction === 'previous' && task.status !== this.statuses[0]) {
+        // eslint-disable-next-line no-param-reassign
+        task.status = this.statuses[this.statuses.indexOf(task.status) - 1];
+        this.addComment({
+          content: `${this.user.displayName} changed status to ${task.status}`,
+          type: 'status',
+          taskId: this.task.id,
+          date: new Date().getTime(),
+        });
+        this.crud.updateObject('Tasks', task.id, task);
+      }
     }
   }
 
@@ -235,10 +261,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
     this.addComment(commentData);
   }
 
-  public setPriority(priprity) {
-    console.log(priprity);
+  public setPriority(priority) {
     const commentData = {
-      content: `${this.user.displayName} changed task priority to ${priprity.target.value}`,
+      content: `${this.user.displayName} changed task priority to ${priority.target.value}`,
       type: 'status',
       taskId: this.task.id,
       date: new Date().getTime(),
@@ -278,6 +303,24 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
       });
   }
 
+  public dropNotification(content, type) {
+    const title = 'Warning';
+
+    const temp = {
+      type,
+      title: 'Warning',
+      content,
+      timeOut: 5000,
+      showProgressBar: true,
+      pauseOnHover: true,
+      clickToClose: true,
+      animate: 'fromRight',
+    };
+
+    // @ts-ignore
+    this.notification.create(title, content, type, temp);
+  }
+
   onSubmit() {
     const { controls } = this.formGr;
 
@@ -307,15 +350,25 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
 
   private initForm() {
     this.formGr = this.fb.group({
-      name: [this.task.name, [Validators.required]],
+      name: [this.task.name, [Validators.required, noWhitespaceValidator]],
       info: [this.task.info, Validators.maxLength(1000)],
       projectId: [this.task.projectId, [Validators.required]],
       dueDate: this.task.dueDate ? new Date(this.task.dueDate) : null,
       priority: this.task.priority,
       assignedTo: this.task.assignedTo,
     });
-    if (this.task.isChanging) {
-      this.formGr.disable();
+
+    if (this.task.id) {
+      if (!this.task.openBy) {
+        this.task.openBy = this.user.uid;
+        this.task.isChanging = true;
+      } else if (this.task.openBy !== this.user.uid) {
+        this.formGr.disable();
+        setTimeout(() => {
+          this.dropNotification('This task is modifying by other user', 'warn');
+        }, 1000);
+      }
+      this.crud.updateObject('Tasks', this.task.id, this.task);
     }
   }
 
@@ -329,9 +382,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy, AfterContentInit 
   }
 
   ngOnDestroy(): void {
-    if (this.task.id) {
-      this.task.isChanging = false;
-      this.crud.updateObject('Tasks', this.task.id, this.task);
+    if (this.openBy === this.user.uid) {
+      this.openBy = null;
     }
     clearTimeout(this.timeoutId);
   }

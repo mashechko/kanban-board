@@ -1,5 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import firebase from 'firebase';
+import { NotificationsService } from 'angular2-notifications';
 import { DialogService } from '../../../../services/dialog.service';
 import { Task } from './task-interface';
 import { CRUDService } from '../../../../services/crudservice.service';
@@ -14,7 +15,11 @@ export class TaskComponent implements OnInit {
 
   public devPhotoURL: string;
 
-  constructor(private dialogService: DialogService, private crud: CRUDService) {}
+  constructor(
+    private dialogService: DialogService,
+    private crud: CRUDService,
+    private notification: NotificationsService,
+  ) {}
 
   ngOnInit(): void {
     if (this.task.assignedTo) {
@@ -23,7 +28,29 @@ export class TaskComponent implements OnInit {
   }
 
   public showDialog(task) {
-    this.dialogService.updateTask(task);
+    if (task.isDragging) {
+      this.dropNotification('This task is dragging by other user', 'warn');
+    } else {
+      this.dialogService.updateTask(task);
+    }
+  }
+
+  public dropNotification(content, type) {
+    const title = 'Warning';
+
+    const temp = {
+      type,
+      title: 'Warning',
+      content,
+      timeOut: 5000,
+      showProgressBar: true,
+      pauseOnHover: true,
+      clickToClose: true,
+      animate: 'fromRight',
+    };
+
+    // @ts-ignore
+    this.notification.create(title, content, type, temp);
   }
 
   public getUserPhoto(): void {

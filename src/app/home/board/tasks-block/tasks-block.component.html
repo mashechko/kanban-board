@@ -1,9 +1,20 @@
-<div class="container">
+<div class="container"
+     cdkDropList
+     [cdkDropListData]="{'tasks': tasks, 'status': column}"
+
+     cdkDropListSortingDisabled>
   <div class="block__header" appSetBackground="{{column}}">
     <h1 class="block__header_text">{{column | uppercase}}</h1>
   </div>
   <ng-container *ngFor="let task of tasks;trackBy:trackByFn">
-    <app-task [task]="task" cdkDrag [cdkDragDisabled]="!isDraggable"
-              (cdkDragDropped)="onDrop.emit([$event, task])"></app-task>
+    <app-task [task]="task" cdkDrag [cdkDragDisabled]="!isDraggable || task.isDragging || task.isChanging"
+              (cdkDragDropped)="handleTask($event, task)"
+
+
+    ></app-task>
   </ng-container>
 </div>
+<!--(cdkDragEnded)="removeBlock(task)"-->
+<!--(cdkDragStarted)="addBlock(task)"-->
+
+

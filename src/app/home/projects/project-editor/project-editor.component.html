@@ -4,7 +4,7 @@
     <div class="navigation">
       <ng-container *ngIf="project.id; else saver">
         <button class="navigation__button flaticon-028-trash no-outline"
-                (click)="delete(project)" [disabled]="project.createdBy !== currentUser.uid"></button>
+                (click)="delete(project)"></button>
         <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()"></button>
       </ng-container>
       <ng-template #saver>
@@ -14,12 +14,13 @@
     </div>
 
     <div class="main-info right-border">
+      <div *ngIf="isControlInvalid('name')" class="error-warn">please enter correct name</div>
       <input class="main-info__name no-outline gray-border-focus"
              [class.error]="isControlInvalid('name')"
-             placeholder="Project name" type="text" formControlName="name" maxlength="20" ngxTrim>
+             placeholder="Project name" type="text" formControlName="name" maxlength="20">
       <mat-select multiple (selectionChange)="updateDevs($event)" formControlName="selectedDevs"
                   [disabled]="project.createdBy !== currentUser.uid"
-                  (click)="dropNotification()">
+                  (click)="dropNotification('Only project creator can set developers', 'warn')">
         <input class="search-dev no-outline" (keyup)="onKey($event)">
         <mat-option *ngFor="let dev of searchDevs"
                     [value]="dev.uid"
@@ -54,3 +55,4 @@
     </div>
   </div>
 </form>
+<simple-notifications></simple-notifications>

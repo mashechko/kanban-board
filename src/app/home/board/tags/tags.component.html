@@ -14,10 +14,11 @@
       </mat-icon>
     </button>NEW
   </div>
-  <app-tag *ngFor="let tag of tags"
-           [tag]="tag"
-           (click)="onClick.emit(tag)"
-  ></app-tag>
+  <ng-container *ngFor="let tag of tags">
+    <app-tag [tag]="tag" (click)="onClick.emit(tag)"></app-tag>
+    <button class="delete-tag no-outline no-border" appSetBackground="{{tag.background}}" (click)="deleteTag(tag.id)">x</button>
+  </ng-container>
+
   <div class="task-info__add-tags" *ngIf="openNewTagWindow">
     <input type="text" class="set-tag no-outline"
            #inputElementTag

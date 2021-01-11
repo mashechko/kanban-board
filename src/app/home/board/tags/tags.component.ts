@@ -50,8 +50,9 @@ export class TagsComponent implements OnInit {
   }
 
   public addNewTag() {
+    const tag = { name: this.tagPreviewText, background: this.selectedColor };
     if (this.tagPreviewText.length) {
-      this.crud.createEntity('tags', { name: this.tagPreviewText, background: this.selectedColor });
+      this.crud.createEntity('tags', tag);
     }
   }
 
@@ -61,5 +62,9 @@ export class TagsComponent implements OnInit {
     } else if (window === 'NewTagWindow') {
       this.openNewTagWindow = !this.openNewTagWindow;
     }
+  }
+
+  public deleteTag(id) {
+    this.crud.deleteObject('tags', id);
   }
 }

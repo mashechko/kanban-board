@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { CRUDService } from '../../../../services/crudservice.service';
 import { TagInterface } from './tag-interface';
 
@@ -7,6 +7,22 @@ import { TagInterface } from './tag-interface';
   templateUrl: './tag.component.html',
   styleUrls: ['./tag.component.css'],
 })
-export class TagComponent {
+export class TagComponent implements OnInit {
   @Input() tag: TagInterface;
+
+  @Input() tagId: string;
+
+  constructor(private crud: CRUDService) {}
+
+  ngOnInit(): void {
+    if (this.tagId) {
+      this.getTag();
+    }
+  }
+
+  private getTag() {
+    this.crud.getElementById('tags', this.tagId).subscribe((value: TagInterface) => {
+      this.tag = value;
+    });
+  }
 }

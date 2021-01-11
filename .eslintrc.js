@@ -53,6 +53,7 @@ module.exports = {
       },
       rules: {
         'import/no-unresolved': 'off',
+        'no-param-reassign': ["error", { "props": false }],
         'import/prefer-default-export': 'off',
         'class-methods-use-this': 'off',
         'lines-between-class-members': 'off',

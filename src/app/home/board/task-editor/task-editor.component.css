@@ -66,11 +66,12 @@
 }
 
 .progress__status {
-  border-radius: 10px 0 0 10px;
+  margin: 0 5px;
   font-family: Montserrat, sans-serif;
   font-weight: bold;
   font-size: 14px;
   line-height: 40px;
+
 
   color: #FCF6F6;
   padding: 0 15px;
@@ -79,7 +80,12 @@
 .progress__next {
   width: 40px;
   border-radius: 0 10px 10px 0;
-  margin-left: 10px;
+
+}
+
+.progress__previous {
+  width: 40px;
+  border-radius: 10px 0 0 10px;
 }
 
 .progress__status, .progress__next {

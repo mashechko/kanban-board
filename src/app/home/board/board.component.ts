@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Component, OnChanges, OnInit } from '@angular/core';
+import { CdkDragDrop, transferArrayItem } from '@angular/cdk/drag-drop';
+import { take } from 'rxjs/operators';
 import { DialogService } from '../../services/dialog.service';
 import { AuthService } from '../../services/auth.service';
 import { Task } from './tasks-block/task/task-interface';
@@ -11,47 +12,59 @@ import { StoreService } from '../../services/store.service';
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.css'],
 })
-export class BoardComponent implements OnInit {
-  public columns: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
+export class BoardComponent implements OnInit, OnChanges {
+  private tasks: Task[];
 
-  public user: string;
+  public sortedTasks = null;
 
-  private droppedTask: Task;
+  public statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
 
-  private commentId: string;
+  constructor(private dialogService: DialogService, private crud: CRUDService) {}
 
-  constructor(
-    private dialogService: DialogService,
-    private auth: AuthService,
-    private storeService: StoreService,
-    private crud: CRUDService,
-  ) {}
+  ngOnInit() {
+    this.getTasks();
+  }
 
-  ngOnInit(): void {
-    this.user = this.storeService.user.displayName;
+  ngOnChanges(changes): void {
+    this.sortTasks();
+  }
+
+  private sortTasks() {
+    this.sortedTasks = {
+      'ready to dev': [],
+      'in development': [],
+      'in qa': [],
+      closed: [],
+    };
+    this.tasks.forEach((task) => {
+      switch (task.status) {
+        case 'ready to dev':
+          this.sortedTasks['ready to dev'].push(task);
+          break;
+        case 'in development':
+          this.sortedTasks['in development'].push(task);
+          break;
+        case 'in qa':
+          this.sortedTasks['in qa'].push(task);
+          break;
+        case 'closed':
+          this.sortedTasks.closed.push(task);
+          break;
+        default:
+          this.sortedTasks['ready to dev'].push(task);
+      }
+    });
+  }
+
+  private getTasks() {
+    if (this.tasks) return;
+    this.crud.getCollectionWithOrder('Tasks', 'lastModified', false).subscribe((value: Task[]) => {
+      this.tasks = value;
+      this.sortTasks();
+    });
   }
 
   public showDialog(status) {
     this.dialogService.createTask(status);
-  }
-
-  public handleTask(data) {
-    const [event, task] = data;
-    this.droppedTask = task;
-    if (event.previousContainer !== event.container) {
-      this.droppedTask.status = event.container.data;
-      const comment = {
-        content: `${this.user} changed status to ${event.container.data}`,
-        type: 'status',
-        taskId: this.droppedTask.id,
-        date: new Date().getTime(),
-      };
-      this.crud.createEntity('comments', comment).subscribe((value) => {
-        this.commentId = value;
-        this.droppedTask.comments.push(this.commentId);
-        this.droppedTask.lastModified = new Date().getTime();
-        this.crud.updateObject('Tasks', this.droppedTask.id, this.droppedTask);
-      });
-    }
   }
 }

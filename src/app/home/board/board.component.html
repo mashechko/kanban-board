@@ -1,13 +1,6 @@
 <div class="board" cdkDropListGroup>
-  <ng-container *ngFor="let column of columns">
-    <app-tasks-block
-      [column]="column"
-      cdkDropList
-      [cdkDropListData]="column"
-      (onDrop)="handleTask($event)"
-      cdkDropListSortingDisabled
-    >
-    </app-tasks-block>
+  <ng-container *ngFor="let status of statuses">
+    <app-tasks-block [tasks]="sortedTasks[status]" [column]="status"></app-tasks-block>
   </ng-container>
   <button class="board__add-task" (click)="showDialog('ready to dev')">+ task</button>
 </div>

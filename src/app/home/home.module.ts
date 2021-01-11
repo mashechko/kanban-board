@@ -14,6 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
+import { SimpleNotificationsModule } from 'angular2-notifications';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -73,6 +75,7 @@ import { ProjectDevComponent } from './projects/project-dev/project-dev.componen
     MatNativeDateModule,
     MatProgressBarModule,
     MatIconModule,
+    SimpleNotificationsModule.forRoot(),
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
   providers: [DialogService],

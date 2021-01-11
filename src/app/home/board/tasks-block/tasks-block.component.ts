@@ -4,6 +4,8 @@ import { Subject } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
+import { Task } from './task/task-interface';
+import { StoreService } from '../../../services/store.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -12,30 +14,59 @@ import { AutoUnsubscribe } from '../../../auto-unsubscribe';
   styleUrls: ['./tasks-block.component.css'],
 })
 export class TasksBlockComponent implements OnInit, OnDestroy {
+  @Input() tasks: Task[];
+
   @Input() column: string;
 
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onDrop = new EventEmitter();
 
-  private unsubscribeStream$: Subject<void> = new Subject<void>();
+  public isDraggable: boolean;
 
-  public tasks: unknown[];
+  public user: string;
 
-  public isDraggable = true;
+  private commentId: string;
 
-  constructor(private crud: CRUDService) {}
+  constructor(private crud: CRUDService, private storeService: StoreService) {}
 
   ngOnInit(): void {
-    this.getTasks(this.column);
     this.isDraggable = window.innerWidth >= 1290;
+    this.user = this.storeService.user.displayName;
   }
 
-  public getTasks(status) {
-    this.crud
-      .getElementsByProperty('Tasks', 'status', status, 'lastModified', false)
-      .subscribe((tasks) => {
-        this.tasks = tasks;
+  public addBlock(task: Task) {
+    task.isDragging = true;
+    this.crud.updateObject('Tasks', task.id, task);
+  }
+
+  public removeBlock(task: Task) {
+    task.isDragging = false;
+    this.crud.updateObject('Tasks', task.id, task);
+  }
+
+  public handleTask(event, task) {
+    if (event.previousContainer !== event.container) {
+      transferArrayItem(
+        event.previousContainer.data.tasks,
+        event.container.data.tasks,
+        event.previousIndex,
+        event.currentIndex,
+      );
+      task.status = event.container.data.status;
+      task.isDragging = false;
+      const comment = {
+        content: `${this.user} changed status to ${event.container.data.status}`,
+        type: 'status',
+        taskId: task.id,
+        date: new Date().getTime(),
+      };
+      this.crud.createEntity('comments', comment).subscribe((value) => {
+        this.commentId = value;
+        task.comments.push(this.commentId);
+        task.lastModified = new Date().getTime();
+        this.crud.updateObject('Tasks', task.id, task);
       });
+    }
   }
 
   public trackByFn(index, item) {

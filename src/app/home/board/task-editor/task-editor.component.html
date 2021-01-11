@@ -14,8 +14,9 @@
     </div>
     <div class="progress right-border">
       <div class="progress__status-container">
+        <div class="progress__previous no-border" appSetBackground="{{task.status}}" (click)="changeStatus(task, 'previous')"></div>
         <div class="progress__status" appSetBackground="{{task.status}}">{{task.status | uppercase}}</div>
-        <div class="progress__next no-border" appSetBackground="{{task.status}}" (click)="changeStatus(task)"></div>
+        <div class="progress__next no-border" appSetBackground="{{task.status}}" (click)="changeStatus(task, 'next')"></div>
       </div>
       <mat-select formControlName="projectId" [class.error]="isControlInvalid('projectId')"
                   (selectionChange)="getDevelopers($event)">
@@ -50,8 +51,9 @@
     </div>
 
     <div class="task-info right-border">
+      <div *ngIf="isControlInvalid('name')" class="error-warn">please enter correct name</div>
       <input class="task-info__name no-outline gray-border-focus" [class.error]="isControlInvalid('name')"
-             placeholder="Task name" type="text" formControlName="name" maxlength="20" ngxTrim>
+             placeholder="Task name" type="text" formControlName="name" maxlength="20" >
       <h1 class="editor-title">INFO</h1>
       <mat-select formControlName="assignedTo" (selectionChange)="setDev($event)">
         <input class="search-dev no-outline" (keyup)="onKey($event)">
@@ -60,8 +62,8 @@
       </mat-select>
       <div class="task-info__tags">
         <app-tags (onClick)="addTag($event)"></app-tags>
-        <div *ngIf="tags">
-          <app-tag *ngFor="let tag of tags" [tag]="tag" (click)="removeTag(tag)"></app-tag>
+        <div *ngIf="task.tags">
+          <app-tag *ngFor="let tagId of task.tags" [tagId]="tagId" (click)="removeTag(tagId)"></app-tag>
         </div>
       </div>
 
@@ -111,6 +113,7 @@
              placeholder="Add comment..." type="text" value="" #inputElementComment maxlength="100">
       <button class="add-comment__btn no-outline no-border" (click)="addComment()">Add</button>
     </div>
-
   </div>
+  <simple-notifications></simple-notifications>
 </form>
+

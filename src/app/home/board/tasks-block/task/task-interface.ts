@@ -13,6 +13,8 @@ export interface Task {
   tags: string[];
   imageLinks: string[];
   isChanging?: boolean;
+  openBy?: string;
   lastModified?: number;
   projectId: string;
+  isDragging?: boolean;
 }

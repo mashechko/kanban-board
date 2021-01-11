@@ -98,6 +98,11 @@
   border: 1px solid red;
 }
 
+.error-warn {
+  padding: 5px 0;
+  color: gray;
+}
+
 ::ng-deep .mat-dialog-container {
   box-shadow: none;
   background: none;
