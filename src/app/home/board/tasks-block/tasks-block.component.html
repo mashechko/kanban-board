@@ -9,12 +9,9 @@
   <ng-container *ngFor="let task of tasks;trackBy:trackByFn">
     <app-task [task]="task" cdkDrag [cdkDragDisabled]="!isDraggable || task.isDragging || task.isChanging"
               (cdkDragDropped)="handleTask($event, task)"
-
-
+              (cdkDragStarted)="addBlock(task)"
     ></app-task>
   </ng-container>
 </div>
-<!--(cdkDragEnded)="removeBlock(task)"-->
-<!--(cdkDragStarted)="addBlock(task)"-->
 
 

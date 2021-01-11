@@ -12,7 +12,7 @@ import auth = firebase.auth;
   providedIn: 'root',
 })
 export class AuthService {
-  public user$: firebase.User;
+  public user$: User;
 
   constructor(
     private afAuth: AngularFireAuth,

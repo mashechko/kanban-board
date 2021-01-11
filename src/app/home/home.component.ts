@@ -13,7 +13,7 @@ import { StoreService } from '../services/store.service';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  public user: firebase.User;
+  public user: User;
 
   constructor(
     private auth: AuthService,

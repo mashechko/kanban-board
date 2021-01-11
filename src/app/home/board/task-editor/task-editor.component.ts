@@ -35,9 +35,9 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   public user: User;
 
-  public developers: firebase.User[];
+  public developers: User[];
 
-  public selectedDevs: firebase.User[];
+  public selectedDevs: User[];
 
   public tags: TagInterface[] = [];
 
@@ -132,6 +132,15 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
         this.getDevelopers({ value: this.task.projectId });
       }
     });
+  }
+
+  public checkProjectNumber() {
+    if (!this.projects.length) {
+      this.dropNotification(
+        'No projects available. Create a project before adding a task.',
+        'warn',
+      );
+    }
   }
 
   public save(task) {

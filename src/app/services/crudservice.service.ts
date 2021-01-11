@@ -103,6 +103,30 @@ export class CRUDService {
       );
   }
 
+  public getSortedElementsOfArray<T>(
+    collectionName: string,
+    property: string,
+    values: string[],
+    orderField?: string,
+    orderAsc: boolean = true,
+  ): Observable<T[]> {
+    return this.firestoreService
+      .collection(collectionName, (ref) => {
+        const query: firestore.Query = ref;
+        return query.where(property, 'in', values).orderBy(orderField, orderAsc ? 'asc' : 'desc');
+      })
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data: any = a.payload.doc.data();
+            const { id } = a.payload.doc;
+            return { id, ...data } as T;
+          }),
+        ),
+      );
+  }
+
   public getElementById(collectionName: string, ID: string) {
     return from(this.firestoreService.collection(collectionName).doc(ID).get()).pipe(
       map((value) => value.data()),

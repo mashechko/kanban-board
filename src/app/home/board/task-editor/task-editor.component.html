@@ -19,7 +19,7 @@
         <div class="progress__next no-border" appSetBackground="{{task.status}}" (click)="changeStatus(task, 'next')"></div>
       </div>
       <mat-select formControlName="projectId" [class.error]="isControlInvalid('projectId')"
-                  (selectionChange)="getDevelopers($event)">
+                  (selectionChange)="getDevelopers($event)" (click)="checkProjectNumber()">
         <mat-label>Select project</mat-label>
         <mat-option *ngFor="let project of projects" [value]="project.id">{{project.name}}</mat-option>
       </mat-select>

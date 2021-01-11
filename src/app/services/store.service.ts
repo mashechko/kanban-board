@@ -1,21 +1,22 @@
 import { Injectable } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 import firebase from 'firebase';
+import User = firebase.User;
 
 @Injectable({
   providedIn: 'root',
 })
 export class StoreService {
-  public user$: ReplaySubject<firebase.User> = new ReplaySubject<firebase.User>(1);
+  public user$: ReplaySubject<User> = new ReplaySubject<User>(1);
 
-  private _user: firebase.User;
+  private _user: User;
 
-  public get user(): firebase.User {
+  public get user(): User {
     // eslint-disable-next-line no-underscore-dangle
     return this._user;
   }
 
-  public set user(user: firebase.User) {
+  public set user(user: User) {
     // eslint-disable-next-line no-underscore-dangle
     if (!this._user || this._user.uid !== user.uid) {
       // eslint-disable-next-line no-underscore-dangle

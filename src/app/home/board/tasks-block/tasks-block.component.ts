@@ -39,11 +39,6 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
     this.crud.updateObject('Tasks', task.id, task);
   }
 
-  public removeBlock(task: Task) {
-    task.isDragging = false;
-    this.crud.updateObject('Tasks', task.id, task);
-  }
-
   public handleTask(event, task) {
     if (event.previousContainer !== event.container) {
       transferArrayItem(
@@ -66,6 +61,9 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
         task.lastModified = new Date().getTime();
         this.crud.updateObject('Tasks', task.id, task);
       });
+    } else {
+      task.isDragging = false;
+      this.crud.updateObject('Tasks', task.id, task);
     }
   }
 

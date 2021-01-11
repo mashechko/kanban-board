@@ -43,7 +43,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
   }
 
   private getDevelopers() {
-    return this.crud.getCollection('users').subscribe((developers: firebase.User[]) => {
+    return this.crud.getCollection('users').subscribe((developers: User[]) => {
       this.developers = developers;
       this.searchDevs = developers;
     });
