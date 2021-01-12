@@ -4,8 +4,8 @@
     <div class="navigation">
       <ng-container *ngIf="project.id; else saver">
         <button class="navigation__button flaticon-028-trash no-outline"
-                (click)="delete(project)"></button>
-        <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()"></button>
+                (click)="delete(project)" routerLink="/home/projects"></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()" routerLink="/home/projects"></button>
       </ng-container>
       <ng-template #saver>
         <button class="navigation__button flaticon-060-diskette no-outline" (click)="onSubmit()"></button>
@@ -30,7 +30,11 @@
     <div class="properties">
       <div class="property">
         <h1 class="editor-title">PROJECT ID</h1>
-        <div class="property__value no-border" *ngIf="project.id">{{project.id | truncate}}</div>
+        <div class="editor-title-container">
+          <div class="property__value no-border" *ngIf="project.id">{{project.id | truncate}}</div>
+          <button [cdkCopyToClipboard]="projectLink" class="flaticon-159-file-1 no-border no-outline" title="Copy link"></button>
+        </div>
+
       </div>
       <div class="property">
         <h1 class="editor-title">CREATED</h1>

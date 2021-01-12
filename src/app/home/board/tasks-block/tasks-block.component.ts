@@ -12,7 +12,7 @@ import { StoreService } from '../../../services/store.service';
 @Component({
   selector: 'app-tasks-block',
   templateUrl: './tasks-block.component.html',
-  styleUrls: ['./tasks-block.component.css'],
+  styleUrls: ['./tasks-block.component.css', '../../styles/editor-style.css'],
 })
 export class TasksBlockComponent implements OnInit, OnDestroy {
   @Input() tasks: Task[];

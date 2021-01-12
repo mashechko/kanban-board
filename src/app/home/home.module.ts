@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialogModule } from '@angular/material/dialog';
 import { A11yModule } from '@angular/cdk/a11y';
-import { NgxTrimModule } from 'ngx-trim';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
@@ -15,7 +15,6 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { SimpleNotificationsModule } from 'angular2-notifications';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -61,9 +60,8 @@ import { ProjectDevComponent } from './projects/project-dev/project-dev.componen
     HomeRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-
+    ClipboardModule,
     A11yModule,
-    NgxTrimModule,
     DragDropModule,
 
     MatDialogModule,

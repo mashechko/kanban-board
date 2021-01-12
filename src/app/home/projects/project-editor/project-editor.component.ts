@@ -1,4 +1,4 @@
-import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterContentInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import firebase from 'firebase';
@@ -15,7 +15,7 @@ import { Task } from '../../board/tasks-block/task/task-interface';
   templateUrl: './project-editor.component.html',
   styleUrls: ['./project-editor.component.css', '../../styles/editor-style.css'],
 })
-export class ProjectEditorComponent implements OnInit, OnDestroy {
+export class ProjectEditorComponent implements OnInit, AfterContentInit, OnDestroy {
   public project: Project = null;
 
   formGr: FormGroup;
@@ -31,6 +31,8 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
   private tasks: Task[];
 
   public sortedTasks: object;
+
+  public projectLink: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
@@ -50,6 +52,10 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     if (this.project.id) {
       this.getTasks();
     }
+  }
+
+  ngAfterContentInit() {
+    this.projectLink = window.location.href;
   }
 
   private getDevelopers() {
@@ -161,7 +167,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
         });
       }
     } else {
-      this.crud.createEntity('projects', project).subscribe((value) => {
+      this.crud.createEntity('home/projects', project).subscribe((value) => {
         projectID = value;
         this.project.selectedDevs.forEach((devID) => {
           this.setProjectToDev(devID, projectID);

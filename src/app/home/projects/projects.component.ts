@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { NotificationsService } from 'angular2-notifications';
+import { Router } from '@angular/router';
 import { DialogService } from '../../services/dialog.service';
 import { Project } from './project/project-interface';
 import { CRUDService } from '../../services/crudservice.service';
@@ -18,10 +19,23 @@ export class ProjectsComponent implements OnInit {
 
   public selected = 'lastModified';
 
-  constructor(private dialogService: DialogService, private crud: CRUDService) {}
+  private projectId: string;
+
+  private project: Project;
+
+  constructor(
+    private dialogService: DialogService,
+    private crud: CRUDService,
+    private router: Router,
+  ) {}
 
   ngOnInit(): void {
     this.getProjects(this.selected, false);
+    if (this.router.url.match(/\/projects\/project\/(.+)/)) {
+      // eslint-disable-next-line prefer-destructuring
+      this.projectId = this.router.url.match(/\/projects\/project\/(.+)/)[1];
+      this.getProject();
+    }
   }
 
   private getProjects(sortBy, orderAsc) {
@@ -33,6 +47,13 @@ export class ProjectsComponent implements OnInit {
         // eslint-disable-next-line prefer-destructuring
         this.nextItem = value[3];
       });
+  }
+
+  private getProject() {
+    this.crud.getElementById('projects', this.projectId).subscribe((value: Project) => {
+      this.project = value;
+      this.openProject(this.project);
+    });
   }
 
   public loadNextPage() {
@@ -101,6 +122,10 @@ export class ProjectsComponent implements OnInit {
     } else {
       this.getProjects(event.value, false);
     }
+  }
+
+  private openProject(project) {
+    this.dialogService.updateProject(project);
   }
 
   public showDialog() {

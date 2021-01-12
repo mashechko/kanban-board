@@ -13,10 +13,17 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [GuardService],
     children: [
-      { path: '', component: BoardComponent },
-      { path: 'projects', component: ProjectsComponent },
-      { path: 'board', component: BoardComponent },
-      { path: 'board/:id', component: TaskEditorComponent },
+      { path: '', redirectTo: 'board', pathMatch: 'full' },
+      {
+        path: 'projects',
+        component: ProjectsComponent,
+        children: [{ path: 'project/:id', component: ProjectsComponent }],
+      },
+      {
+        path: 'board',
+        component: BoardComponent,
+        children: [{ path: 'task/:id', component: BoardComponent }],
+      },
     ],
   },
 ];

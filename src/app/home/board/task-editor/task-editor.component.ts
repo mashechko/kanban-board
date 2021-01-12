@@ -1,4 +1,5 @@
 import {
+  AfterContentInit,
   Component,
   ElementRef,
   HostListener,
@@ -30,7 +31,7 @@ import { noWhitespaceValidator } from '../../trim-validator';
   templateUrl: './task-editor.component.html',
   styleUrls: ['./task-editor.component.css', '../../styles/editor-style.css'],
 })
-export class TaskEditorComponent implements OnInit, OnDestroy {
+export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy {
   public task: Task = null;
 
   public user: User;
@@ -62,6 +63,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
   public projects: Project[];
 
   private openBy: string;
+
+  public taskLink: string;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
@@ -100,6 +103,10 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     if (this.task.comments.length) {
       this.getComments();
     }
+  }
+
+  ngAfterContentInit() {
+    this.taskLink = window.location.href;
   }
 
   public getDevelopers(projectId) {

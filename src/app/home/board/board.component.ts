@@ -1,4 +1,5 @@
 import { Component, OnChanges, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { DialogService } from '../../services/dialog.service';
 import { Task } from './tasks-block/task/task-interface';
 import { CRUDService } from '../../services/crudservice.service';
@@ -15,6 +16,10 @@ export class BoardComponent implements OnInit, OnChanges {
 
   private user: User;
 
+  private taskId: string;
+
+  private task: Task;
+
   public sortedTasks = null;
 
   public statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
@@ -23,11 +28,17 @@ export class BoardComponent implements OnInit, OnChanges {
     private dialogService: DialogService,
     private crud: CRUDService,
     private storeService: StoreService,
+    private router: Router,
   ) {}
 
   ngOnInit() {
     this.user = this.storeService.user;
     this.getUserData();
+    if (this.router.url.match(/\/board\/task\/(.+)/)) {
+      // eslint-disable-next-line prefer-destructuring
+      this.taskId = this.router.url.match(/\/board\/task\/(.+)/)[1];
+      this.getTask();
+    }
   }
 
   ngOnChanges(changes): void {
@@ -77,6 +88,17 @@ export class BoardComponent implements OnInit, OnChanges {
         this.tasks = value;
         this.sortTasks();
       });
+  }
+
+  private getTask() {
+    this.crud.getElementById('Tasks', this.taskId).subscribe((value: Task) => {
+      this.task = value;
+      this.openTask(this.task);
+    });
+  }
+
+  private openTask(task) {
+    this.dialogService.updateTask(task);
   }
 
   public showDialog(status) {

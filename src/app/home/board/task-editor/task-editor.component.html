@@ -4,12 +4,12 @@
 
     <div class="navigation">
       <ng-container *ngIf="task.id; else saver">
-        <button class="navigation__button flaticon-028-trash no-outline" (click)="delete(task)"></button>
-        <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()"></button>
+        <button class="navigation__button flaticon-028-trash no-outline" (click)="delete(task)" routerLink=""></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit()" routerLink=""></button>
       </ng-container>
       <ng-template #saver>
         <button class="navigation__button flaticon-060-diskette no-outline" (click)="onSubmit()"></button>
-        <button class="navigation__button flaticon-193-cancel no-outline" [mat-dialog-close]="true" ></button>
+        <button class="navigation__button flaticon-193-cancel no-outline" [mat-dialog-close]="true"></button>
       </ng-template>
     </div>
     <div class="progress right-border">
@@ -28,7 +28,10 @@
     <div class="properties">
       <div class="property">
         <h1 class="editor-title">TICKET NUMBER</h1>
-        <div class="property__value no-border" *ngIf="task.id">{{task.id | truncate}}</div>
+        <div class="editor-title-container">
+          <div class="property__value no-border" *ngIf="task.id">{{task.id | truncate}}</div>
+          <button [cdkCopyToClipboard]="taskLink" class="flaticon-159-file-1 no-border no-outline" title="Copy link"></button>
+        </div>
       </div>
       <div class="property">
         <h1 class="editor-title">CREATED</h1>

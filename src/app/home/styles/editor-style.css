@@ -27,6 +27,11 @@
   padding: 10px 0;
 }
 
+.editor-title-container {
+  display: flex;
+  justify-content: space-between;
+}
+
 .properties {
   background: white;
   border-bottom: 1px solid #C4C4C4;
@@ -96,6 +101,10 @@
 
 .error {
   border: 1px solid red;
+}
+
+.flaticon-159-file-1 {
+  background: none;
 }
 
 .error-warn {
