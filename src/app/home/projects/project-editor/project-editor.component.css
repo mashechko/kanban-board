@@ -93,6 +93,21 @@
   grid-area: event-log;
 }
 
+.event-log__task {
+  width: 120px;
+  height: 20px;
+  border-radius: 5px;
+  font-size: 15px;
+  text-align: center;
+  line-height: 20px;
+  color: white;
+  margin-right: 5px;
+}
+
+.event-log__task-container {
+  display: flex;
+  margin: 10px 0;
+}
 .project-info, .event-log {
   height: 400px;
   padding: 10px 10px;

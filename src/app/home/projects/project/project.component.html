@@ -4,7 +4,7 @@
   <div class="project__developers" *ngIf="devPreview">
     <img *ngFor="let dev of devPreview"
          src="{{dev.photoURL}}" class="dev-photo" title="{{dev.displayName}}">
-    <div *ngIf="developers.length > 3"class="dev-more">and {{developers.length - 3}} more</div>
+    <div *ngIf="project.selectedDevs.length > 3"class="dev-more">and {{project.selectedDevs.length - 3}} more</div>
   </div>
   <div class="project__info">created: {{project.created | date}}</div>
 </div>

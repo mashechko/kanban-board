@@ -19,7 +19,6 @@
              [class.error]="isControlInvalid('name')"
              placeholder="Project name" type="text" formControlName="name" maxlength="20">
       <mat-select multiple (selectionChange)="updateDevs($event)" formControlName="selectedDevs"
-                  [disabled]="project.createdBy !== currentUser.uid"
                   (click)="dropNotification('Only project creator can set developers', 'warn')">
         <input class="search-dev no-outline" (keyup)="onKey($event)">
         <mat-option *ngFor="let dev of searchDevs"
@@ -51,6 +50,14 @@
     </div>
 
     <div class="event-log">
+      <ng-container *ngIf="sortedTasks">
+        <div class="event-log__task-container" *ngFor="let status of statuses" >
+          <div class="event-log__task" appSetBackground="{{status}}">{{status}}</div>
+          <div>: {{sortedTasks[status].length || 0}}</div>
+        </div>
+      </ng-container>
+
+
 
     </div>
   </div>

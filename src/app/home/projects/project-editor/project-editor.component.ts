@@ -8,6 +8,7 @@ import { CRUDService } from '../../../services/crudservice.service';
 import { StoreService } from '../../../services/store.service';
 import { User } from '../../../user-interface';
 import { noWhitespaceValidator } from '../../trim-validator';
+import { Task } from '../../board/tasks-block/task/task-interface';
 
 @Component({
   selector: 'app-project-editor',
@@ -21,9 +22,15 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
 
   public developers: User[];
 
+  public statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
+
   public searchDevs: User[];
 
   public currentUser: User;
+
+  private tasks: Task[];
+
+  public sortedTasks: object;
 
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
@@ -37,9 +44,12 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.currentUser = this.storeService.user;
     this.initForm();
     this.getDevelopers();
-    this.currentUser = this.storeService.user;
+    if (this.project.id) {
+      this.getTasks();
+    }
   }
 
   private getDevelopers() {
@@ -49,7 +59,50 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getTasks() {
+    this.crud
+      .getElementsByProperty('Tasks', 'projectId', this.project.id, 'lastModified')
+      .subscribe((value: Task[]) => {
+        this.tasks = value;
+        this.sortTasks();
+      });
+  }
+
+  private sortTasks() {
+    this.sortedTasks = {
+      'ready to dev': [],
+      'in development': [],
+      'in qa': [],
+      closed: [],
+    };
+    this.tasks.forEach((task) => {
+      switch (task.status) {
+        case 'ready to dev':
+          this.sortedTasks['ready to dev'].push(task);
+          break;
+        case 'in development':
+          this.sortedTasks['in development'].push(task);
+          break;
+        case 'in qa':
+          this.sortedTasks['in qa'].push(task);
+          break;
+        case 'closed':
+          this.sortedTasks.closed.push(task);
+          break;
+        default:
+          this.sortedTasks['ready to dev'].push(task);
+      }
+    });
+  }
+
   public updateDevs(event) {
+    if (this.project.selectedDevs.length > event.value.length) {
+      this.project.selectedDevs.forEach((devId) => {
+        if (event.value.indexOf(devId) === -1) {
+          this.deleteProjectFromDev(devId, this.project.id);
+        }
+      });
+    }
     this.project.selectedDevs = event.value;
   }
 
@@ -124,6 +177,12 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
         this.deleteProjectFromDev(devID, project.id);
       });
       this.crud.deleteObject('projects', project.id);
+      if (this.tasks.length) {
+        this.dropNotification('All tasks of this project will be deleted', 'warn');
+        this.tasks.forEach((task) => {
+          this.crud.deleteObject('Tasks', task.id);
+        });
+      }
       this.dialogRef.close();
     } else {
       this.dropNotification('Only project creator can delete project', 'warn');
@@ -160,6 +219,11 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
       info: [this.project.info, Validators.maxLength(1000)],
       selectedDevs: [this.project.selectedDevs],
     });
+    if (this.project.id) {
+      if (this.project.createdBy !== this.currentUser.uid) {
+        this.formGr.controls.selectedDevs.disable();
+      }
+    }
   }
 
   public onKey(event) {

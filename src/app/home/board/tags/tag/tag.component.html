@@ -1,1 +1,4 @@
-<div class="tag" *ngIf="tag" appSetBackground="{{tag.background}}">{{tag.name}}</div>
+<div class="tag" *ngIf="tag; else defaultTag" appSetBackground="{{tag.background}}">{{tag.name}}</div>
+<ng-template #defaultTag>
+  <div class="tag" appSetBackground="gray">tag name</div>
+</ng-template>

@@ -5,6 +5,7 @@ import { HomeComponent } from './home.component';
 import { GuardService } from '../services/guard.service';
 import { BoardComponent } from './board/board.component';
 import { ProjectsComponent } from './projects/projects.component';
+import { TaskEditorComponent } from './board/task-editor/task-editor.component';
 
 const routes: Routes = [
   {
@@ -12,18 +13,10 @@ const routes: Routes = [
     component: HomeComponent,
     canActivate: [GuardService],
     children: [
-      {
-        path: '',
-        component: BoardComponent,
-      },
-      {
-        path: 'projects',
-        component: ProjectsComponent,
-      },
-      {
-        path: 'board',
-        component: BoardComponent,
-      },
+      { path: '', component: BoardComponent },
+      { path: 'projects', component: ProjectsComponent },
+      { path: 'board', component: BoardComponent },
+      { path: 'board/:id', component: TaskEditorComponent },
     ],
   },
 ];

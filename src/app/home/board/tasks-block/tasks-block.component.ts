@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angu
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { ActivatedRoute } from '@angular/router';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { Task } from './task/task-interface';
@@ -27,7 +28,11 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
 
   private commentId: string;
 
-  constructor(private crud: CRUDService, private storeService: StoreService) {}
+  constructor(
+    private crud: CRUDService,
+    private storeService: StoreService,
+    private route: ActivatedRoute,
+  ) {}
 
   ngOnInit(): void {
     this.isDraggable = window.innerWidth >= 1290;

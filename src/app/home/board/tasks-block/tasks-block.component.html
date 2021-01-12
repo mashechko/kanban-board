@@ -10,6 +10,7 @@
     <app-task [task]="task" cdkDrag [cdkDragDisabled]="!isDraggable || task.isDragging || task.isChanging"
               (cdkDragDropped)="handleTask($event, task)"
               (cdkDragStarted)="addBlock(task)"
+              [routerLink]="['board', task.id]"
     ></app-task>
   </ng-container>
 </div>

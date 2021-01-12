@@ -4,6 +4,8 @@
       <app-tasks-block [tasks]="sortedTasks[status]" [column]="status"></app-tasks-block>
     </ng-container>
   </ng-container>
-  <ng-template #noTasks>You are not assigned to any project</ng-template>
+  <ng-template #noTasks>
+    <div class="no-tasks">You are not assigned to any project</div>
+  </ng-template>
   <button class="board__add-task" (click)="showDialog('ready to dev')">+ task</button>
 </div>

@@ -32,6 +32,12 @@
   opacity: 0;
 }
 
+.no-tasks {
+  text-align: center;
+  font-size: 24px;
+  font-family: Roboto, sans-serif;
+  font-weight: 600;
+}
 
 .app-tasks-block.cdk-drop-list-dragging app-task:not(.cdk-drag-placeholder) {
   transition:transform 250ms cubic-bezier(0, 0, 0.2, 1);

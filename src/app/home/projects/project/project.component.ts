@@ -37,10 +37,9 @@ export class ProjectComponent implements OnInit {
 
   private getSelectedDevs() {
     this.crud
-      .getElementsOfArray('users', 'uid', this.project.selectedDevs)
+      .getElementsOfArray('users', 'uid', this.project.selectedDevs.slice(0, 3))
       .subscribe((value: User[]) => {
-        this.developers = value;
-        this.devPreview = this.developers.slice(0, 3);
+        this.devPreview = value;
       });
   }
 }
