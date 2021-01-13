@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit } from '@angular/core';
+import { Component, HostListener, OnChanges, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { DialogService } from '../../services/dialog.service';
 import { Task } from './tasks-block/task/task-interface';

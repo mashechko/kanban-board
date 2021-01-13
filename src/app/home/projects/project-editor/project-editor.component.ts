@@ -167,7 +167,7 @@ export class ProjectEditorComponent implements OnInit, AfterContentInit, OnDestr
         });
       }
     } else {
-      this.crud.createEntity('home/projects', project).subscribe((value) => {
+      this.crud.createEntity('projects', project).subscribe((value) => {
         projectID = value;
         this.project.selectedDevs.forEach((devID) => {
           this.setProjectToDev(devID, projectID);

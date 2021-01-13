@@ -130,7 +130,6 @@ export class CRUDService {
   public getElementById(collectionName: string, ID: string) {
     return from(this.firestoreService.collection(collectionName).doc(ID).get()).pipe(
       map((value) => value.data()),
-      take(1),
     );
   }
 
@@ -140,7 +139,7 @@ export class CRUDService {
         .collection(collectionName)
         .doc(id)
         .set({ ...obj }, { merge: true }),
-    ).pipe(take(1));
+    );
   }
 
   public deleteObject(collectionName: string, id: string): Observable<void> {

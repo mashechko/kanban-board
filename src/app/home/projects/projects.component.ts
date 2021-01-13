@@ -51,7 +51,8 @@ export class ProjectsComponent implements OnInit {
 
   private getProject() {
     this.crud.getElementById('projects', this.projectId).subscribe((value: Project) => {
-      this.project = value;
+      this.project = { id: this.projectId, ...value };
+      console.log(value);
       this.openProject(this.project);
     });
   }

@@ -1,6 +1,7 @@
 import {
   AfterContentInit,
   Component,
+  DoCheck,
   ElementRef,
   HostListener,
   Inject,
@@ -66,6 +67,8 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
 
   public taskLink: string;
 
+  private taskSubscription;
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -91,8 +94,11 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
     this.closeIfInactive();
   }
 
-  @HostListener('window:beforeunload', ['$event'])
-  unloadHandler(event: Event) {}
+  @HostListener('window:beforeunload')
+  beforeunloadHandler(event) {
+    console.log('test');
+    return false;
+  }
 
   ngOnInit(): void {
     this.user = this.storeService.user;
@@ -100,6 +106,9 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
     this.getProjects();
     this.minDate = new Date();
     this.closeIfInactive();
+    if (this.task.id) {
+      this.getTask();
+    }
     if (this.task.comments.length) {
       this.getComments();
     }
@@ -107,6 +116,18 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
 
   ngAfterContentInit() {
     this.taskLink = window.location.href;
+  }
+
+  private getTask() {
+    this.taskSubscription = this.crud
+      .getElementsByProperty('Tasks', 'id', this.task.id, 'lastModified')
+      .subscribe((value: Task[]) => {
+        // eslint-disable-next-line prefer-destructuring
+        this.task = value[0];
+        if (!this.task.openBy) {
+          this.initForm();
+        }
+      });
   }
 
   public getDevelopers(projectId) {
@@ -157,6 +178,7 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
       if (this.user.uid === this.task.openBy) {
         this.task.openBy = null;
         this.task.isChanging = false;
+        this.taskSubscription.unsubscribe();
       }
       this.crud.updateObject('Tasks', task.id, task);
       this.dialogRef.close();
@@ -378,13 +400,15 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
       if (!this.task.openBy) {
         this.task.openBy = this.user.uid;
         this.task.isChanging = true;
+        this.formGr.enable({ emitEvent: true });
+        this.crud.updateObject('Tasks', this.task.id, this.task);
       } else if (this.task.openBy !== this.user.uid) {
         this.formGr.disable();
         setTimeout(() => {
           this.dropNotification('This task is modifying by other user', 'warn');
         }, 1000);
+        this.crud.updateObject('Tasks', this.task.id, this.task);
       }
-      this.crud.updateObject('Tasks', this.task.id, this.task);
     }
   }
 

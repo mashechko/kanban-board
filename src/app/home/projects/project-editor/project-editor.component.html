@@ -28,10 +28,10 @@
     </div>
 
     <div class="properties">
-      <div class="property">
+      <div class="property" *ngIf="project.id">
         <h1 class="editor-title">PROJECT ID</h1>
         <div class="editor-title-container">
-          <div class="property__value no-border" *ngIf="project.id">{{project.id | truncate}}</div>
+          <div class="property__value no-border" >{{project.id | truncate}}</div>
           <button [cdkCopyToClipboard]="projectLink" class="flaticon-159-file-1 no-border no-outline" title="Copy link"></button>
         </div>
 
