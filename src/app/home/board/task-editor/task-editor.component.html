@@ -30,7 +30,8 @@
         <h1 class="editor-title">TICKET NUMBER</h1>
         <div class="editor-title-container" >
           <div class="property__value no-border" >{{task.id | truncate}}</div>
-          <button [cdkCopyToClipboard]="taskLink" class="flaticon-159-file-1 no-border no-outline" title="Copy link"></button>
+          <button (click)="copyToClipboard()" [cdkCopyToClipboard]="taskLink"
+                  class="flaticon-159-file-1 no-border no-outline" title="Copy link"></button>
         </div>
       </div>
       <div class="property">

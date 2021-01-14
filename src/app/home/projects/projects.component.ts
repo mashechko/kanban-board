@@ -13,15 +13,17 @@ import { CRUDService } from '../../services/crudservice.service';
 export class ProjectsComponent implements OnInit {
   public projects: Project[];
 
-  public nextItem: Project;
-
-  public previousItem: Project;
-
-  public selected = 'lastModified';
+  public projectsToShow: Project[];
 
   private projectId: string;
 
   private project: Project;
+
+  public currentPage: number;
+
+  public pagesAmount: number;
+
+  public selected = 'lastModified';
 
   constructor(
     private dialogService: DialogService,
@@ -39,85 +41,37 @@ export class ProjectsComponent implements OnInit {
   }
 
   private getProjects(sortBy, orderAsc) {
-    this.previousItem = null;
-    this.crud
-      .getElementsWithLimit('projects', sortBy, orderAsc, 3)
-      .subscribe((value: Project[]) => {
-        this.projects = value.slice(0, 3);
-        // eslint-disable-next-line prefer-destructuring
-        this.nextItem = value[3];
-      });
+    this.crud.getCollectionWithOrder('projects', sortBy, orderAsc).subscribe((value: Project[]) => {
+      this.projects = value;
+      this.projectsToShow = this.projects.slice(0, 3);
+      this.currentPage = 1;
+      if (this.projects.length % 3) {
+        this.pagesAmount = Math.ceil(this.projects.length / 3);
+      } else {
+        this.pagesAmount = this.projects.length / 3;
+      }
+    });
   }
 
   private getProject() {
     this.crud.getElementById('projects', this.projectId).subscribe((value: Project) => {
       this.project = { id: this.projectId, ...value };
-      console.log(value);
       this.openProject(this.project);
     });
   }
 
   public loadNextPage() {
-    const orderAcs = this.selected === 'name';
-
-    let startAt: any;
-    switch (this.selected) {
-      case 'lastModified':
-        startAt = this.nextItem.lastModified;
-        break;
-      case 'name':
-        startAt = this.nextItem.name;
-        break;
-      case 'created':
-        startAt = this.nextItem.created;
-        break;
-      default:
-        startAt = this.nextItem.lastModified;
-    }
-    // eslint-disable-next-line prefer-destructuring
-    // this.previousItem = this.projects[2];
-    this.crud
-      .getElementsWithLimit('projects', this.selected, orderAcs, 3, startAt)
-      .subscribe((value: Project[]) => {
-        // eslint-disable-next-line prefer-destructuring
-        this.previousItem = value[0];
-        this.projects = value.slice(0, 3);
-        // eslint-disable-next-line prefer-destructuring
-        this.nextItem = value[3];
-      });
+    this.currentPage += 1;
+    this.projectsToShow = this.projects.slice((this.currentPage - 1) * 3, this.currentPage * 3);
   }
 
   public loadPreviousPage() {
-    const orderAcs = this.selected === 'name';
-
-    let endAt: any;
-    switch (this.selected) {
-      case 'lastModified':
-        endAt = this.previousItem.lastModified;
-        break;
-      case 'name':
-        endAt = this.previousItem.name;
-        break;
-      case 'created':
-        endAt = this.previousItem.created;
-        break;
-      default:
-        endAt = this.previousItem.lastModified;
-    }
-    // eslint-disable-next-line prefer-destructuring
-    this.crud
-      .getElementsWithLimit('projects', this.selected, orderAcs, 3, undefined, endAt)
-      .subscribe((value: Project[]) => {
-        // eslint-disable-next-line prefer-destructuring
-        this.previousItem = value[0];
-        this.projects = value.slice(0, 3);
-        // eslint-disable-next-line prefer-destructuring
-        this.nextItem = value[3];
-      });
+    this.currentPage -= 1;
+    this.projectsToShow = this.projects.slice((this.currentPage - 1) * 3, this.currentPage * 3);
   }
 
   public changeSorting(event) {
-    this.previousItem = null;
+    this.currentPage = 1;
     if (event.value === 'name') {
       this.getProjects(event.value, true);
     } else {

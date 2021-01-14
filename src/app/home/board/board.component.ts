@@ -5,6 +5,7 @@ import { Task } from './tasks-block/task/task-interface';
 import { CRUDService } from '../../services/crudservice.service';
 import { StoreService } from '../../services/store.service';
 import { User } from '../../user-interface';
+import { STATUSES } from '../STATUSES';
 
 @Component({
   selector: 'app-board',
@@ -22,7 +23,7 @@ export class BoardComponent implements OnInit, OnChanges {
 
   public sortedTasks = null;
 
-  public statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
+  public statuses: string[] = STATUSES;
 
   constructor(
     private dialogService: DialogService,

@@ -34,6 +34,7 @@ import { ProjectEditorComponent } from './projects/project-editor/project-editor
 import { CommentComponent } from './board/task-editor/comment/comment.component';
 import { TagsComponent } from './board/tags/tags.component';
 import { ProjectDevComponent } from './projects/project-dev/project-dev.component';
+import { UploadService } from '../services/upload.service';
 
 @NgModule({
   declarations: [
@@ -76,6 +77,6 @@ import { ProjectDevComponent } from './projects/project-dev/project-dev.componen
     SimpleNotificationsModule.forRoot(),
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
-  providers: [DialogService],
+  providers: [DialogService, UploadService],
 })
 export class HomeModule {}

@@ -1,6 +1,6 @@
-import { AfterContentInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import firebase from 'firebase';
 import { NotificationsService } from 'angular2-notifications';
 import { Project } from '../project/project-interface';
@@ -9,20 +9,21 @@ import { StoreService } from '../../../services/store.service';
 import { User } from '../../../user-interface';
 import { noWhitespaceValidator } from '../../trim-validator';
 import { Task } from '../../board/tasks-block/task/task-interface';
+import { STATUSES } from '../../STATUSES';
 
 @Component({
   selector: 'app-project-editor',
   templateUrl: './project-editor.component.html',
   styleUrls: ['./project-editor.component.css', '../../styles/editor-style.css'],
 })
-export class ProjectEditorComponent implements OnInit, AfterContentInit, OnDestroy {
+export class ProjectEditorComponent implements OnInit, OnDestroy {
   public project: Project = null;
 
   formGr: FormGroup;
 
   public developers: User[];
 
-  public statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
+  public statuses: string[] = STATUSES;
 
   public searchDevs: User[];
 
@@ -49,13 +50,10 @@ export class ProjectEditorComponent implements OnInit, AfterContentInit, OnDestr
     this.currentUser = this.storeService.user;
     this.initForm();
     this.getDevelopers();
+    this.projectLink = window.location.href;
     if (this.project.id) {
       this.getTasks();
     }
-  }
-
-  ngAfterContentInit() {
-    this.projectLink = window.location.href;
   }
 
   private getDevelopers() {

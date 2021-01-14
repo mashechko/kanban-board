@@ -1,7 +1,5 @@
 import {
-  AfterContentInit,
   Component,
-  DoCheck,
   ElementRef,
   HostListener,
   Inject,
@@ -10,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { takeWhile } from 'rxjs/operators';
 import firebase from 'firebase';
 import { combineLatest } from 'rxjs';
@@ -25,6 +23,7 @@ import { CommentInterface } from './comment/comment-interface';
 import { User } from '../../../user-interface';
 import { Project } from '../../projects/project/project-interface';
 import { noWhitespaceValidator } from '../../trim-validator';
+import { STATUSES } from '../../STATUSES';
 
 @AutoUnsubscribe()
 @Component({
@@ -32,7 +31,7 @@ import { noWhitespaceValidator } from '../../trim-validator';
   templateUrl: './task-editor.component.html',
   styleUrls: ['./task-editor.component.css', '../../styles/editor-style.css'],
 })
-export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy {
+export class TaskEditorComponent implements OnInit, OnDestroy {
   public task: Task = null;
 
   public user: User;
@@ -43,7 +42,7 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
 
   public tags: TagInterface[] = [];
 
-  private statuses: string[] = ['ready to dev', 'in development', 'in qa', 'closed'];
+  private statuses: string[] = STATUSES;
 
   formGr: FormGroup;
 
@@ -96,7 +95,6 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
 
   @HostListener('window:beforeunload')
   beforeunloadHandler(event) {
-    console.log('test');
     return false;
   }
 
@@ -112,10 +110,6 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
     if (this.task.comments.length) {
       this.getComments();
     }
-  }
-
-  ngAfterContentInit() {
-    this.taskLink = window.location.href;
   }
 
   private getTask() {
@@ -198,7 +192,7 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
   public delete(task) {
     if (this.task.openBy === this.user.uid) {
       this.deleteComments();
-      if (task.imageLinks.lastModified) {
+      if (task.imageLinks.length) {
         this.deleteImages();
       }
       this.crud.deleteObject('Tasks', task.id);
@@ -207,6 +201,7 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
     } else {
       this.dropNotification('You cannot delete this task while other user is modifying it', 'warn');
     }
+    this.taskSubscription.unsubscribe();
   }
 
   private deleteComments() {
@@ -216,7 +211,9 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
   }
 
   private deleteImages() {
-    this.task.imageLinks.forEach((link) => {});
+    this.task.imageLinks.forEach((link) => {
+      this.uploadService.deleteFile(link);
+    });
   }
 
   public changeStatus(task, direction) {
@@ -339,6 +336,10 @@ export class TaskEditorComponent implements OnInit, AfterContentInit, OnDestroy 
           this.task.imageLinks.push(link);
         }
       });
+  }
+
+  public copyToClipboard() {
+    this.taskLink = window.location.href;
   }
 
   public dropNotification(content, type) {
