@@ -1,29 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { NotificationsService } from 'angular2-notifications';
+import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DialogService } from '../../services/dialog.service';
 import { Project } from './project/project-interface';
 import { CRUDService } from '../../services/crudservice.service';
+import { AutoUnsubscribe } from '../../auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-projects',
   templateUrl: './projects.component.html',
-  styleUrls: ['./projects.component.css', '../styles/editor-style.css'],
+  styleUrls: [
+    './projects.component.css',
+    '../styles/editor-style.css',
+    '../styles/common-styles.css',
+  ],
 })
-export class ProjectsComponent implements OnInit {
+export class ProjectsComponent implements OnInit, OnDestroy {
   public projects: Project[];
-
-  public projectsToShow: Project[];
 
   private projectId: string;
 
   private project: Project;
 
-  public currentPage: number;
+  public nextItem: Project;
 
-  public pagesAmount: number;
+  public previousItem: Project;
 
   public selected = 'lastModified';
+
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(
     private dialogService: DialogService,
@@ -34,44 +41,69 @@ export class ProjectsComponent implements OnInit {
   ngOnInit(): void {
     this.getProjects(this.selected, false);
     if (this.router.url.match(/\/projects\/project\/(.+)/)) {
-      // eslint-disable-next-line prefer-destructuring
       this.projectId = this.router.url.match(/\/projects\/project\/(.+)/)[1];
       this.getProject();
     }
   }
 
   private getProjects(sortBy, orderAsc) {
-    this.crud.getCollectionWithOrder('projects', sortBy, orderAsc).subscribe((value: Project[]) => {
-      this.projects = value;
-      this.projectsToShow = this.projects.slice(0, 3);
-      this.currentPage = 1;
-      if (this.projects.length % 3) {
-        this.pagesAmount = Math.ceil(this.projects.length / 3);
-      } else {
-        this.pagesAmount = this.projects.length / 3;
-      }
-    });
+    this.crud
+      .getElementsWithLimit('projects', sortBy, orderAsc, 4)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: Project[]) => {
+        this.projects = value.slice(0, 3);
+        this.nextItem = value[3];
+      });
   }
 
   private getProject() {
-    this.crud.getElementById('projects', this.projectId).subscribe((value: Project) => {
-      this.project = { id: this.projectId, ...value };
-      this.openProject(this.project);
-    });
+    this.crud
+      .getElementById('projects', this.projectId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: Project) => {
+        this.project = { id: this.projectId, ...value };
+        this.openProject(this.project);
+      });
   }
 
   public loadNextPage() {
-    this.currentPage += 1;
-    this.projectsToShow = this.projects.slice((this.currentPage - 1) * 3, this.currentPage * 3);
+    const orderAsc = this.selected === 'name';
+    this.previousItem = this.projects[2];
+    this.crud
+      .getElementsWithLimit('projects', this.selected, orderAsc, 3, this.nextItem[this.selected])
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: Project[]) => {
+        this.projects = value.slice(0, 3);
+        this.nextItem = value[3];
+      });
   }
 
   public loadPreviousPage() {
-    this.currentPage -= 1;
-    this.projectsToShow = this.projects.slice((this.currentPage - 1) * 3, this.currentPage * 3);
+    const orderAsc = this.selected === 'name';
+    this.nextItem = this.projects[0];
+    this.crud
+      .getElementsWithLimit(
+        'projects',
+        this.selected,
+        orderAsc,
+        3,
+        undefined,
+        this.nextItem[this.selected],
+      )
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: Project[]) => {
+        if (value.length > 3) {
+          this.projects = value.slice(1, 4);
+          this.previousItem = value[0];
+        } else {
+          this.previousItem = null;
+          this.projects = value;
+        }
+      });
   }
 
   public changeSorting(event) {
-    this.currentPage = 1;
+    this.previousItem = null;
     if (event.value === 'name') {
       this.getProjects(event.value, true);
     } else {
@@ -90,4 +122,6 @@ export class ProjectsComponent implements OnInit {
   trackByFn(index, item) {
     return item.lastModified;
   }
+
+  ngOnDestroy() {}
 }

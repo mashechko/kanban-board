@@ -1,10 +1,19 @@
 <div class="project" (click)="showDialog(project)">
   <div class="project__name">{{project.name | uppercase}}</div>
-  <div class="project__info" *ngIf="createdBy">createdBy: {{createdBy.displayName}}</div>
-  <div class="project__developers" *ngIf="devPreview">
+  <div class="project__info" *ngIf="createdBy; else defaultCreated">createdBy: {{createdBy.displayName}}</div>
+  <ng-template #defaultCreated>
+    <div class="project__info">createdBy:</div>
+  </ng-template>
+  <div class="project__developers" *ngIf="devPreview; else loading">
     <img *ngFor="let dev of devPreview"
          src="{{dev.photoURL}}" class="dev-photo" title="{{dev.displayName}}">
     <div *ngIf="project.selectedDevs.length > 3"class="dev-more">and {{project.selectedDevs.length - 3}} more</div>
   </div>
+  <ng-template #loading>
+    <img class="dev-photo" src="assets/default-avatar.png">
+    <img class="dev-photo" src="assets/default-avatar.png">
+    <img class="dev-photo" src="assets/default-avatar.png">
+  </ng-template>
+
   <div class="project__info">created: {{project.created | date}}</div>
 </div>

@@ -1,8 +1,10 @@
-import { AfterViewInit, Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, DoCheck, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import firebase from 'firebase';
 import { NotificationsService } from 'angular2-notifications';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { Project } from '../project/project-interface';
 import { CRUDService } from '../../../services/crudservice.service';
 import { StoreService } from '../../../services/store.service';
@@ -10,13 +12,15 @@ import { User } from '../../../user-interface';
 import { noWhitespaceValidator } from '../../trim-validator';
 import { Task } from '../../board/tasks-block/task/task-interface';
 import { STATUSES } from '../../STATUSES';
+import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 
+@AutoUnsubscribe()
 @Component({
   selector: 'app-project-editor',
   templateUrl: './project-editor.component.html',
   styleUrls: ['./project-editor.component.css', '../../styles/editor-style.css'],
 })
-export class ProjectEditorComponent implements OnInit, OnDestroy {
+export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
   public project: Project = null;
 
   formGr: FormGroup;
@@ -35,6 +39,8 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
 
   public projectLink: string;
 
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<ProjectEditorComponent>,
@@ -50,10 +56,13 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     this.currentUser = this.storeService.user;
     this.initForm();
     this.getDevelopers();
-    this.projectLink = window.location.href;
     if (this.project.id) {
       this.getTasks();
     }
+  }
+
+  ngDoCheck() {
+    this.projectLink = window.location.href;
   }
 
   private getDevelopers() {
@@ -66,6 +75,7 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
   private getTasks() {
     this.crud
       .getElementsByProperty('Tasks', 'projectId', this.project.id, 'lastModified')
+      .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Task[]) => {
         this.tasks = value;
         this.sortTasks();
@@ -132,31 +142,48 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
 
   private setProjectToDev(devId: string, projectId: string) {
     let developer: User;
-    this.crud.getElementById('users', devId).subscribe((value: User) => {
-      developer = value;
-      if (developer.projects && developer.projects.indexOf(projectId) === -1) {
-        developer.projects.push(projectId);
-      } else {
-        developer.projects = [projectId];
-      }
-      this.crud.updateObject('users', devId, developer);
-    });
+    this.crud
+      .getElementById('users', devId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: User) => {
+        developer = value;
+        if (developer.projects) {
+          if (developer.projects.indexOf(projectId) === -1) {
+            developer.projects.push(projectId);
+          }
+        } else {
+          developer.projects = [projectId];
+        }
+        this.crud
+          .updateObject('users', devId, developer)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
+      });
   }
 
   private deleteProjectFromDev(devId: string, projectId: string) {
     let developer: User;
-    this.crud.getElementById('users', devId).subscribe((value: User) => {
-      developer = value;
-      developer.projects.splice(developer.projects.indexOf(projectId), 1);
-      this.crud.updateObject('users', devId, developer);
-    });
+    this.crud
+      .getElementById('users', devId)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: User) => {
+        developer = value;
+        developer.projects.splice(developer.projects.indexOf(projectId), 1);
+        this.crud
+          .updateObject('users', devId, developer)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
+      });
   }
 
   public save(project) {
     let projectID: string;
     this.project.lastModified = new Date().getTime();
     if (project.id) {
-      this.crud.updateObject('projects', project.id, project);
+      this.crud
+        .updateObject('projects', project.id, project)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe();
       projectID = this.project.id;
       this.dialogRef.close();
       if (this.project.createdBy === this.currentUser.uid) {
@@ -180,11 +207,11 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
       project.selectedDevs.forEach((devID) => {
         this.deleteProjectFromDev(devID, project.id);
       });
-      this.crud.deleteObject('projects', project.id);
+      this.crud.deleteObject('projects', project.id).subscribe();
       if (this.tasks.length) {
         this.dropNotification('All tasks of this project will be deleted', 'warn');
         this.tasks.forEach((task) => {
-          this.crud.deleteObject('Tasks', task.id);
+          this.crud.deleteObject('Tasks', task.id).subscribe();
         });
       }
       this.dialogRef.close();
@@ -225,6 +252,14 @@ export class ProjectEditorComponent implements OnInit, OnDestroy {
     });
     if (this.project.id) {
       if (this.project.createdBy !== this.currentUser.uid) {
+        this.formGr.controls.selectedDevs.disable();
+      }
+      if (
+        this.project.selectedDevs.indexOf(this.currentUser.uid) === -1 &&
+        this.project.createdBy !== this.currentUser.uid
+      ) {
+        this.formGr.controls.name.disable();
+        this.formGr.controls.info.disable();
         this.formGr.controls.selectedDevs.disable();
       }
     }

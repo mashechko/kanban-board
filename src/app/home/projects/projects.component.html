@@ -1,21 +1,27 @@
 <div class="projects">
-  <mat-select (selectionChange)="changeSorting($event)" [value]="selected">
+  <ng-container *ngIf="projects; else loading">
+    <ng-container *ngIf="projects.length; else noProjects"></ng-container>
+    <mat-select (selectionChange)="changeSorting($event)" [value]="selected" [class.disabled]="!projects.length">
 
-    <mat-label>Sort by</mat-label>
-    <mat-option value="name">sort by name</mat-option>
-    <mat-option value="created">sort by date</mat-option>
-    <mat-option value="lastModified">sort by last modification</mat-option>
-  </mat-select>
-  <app-project *ngFor="let project of projectsToShow; trackBy:trackByFn" class="no-outline"
-               [project]="project" [routerLink]="['project', project.id]"></app-project>
-  <div class="projects__navigation" *ngIf="projects">
-    <button class="projects__navigation-btn no-border no-outline"
-            [disabled]="currentPage === 1" (click)="loadPreviousPage()"
-            [class.disabled]="currentPage === 1">previous</button>
-    <button class="projects__navigation-btn no-border no-outline"
-            [disabled]="currentPage === pagesAmount" (click)="loadNextPage()"
-            [class.disabled]="currentPage === pagesAmount">next</button>
-  </div>
+      <mat-label>Sort by</mat-label>
+      <mat-option value="name">sort by name</mat-option>
+      <mat-option value="created">sort by date</mat-option>
+      <mat-option value="lastModified">sort by last modification</mat-option>
+    </mat-select>
+    <app-project *ngFor="let project of projects; trackBy:trackByFn" class="no-outline"
+                 [project]="project" [routerLink]="['project', project.id]"></app-project>
+    <div class="projects__navigation" *ngIf="projects">
+      <button class="projects__navigation-btn no-border no-outline"
+              (click)="loadPreviousPage()"
+              [class.disabled]="!previousItem">previous</button>
+      <button class="projects__navigation-btn no-border no-outline"
+              (click)="loadNextPage()"
+              [class.disabled]="!nextItem">next</button>
+    </div>
+    <ng-template #noProjects><div class="no-tasks">No projects available</div></ng-template>
+  </ng-container>
+  <ng-template #loading><div class="no-tasks">Loading...</div></ng-template>
+
   <button class="projects__add-project" (click)="showDialog()">Create new project</button>
 </div>
 

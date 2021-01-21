@@ -1,8 +1,7 @@
 import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { takeUntil } from 'rxjs/operators';
 import { Subject } from 'rxjs';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { ActivatedRoute } from '@angular/router';
+import { transferArrayItem } from '@angular/cdk/drag-drop';
 import { CRUDService } from '../../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { Task } from './task/task-interface';
@@ -28,11 +27,9 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
 
   private commentId: string;
 
-  constructor(
-    private crud: CRUDService,
-    private storeService: StoreService,
-    private route: ActivatedRoute,
-  ) {}
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
+
+  constructor(private crud: CRUDService, private storeService: StoreService) {}
 
   ngOnInit(): void {
     this.isDraggable = window.innerWidth >= 1290;
@@ -41,7 +38,10 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
 
   public addBlock(task: Task) {
     task.isDragging = true;
-    this.crud.updateObject('Tasks', task.id, task);
+    this.crud
+      .updateObject('Tasks', task.id, task)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe();
   }
 
   public handleTask(event, task) {
@@ -64,11 +64,17 @@ export class TasksBlockComponent implements OnInit, OnDestroy {
         this.commentId = value;
         task.comments.push(this.commentId);
         task.lastModified = new Date().getTime();
-        this.crud.updateObject('Tasks', task.id, task);
+        this.crud
+          .updateObject('Tasks', task.id, task)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
       });
     } else {
       task.isDragging = false;
-      this.crud.updateObject('Tasks', task.id, task);
+      this.crud
+        .updateObject('Tasks', task.id, task)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe();
     }
   }
 

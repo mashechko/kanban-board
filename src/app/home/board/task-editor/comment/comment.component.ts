@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { CRUDService } from '../../../../services/crudservice.service';
 import { CommentInterface } from './comment-interface';
 
 @Component({

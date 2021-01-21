@@ -35,6 +35,7 @@ import { CommentComponent } from './board/task-editor/comment/comment.component'
 import { TagsComponent } from './board/tags/tags.component';
 import { ProjectDevComponent } from './projects/project-dev/project-dev.component';
 import { UploadService } from '../services/upload.service';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { UploadService } from '../services/upload.service';
     CommentComponent,
     TagsComponent,
     ProjectDevComponent,
+    NotFoundComponent,
   ],
   imports: [
     CommonModule,

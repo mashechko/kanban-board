@@ -1,6 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import firebase from 'firebase';
 import { NotificationsService } from 'angular2-notifications';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { DialogService } from '../../../../services/dialog.service';
 import { Task } from './task-interface';
 import { CRUDService } from '../../../../services/crudservice.service';
@@ -10,10 +12,12 @@ import { CRUDService } from '../../../../services/crudservice.service';
   templateUrl: './task.component.html',
   styleUrls: ['./task.component.css'],
 })
-export class TaskComponent implements OnInit {
+export class TaskComponent implements OnInit, OnDestroy {
   @Input() task: Task;
 
   public devPhotoURL: string;
+
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(
     private dialogService: DialogService,
@@ -54,8 +58,13 @@ export class TaskComponent implements OnInit {
   }
 
   public getUserPhoto(): void {
-    this.crud.getElementById('users', this.task.assignedTo).subscribe((value: firebase.User) => {
-      this.devPhotoURL = value.photoURL;
-    });
+    this.crud
+      .getElementById('users', this.task.assignedTo)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: firebase.User) => {
+        this.devPhotoURL = value.photoURL;
+      });
   }
+
+  ngOnDestroy(): void {}
 }

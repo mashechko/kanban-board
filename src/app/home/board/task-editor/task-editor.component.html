@@ -1,5 +1,5 @@
 <form [formGroup]="formGr"
-      (keydown.enter)="$event.preventDefault()" >
+      (keydown.enter)="$event.preventDefault()">
   <div class="container">
 
     <div class="navigation">
@@ -30,7 +30,7 @@
         <h1 class="editor-title">TICKET NUMBER</h1>
         <div class="editor-title-container" >
           <div class="property__value no-border" >{{task.id | truncate}}</div>
-          <button (click)="copyToClipboard()" [cdkCopyToClipboard]="taskLink"
+          <button [cdkCopyToClipboard]="taskLink"
                   class="flaticon-159-file-1 no-border no-outline" title="Copy link"></button>
         </div>
       </div>
@@ -41,7 +41,7 @@
       <div class="property">
         <h1 class="editor-title no-outline gray-border-focus">DUE DATE</h1>
         <mat-form-field>
-          <input matInput [matDatepicker]="dp" formControlName="dueDate" [min]="minDate" >
+          <input matInput [matDatepicker]="dp" formControlName="dueDate" appCheckDueDate="{{task.dueDate}}" [min]="minDate" >
           <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
           <mat-datepicker #dp></mat-datepicker>
         </mat-form-field>
@@ -67,7 +67,11 @@
       <div class="task-info__tags">
         <app-tags (onClick)="addTag($event)"></app-tags>
         <div *ngIf="task.tags">
-          <app-tag *ngFor="let tagId of task.tags" [tagId]="tagId" (click)="removeTag(tagId)"></app-tag>
+          <ng-container *ngFor="let tagId of task.tags">
+            <app-tag  [tagId]="tagId"></app-tag>
+            <button class="delete-tag no-outline no-border" appSetBackground="white" (click)="removeTag(tagId)">x</button>
+          </ng-container>
+
         </div>
       </div>
 

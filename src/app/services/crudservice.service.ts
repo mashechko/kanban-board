@@ -152,7 +152,7 @@ export class CRUDService {
     orderAsc: boolean = true,
     limit: number,
     startAt?: any,
-    endAt?: any,
+    endBefore?: any,
   ): Observable<T[]> {
     return this.firestoreService
       .collection(collectionName, (ref) => {
@@ -163,11 +163,11 @@ export class CRUDService {
             .startAt(startAt)
             .limit(limit + 1);
         }
-        if (endAt) {
+        if (endBefore) {
           return query
             .orderBy(order, orderAsc ? 'asc' : 'desc')
-            .endAt(endAt)
-            .limit(limit + 1);
+            .endBefore(endBefore)
+            .limitToLast(limit + 1);
         }
         return query.orderBy(order, orderAsc ? 'asc' : 'desc').limit(limit + 1);
       })

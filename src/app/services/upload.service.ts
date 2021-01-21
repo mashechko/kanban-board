@@ -43,6 +43,6 @@ export class UploadService {
   }
 
   public deleteFile(downloadUrl) {
-    return this.storage.storage.refFromURL(downloadUrl).delete();
+    return from(this.storage.storage.refFromURL(downloadUrl).delete()).subscribe();
   }
 }

@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Input, OnInit } from '@angular/core';
+import { Directive, DoCheck, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 
 @Directive({
   selector: '[appCheckDueDate]',

@@ -1,12 +1,18 @@
 <div class="board" cdkDropListGroup>
-  <ng-container *ngIf="tasks; else loading">
-    <ng-container *ngIf="user.projects.length; else noTasks">
-      <app-tasks-block [tasks]="sortedTasks[status]" [column]="status" *ngFor="let status of statuses"></app-tasks-block>
-    </ng-container>
-    <ng-template #noTasks>You are not assigned to any project</ng-template>
+  <ng-container *ngIf="user; else loading">
+    <ng-container *ngIf="user.projects; else noProjects">
+      <ng-container *ngIf="user.projects.length; else noTasks">
+        <ng-container *ngIf="tasks; else loading">
+          <ng-container *ngIf="tasks.length; else noTasks">
+            <app-tasks-block [tasks]="sortedTasks[status]" [column]="status" *ngFor="let status of statuses"></app-tasks-block>
+          </ng-container>
+        </ng-container>
+      </ng-container>
+      </ng-container>
+    <ng-template #noProjects><div class="no-tasks">You are not assigned to any project</div></ng-template>
+    <ng-template #noTasks><div class="no-tasks">You have no tasks</div></ng-template>
   </ng-container>
-  <ng-template #loading>
-    <div class="no-tasks">Loading...</div>
-  </ng-template>
+  <ng-template #loading><div class="no-tasks">Loading...</div></ng-template>
   <button class="board__add-task" (click)="showDialog('ready to dev')">+ task</button>
 </div>
+

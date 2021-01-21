@@ -29,7 +29,7 @@
             appSetBackground="{{color}}"
             (click)="changeColor(color)"
     ></button>
-    <button (click)="addNewTag()">create tag</button>
+    <button (click)="addNewTag()" class="no-outline tag-btn">create tag</button>
     <div *ngIf="tagPreviewText" appSetBackground="{{selectedColor}}" class="tag">{{tagPreviewText}}</div>
   </div>
 </div>

@@ -1,5 +1,6 @@
 import {
   Component,
+  DoCheck,
   ElementRef,
   HostListener,
   Inject,
@@ -9,9 +10,9 @@ import {
 } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { takeWhile } from 'rxjs/operators';
+import { takeUntil, takeWhile } from 'rxjs/operators';
 import firebase from 'firebase';
-import { combineLatest } from 'rxjs';
+import { combineLatest, Subject } from 'rxjs';
 import { NotificationsService } from 'angular2-notifications';
 import { Task } from '../tasks-block/task/task-interface';
 import { CRUDService } from '../../../services/crudservice.service';
@@ -31,7 +32,7 @@ import { STATUSES } from '../../STATUSES';
   templateUrl: './task-editor.component.html',
   styleUrls: ['./task-editor.component.css', '../../styles/editor-style.css'],
 })
-export class TaskEditorComponent implements OnInit, OnDestroy {
+export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
   public task: Task = null;
 
   public user: User;
@@ -68,6 +69,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   private taskSubscription;
 
+  private unsubscribeStream$: Subject<void> = new Subject<void>();
+
   constructor(
     @Inject(MAT_DIALOG_DATA) private data: any,
     private dialogRef: MatDialogRef<TaskEditorComponent>,
@@ -100,8 +103,8 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.user = this.storeService.user;
+    this.getUserData();
     this.initForm();
-    this.getProjects();
     this.minDate = new Date();
     this.closeIfInactive();
     if (this.task.id) {
@@ -112,14 +115,32 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngDoCheck() {
+    this.taskLink = window.location.href;
+  }
+
   private getTask() {
     this.taskSubscription = this.crud
       .getElementsByProperty('Tasks', 'id', this.task.id, 'lastModified')
+      .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Task[]) => {
-        // eslint-disable-next-line prefer-destructuring
         this.task = value[0];
         if (!this.task.openBy) {
           this.initForm();
+        }
+      });
+  }
+
+  getUserData() {
+    this.crud
+      .getElementById('users', this.user.uid)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: User) => {
+        this.user = value;
+        if (this.user.projects) {
+          if (this.user.projects.length) {
+            this.getProjects();
+          }
         }
       });
   }
@@ -131,6 +152,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
         project = value;
         this.crud
           .getElementsOfArray('users', 'uid', project.selectedDevs)
+          .pipe(takeUntil(this.unsubscribeStream$))
           .subscribe((developers: firebase.User[]) => {
             this.developers = developers;
             this.selectedDevs = developers;
@@ -142,22 +164,31 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
   private getComments() {
     this.crud
       .getElementsByProperty('comments', 'taskId', this.task.id, 'date')
+      .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: CommentInterface[]) => {
         this.comments = value;
       });
   }
 
   private getProjects() {
-    this.crud.getCollection('projects').subscribe((value: Project[]) => {
-      this.projects = value;
-      if (this.task.projectId) {
-        this.getDevelopers({ value: this.task.projectId });
-      }
-    });
+    this.crud
+      .getElementsOfArray('projects', 'id', this.user.projects)
+      .pipe(takeUntil(this.unsubscribeStream$))
+      .subscribe((value: Project[]) => {
+        this.projects = value;
+        if (this.task.projectId) {
+          this.getDevelopers({ value: this.task.projectId });
+        }
+      });
   }
 
   public checkProjectNumber() {
-    if (!this.projects.length) {
+    if (!this.projects) {
+      this.dropNotification(
+        'No projects available. Create a project before adding a task.',
+        'warn',
+      );
+    } else if (!this.projects.length) {
       this.dropNotification(
         'No projects available. Create a project before adding a task.',
         'warn',
@@ -166,7 +197,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
   }
 
   public save(task) {
-    // eslint-disable-next-line no-param-reassign
     task.lastModified = new Date().getTime();
     if (task.id) {
       if (this.user.uid === this.task.openBy) {
@@ -174,7 +204,10 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
         this.task.isChanging = false;
         this.taskSubscription.unsubscribe();
       }
-      this.crud.updateObject('Tasks', task.id, task);
+      this.crud
+        .updateObject('Tasks', task.id, task)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe();
       this.dialogRef.close();
     } else {
       this.crud.createEntity('Tasks', task).subscribe((value) => {
@@ -184,6 +217,21 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
           taskId: value,
           date: new Date().getTime(),
         });
+        if (this.task.assignedTo) {
+          let developer: User;
+          this.developers.forEach((dev) => {
+            if (dev.uid === this.task.assignedTo) {
+              developer = dev;
+            }
+          });
+          const commentData = {
+            content: `${this.user.displayName} assigned this task to ${developer.displayName}`,
+            type: 'comment',
+            taskId: value,
+            date: new Date().getTime(),
+          };
+          this.addComment(commentData);
+        }
       });
       this.dialogRef.close();
     }
@@ -195,7 +243,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       if (task.imageLinks.length) {
         this.deleteImages();
       }
-      this.crud.deleteObject('Tasks', task.id);
+      this.crud.deleteObject('Tasks', task.id).subscribe();
       this.task.id = null;
       this.dialogRef.close();
     } else {
@@ -206,7 +254,7 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
 
   private deleteComments() {
     this.comments.forEach((comment: CommentInterface) => {
-      this.crud.deleteObject('comments', comment.id);
+      this.crud.deleteObject('comments', comment.id).subscribe();
     });
   }
 
@@ -224,7 +272,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
           'warn',
         );
       } else if (direction === 'next' && task.status !== this.statuses[3]) {
-        // eslint-disable-next-line no-param-reassign
         task.status = this.statuses[this.statuses.indexOf(task.status) + 1];
         this.addComment({
           content: `${this.user.displayName} changed status to ${task.status}`,
@@ -232,9 +279,11 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
           taskId: this.task.id,
           date: new Date().getTime(),
         });
-        this.crud.updateObject('Tasks', task.id, task);
+        this.crud
+          .updateObject('Tasks', task.id, task)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
       } else if (direction === 'previous' && task.status !== this.statuses[0]) {
-        // eslint-disable-next-line no-param-reassign
         task.status = this.statuses[this.statuses.indexOf(task.status) - 1];
         this.addComment({
           content: `${this.user.displayName} changed status to ${task.status}`,
@@ -242,7 +291,10 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
           taskId: this.task.id,
           date: new Date().getTime(),
         });
-        this.crud.updateObject('Tasks', task.id, task);
+        this.crud
+          .updateObject('Tasks', task.id, task)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
       }
     }
   }
@@ -252,7 +304,10 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       this.crud.createEntity('comments', comment).subscribe((value) => {
         this.commentId = value;
         this.task.comments.push(this.commentId);
-        this.crud.updateObject('Tasks', comment.taskId, this.task);
+        this.crud
+          .updateObject('Tasks', comment.taskId, this.task)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
       });
     } else if (this.commentElement.nativeElement.value.length) {
       const commentData = {
@@ -281,19 +336,21 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
   }
 
   public setDev(dev) {
-    let developer: User;
-    this.developers.forEach((value) => {
-      if (value.uid === dev.value) {
-        developer = value;
-      }
-    });
-    const commentData = {
-      content: `${this.user.displayName} assigned this task to ${developer.displayName}`,
-      type: 'comment',
-      taskId: this.task.id,
-      date: new Date().getTime(),
-    };
-    this.addComment(commentData);
+    if (this.task.id) {
+      let developer: User;
+      this.developers.forEach((value) => {
+        if (value.uid === dev.value) {
+          developer = value;
+        }
+      });
+      const commentData = {
+        content: `${this.user.displayName} assigned this task to ${developer.displayName}`,
+        type: 'comment',
+        taskId: this.task.id,
+        date: new Date().getTime(),
+      };
+      this.addComment(commentData);
+    }
   }
 
   public setPriority(priority) {
@@ -336,10 +393,6 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
           this.task.imageLinks.push(link);
         }
       });
-  }
-
-  public copyToClipboard() {
-    this.taskLink = window.location.href;
   }
 
   public dropNotification(content, type) {
@@ -401,14 +454,20 @@ export class TaskEditorComponent implements OnInit, OnDestroy {
       if (!this.task.openBy) {
         this.task.openBy = this.user.uid;
         this.task.isChanging = true;
-        this.formGr.enable({ emitEvent: true });
-        this.crud.updateObject('Tasks', this.task.id, this.task);
+        setTimeout(() => this.formGr.enable());
+        this.crud
+          .updateObject('Tasks', this.task.id, this.task)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
       } else if (this.task.openBy !== this.user.uid) {
-        this.formGr.disable();
+        setTimeout(() => this.formGr.disable());
         setTimeout(() => {
           this.dropNotification('This task is modifying by other user', 'warn');
         }, 1000);
-        this.crud.updateObject('Tasks', this.task.id, this.task);
+        this.crud
+          .updateObject('Tasks', this.task.id, this.task)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
       }
     }
   }

@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { of } from 'rxjs';
-import { map } from 'rxjs/operators';
-import firebase from 'firebase';
 import { AuthService } from '../services/auth.service';
 import { User } from '../user-interface';
 import { StoreService } from '../services/store.service';

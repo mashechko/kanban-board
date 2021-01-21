@@ -48,3 +48,8 @@
   font-weight: 500;
   color: white;
 }
+
+.tag-btn {
+  border-radius: 10px;
+  border: 1px solid black;
+}

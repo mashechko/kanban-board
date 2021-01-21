@@ -1,4 +1,4 @@
-import { Directive, DoCheck, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
+import { Directive, ElementRef, Input, OnChanges, OnInit } from '@angular/core';
 
 @Directive({
   selector: '[appSetBackground]',
