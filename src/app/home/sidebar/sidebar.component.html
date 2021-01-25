@@ -1,10 +1,11 @@
-<div class="sidebar" > <!--(click)="toggle()" [@openClose]="isOpen ? 'open' : 'closed'"-->
+<div class="sidebar" >
   <ng-container>
     <h1 class="sidebar-title">MyKanban</h1>
     <div class="sidebar-navigation">
 <!--      <input (keyup)="eventKey.next($event)">-->
       <a routerLink="projects" class="sidebar-link" appZoom="17px">All projects ({{projectsNumber}})</a>
       <a routerLink="board" class="sidebar-link" appZoom="17px">Go to board</a>
+      <a routerLink="statistics" class="sidebar-link" appZoom="17px">Statistics</a>
     </div>
   </ng-container>
 </div>

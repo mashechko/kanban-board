@@ -61,7 +61,7 @@ export class CRUDService {
     collectionName: string,
     property: string,
     propName: string,
-    orderField?: string,
+    orderField: string,
     orderAsc: boolean = true,
   ): Observable<T[]> {
     return this.firestoreService

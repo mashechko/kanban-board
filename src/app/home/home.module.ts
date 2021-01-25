@@ -16,6 +16,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { SimpleNotificationsModule } from 'angular2-notifications';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -37,6 +38,7 @@ import { TagsComponent } from './board/tags/tags.component';
 import { ProjectDevComponent } from './projects/project-dev/project-dev.component';
 import { UploadService } from '../services/upload.service';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { StatisticsComponent } from './statistics/statistics.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +60,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     TagsComponent,
     ProjectDevComponent,
     NotFoundComponent,
+    StatisticsComponent,
   ],
   imports: [
     CommonModule,
@@ -77,6 +80,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     MatNativeDateModule,
     MatProgressBarModule,
     MatIconModule,
+    NgxChartsModule,
     SimpleNotificationsModule.forRoot(),
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],

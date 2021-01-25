@@ -1,0 +1,16 @@
+.container {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  height: 100%;
+}
+
+.options {
+  display: flex;
+  width: 300px;
+  justify-content: space-between;
+}
+
+::ng-deep.mat-slide-toggle {
+  padding: 20px 0;
+}

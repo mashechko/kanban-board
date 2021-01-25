@@ -1,0 +1,43 @@
+<div class="container">
+  <div class="options">
+    <mat-select (selectionChange)="changeView($event)" [value]="selected" *ngIf="projects">
+      <mat-label>View</mat-label>
+      <mat-option value="all">All projects</mat-option>
+      <ng-container *ngFor="let project of projects">
+        <mat-option value="{{project.id}}">{{project.name}}</mat-option>
+      </ng-container>
+      <mat-option value="user">My tasks</mat-option>
+    </mat-select>
+    <mat-slide-toggle (change)="showPie($event)">Show Pie Diagram</mat-slide-toggle>
+  </div>
+  <ng-container *ngIf="data; else noData">
+    <ngx-charts-bar-vertical *ngIf="!pie; else pieDiagram"
+      [view]="view"
+      [scheme]="colorScheme"
+      [results]="data"
+      [gradient]="gradient"
+      [xAxis]="showXAxis"
+      [yAxis]="showYAxis"
+      [legend]="showLegend"
+      [showXAxisLabel]="showXAxisLabel"
+      [showYAxisLabel]="showYAxisLabel"
+      [xAxisLabel]="xAxisLabel"
+      [yAxisLabel]="yAxisLabel"
+      [legendTitle]="legendTitle">
+    </ngx-charts-bar-vertical>
+    <ng-template #pieDiagram>
+      <ngx-charts-pie-chart
+        [view]="view"
+        [scheme]="colorScheme"
+        [results]="data"
+        [gradient]="gradient"
+        [legend]="showLegend"
+        legendPosition="right"
+        [labels]="showLabels"
+        [doughnut]="false"
+        maxLabelLength="20">
+      </ngx-charts-pie-chart>
+    </ng-template>
+  </ng-container>
+  <ng-template #noData></ng-template>
+</div>

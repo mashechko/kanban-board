@@ -9,7 +9,6 @@
         <mat-option value="created">sort by date</mat-option>
         <mat-option value="lastModified">sort by last modification</mat-option>
       </mat-select>
-      <mat-slide-toggle (change)="showUserProjects($event)">Show my projects</mat-slide-toggle>
     </div>
     <app-project *ngFor="let project of projects; trackBy:trackByFn" class="no-outline"
                  [project]="project" [routerLink]="['project', project.id]"></app-project>

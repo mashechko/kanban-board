@@ -71,14 +71,6 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       });
   }
 
-  public showUserProjects(event) {
-    if (event.checked) {
-      console.log('');
-    } else {
-      this.getProjects(this.selected, false);
-    }
-  }
-
   public loadNextPage() {
     const orderAsc = this.selected === 'name';
     this.previousItem = this.projects[2];
