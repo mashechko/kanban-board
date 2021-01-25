@@ -16,6 +16,7 @@ export class DialogService {
       comments: [],
       tags: [],
       imageLinks: [],
+      openBy: [],
       priority: 'Low Priority',
       isChanging: false,
     };

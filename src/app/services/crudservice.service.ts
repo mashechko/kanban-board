@@ -103,6 +103,28 @@ export class CRUDService {
       );
   }
 
+  public getElementsByArray<T>(
+    collectionName: string,
+    property: string,
+    value: string,
+  ): Observable<T[]> {
+    return this.firestoreService
+      .collection(collectionName, (ref) => {
+        const query: firestore.Query = ref;
+        return query.where(property, 'array-contains', value);
+      })
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data: any = a.payload.doc.data();
+            const { id } = a.payload.doc;
+            return { id, ...data } as T;
+          }),
+        ),
+      );
+  }
+
   public getSortedElementsOfArray<T>(
     collectionName: string,
     property: string,

@@ -7,10 +7,8 @@ import { AuthService } from '../services/auth.service';
   templateUrl: './welcome.component.html',
   styleUrls: ['./welcome.component.css'],
 })
-export class WelcomeComponent implements OnInit {
+export class WelcomeComponent {
   constructor(public auth: AuthService, private router: Router) {}
-
-  ngOnInit(): void {}
 
   public login() {
     this.auth.googleSign().subscribe(() => {

@@ -1,13 +1,16 @@
 <div class="projects">
   <ng-container *ngIf="projects; else loading">
     <ng-container *ngIf="projects.length; else noProjects"></ng-container>
-    <mat-select (selectionChange)="changeSorting($event)" [value]="selected" [class.disabled]="!projects.length">
+    <div class="projects-header">
+      <mat-select (selectionChange)="changeSorting($event)" [value]="selected" [class.disabled]="!projects.length">
 
-      <mat-label>Sort by</mat-label>
-      <mat-option value="name">sort by name</mat-option>
-      <mat-option value="created">sort by date</mat-option>
-      <mat-option value="lastModified">sort by last modification</mat-option>
-    </mat-select>
+        <mat-label>Sort by</mat-label>
+        <mat-option value="name">sort by name</mat-option>
+        <mat-option value="created">sort by date</mat-option>
+        <mat-option value="lastModified">sort by last modification</mat-option>
+      </mat-select>
+      <mat-slide-toggle (change)="showUserProjects($event)">Show my projects</mat-slide-toggle>
+    </div>
     <app-project *ngFor="let project of projects; trackBy:trackByFn" class="no-outline"
                  [project]="project" [routerLink]="['project', project.id]"></app-project>
     <div class="projects__navigation" *ngIf="projects">

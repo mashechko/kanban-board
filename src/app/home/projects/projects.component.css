@@ -7,6 +7,11 @@
   max-height: 700px;
 }
 
+.projects-header {
+  display: flex;
+  justify-content: space-between;
+}
+
 .projects__add-project {
   position: fixed;
   right: 10px;
@@ -48,4 +53,8 @@
 
 .disabled {
   display: none;
+}
+
+::ng-deep.mat-slide-toggle {
+  padding: 18px 10px;
 }

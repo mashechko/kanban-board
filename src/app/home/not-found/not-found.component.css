@@ -1,0 +1,31 @@
+.not-found {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  grid-row-gap: 15px;
+  height: 100%;
+}
+
+.not-found__error {
+  font-size: 150px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.not-found__text {
+  font-size: 35px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+}
+
+.not-found__btn {
+  border: none;
+  border-radius: 10px;
+  height: 40px;
+  width: 150px;
+  color: white;
+  font-size: 15px;
+}
+
+.not-found__btn:focus {
+  outline: none;
+}

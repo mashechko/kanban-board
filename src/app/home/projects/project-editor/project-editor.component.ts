@@ -13,6 +13,7 @@ import { noWhitespaceValidator } from '../../trim-validator';
 import { Task } from '../../board/tasks-block/task/task-interface';
 import { STATUSES } from '../../STATUSES';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
+import { UploadService } from '../../../services/upload.service';
 
 @AutoUnsubscribe()
 @Component({
@@ -48,6 +49,7 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
     private fb: FormBuilder,
     private storeService: StoreService,
     private notification: NotificationsService,
+    private uploadService: UploadService,
   ) {
     this.project = { ...data.projectInfo };
   }
@@ -211,6 +213,14 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
       if (this.tasks.length) {
         this.dropNotification('All tasks of this project will be deleted', 'warn');
         this.tasks.forEach((task) => {
+          task.comments.forEach((comment) => {
+            this.crud.deleteObject('comments', comment).subscribe();
+          });
+          if (task.imageLinks) {
+            task.imageLinks.forEach((image) => {
+              this.uploadService.deleteFile(image);
+            });
+          }
           this.crud.deleteObject('Tasks', task.id).subscribe();
         });
       }

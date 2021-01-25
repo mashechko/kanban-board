@@ -122,10 +122,11 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
   private getTask() {
     this.taskSubscription = this.crud
       .getElementsByProperty('Tasks', 'id', this.task.id, 'lastModified')
-      .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Task[]) => {
         this.task = value[0];
-        if (!this.task.openBy) {
+        if (!this.task.openBy.length) {
+          this.initForm();
+        } else if (this.task.openBy.indexOf(this.user.uid) !== -1) {
           this.initForm();
         }
       });
@@ -172,7 +173,7 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
 
   private getProjects() {
     this.crud
-      .getElementsOfArray('projects', 'id', this.user.projects)
+      .getElementsByArray('projects', 'selectedDevs', this.user.uid)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Project[]) => {
         this.projects = value;
@@ -199,9 +200,11 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
   public save(task) {
     task.lastModified = new Date().getTime();
     if (task.id) {
-      if (this.user.uid === this.task.openBy) {
-        this.task.openBy = null;
-        this.task.isChanging = false;
+      if (this.task.openBy.indexOf(this.user.uid) !== -1) {
+        this.task.openBy.splice(this.task.openBy.indexOf(this.user.uid), 1);
+        if (!this.task.openBy.length) {
+          this.task.isChanging = false;
+        }
         this.taskSubscription.unsubscribe();
       }
       this.crud
@@ -238,7 +241,7 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   public delete(task) {
-    if (this.task.openBy === this.user.uid) {
+    if (this.task.openBy.length === 1 && this.task.openBy.indexOf(this.user.uid) !== -1) {
       this.deleteComments();
       if (task.imageLinks.length) {
         this.deleteImages();
@@ -266,7 +269,7 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
 
   public changeStatus(task, direction) {
     if (task.id) {
-      if (this.task.openBy !== this.user.uid) {
+      if (this.task.openBy.length > 1 && this.task.openBy.indexOf(this.user.uid) !== 0) {
         this.dropNotification(
           'You cannot change task status while other user is modifying it',
           'warn',
@@ -451,23 +454,28 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
     });
 
     if (this.task.id) {
-      if (!this.task.openBy) {
-        this.task.openBy = this.user.uid;
+      if (!this.task.openBy.length) {
+        this.task.openBy.push(this.user.uid);
         this.task.isChanging = true;
         setTimeout(() => this.formGr.enable());
         this.crud
           .updateObject('Tasks', this.task.id, this.task)
           .pipe(takeUntil(this.unsubscribeStream$))
           .subscribe();
-      } else if (this.task.openBy !== this.user.uid) {
+      } else if (this.task.openBy.indexOf(this.user.uid) === -1) {
         setTimeout(() => this.formGr.disable());
         setTimeout(() => {
-          this.dropNotification('This task is modifying by other user', 'warn');
+          this.dropNotification('This task is being modified by other user', 'warn');
         }, 1000);
+        this.task.openBy.push(this.user.uid);
         this.crud
           .updateObject('Tasks', this.task.id, this.task)
           .pipe(takeUntil(this.unsubscribeStream$))
           .subscribe();
+      } else if (this.task.openBy.indexOf(this.user.uid) !== -1) {
+        if (this.task.openBy.indexOf(this.user.uid) === 0) {
+          setTimeout(() => this.formGr.enable());
+        }
       }
     }
   }
@@ -482,9 +490,6 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.openBy === this.user.uid) {
-      this.openBy = null;
-    }
     clearTimeout(this.timeoutId);
   }
 }

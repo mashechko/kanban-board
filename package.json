@@ -39,6 +39,7 @@
     "@angular/platform-browser-dynamic": "^11.0.5",
     "@angular/router": "^11.0.5",
     "@angular/service-worker": "^11.0.5",
+    "@swimlane/ngx-charts": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.11.0",
     "@typescript-eslint/parser": "^4.11.0",
     "angular2-notifications": "^9.0.0",

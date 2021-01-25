@@ -15,6 +15,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { SimpleNotificationsModule } from 'angular2-notifications';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HomeRoutingModule } from './home-routing.module';
 import { HomeComponent } from './home.component';
 import { BoardComponent } from './board/board.component';
@@ -66,7 +67,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     ClipboardModule,
     A11yModule,
     DragDropModule,
-
+    MatSlideToggleModule,
     MatDialogModule,
     MatButtonModule,
     MatSelectModule,

@@ -47,6 +47,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   private getProjects(sortBy, orderAsc) {
+    this.previousItem = null;
     this.crud
       .getElementsWithLimit('projects', sortBy, orderAsc, 4)
       .pipe(takeUntil(this.unsubscribeStream$))
@@ -61,9 +62,21 @@ export class ProjectsComponent implements OnInit, OnDestroy {
       .getElementById('projects', this.projectId)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Project) => {
-        this.project = { id: this.projectId, ...value };
-        this.openProject(this.project);
+        if (value) {
+          this.project = { id: this.projectId, ...value };
+          this.openProject(this.project);
+        } else {
+          this.router.navigate(['/home/projects']);
+        }
       });
+  }
+
+  public showUserProjects(event) {
+    if (event.checked) {
+      console.log('');
+    } else {
+      this.getProjects(this.selected, false);
+    }
   }
 
   public loadNextPage() {
