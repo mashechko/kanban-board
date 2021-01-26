@@ -353,6 +353,11 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
         date: new Date().getTime(),
       };
       this.addComment(commentData);
+      this.task.assignedTo = developer.uid;
+      this.crud
+        .updateObject('Tasks', this.task.id, this.task)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe();
     }
   }
 

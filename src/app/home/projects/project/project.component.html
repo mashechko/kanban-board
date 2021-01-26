@@ -9,7 +9,7 @@
          src="{{dev.photoURL}}" class="dev-photo" title="{{dev.displayName}}">
     <div *ngIf="project.selectedDevs.length > 3"class="dev-more">and {{project.selectedDevs.length - 3}} more</div>
   </div>
-  <ng-template #loading>
+  <ng-template #loading class="project__developers">
     <img class="dev-photo" src="assets/default-avatar.png">
     <img class="dev-photo" src="assets/default-avatar.png">
     <img class="dev-photo" src="assets/default-avatar.png">

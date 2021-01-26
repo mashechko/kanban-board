@@ -1,11 +1,11 @@
-import { Component, DoCheck, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { DialogService } from '../../services/dialog.service';
 import { Project } from './project/project-interface';
 import { CRUDService } from '../../services/crudservice.service';
 import { AutoUnsubscribe } from '../../auto-unsubscribe';
+import { TriggerSubjectService } from './trigger-subject';
 
 @AutoUnsubscribe()
 @Component({
@@ -20,54 +20,45 @@ import { AutoUnsubscribe } from '../../auto-unsubscribe';
 export class ProjectsComponent implements OnInit, OnDestroy {
   public projects: Project[];
 
-  private projectId: string;
-
-  private project: Project;
-
   public nextItem: Project;
 
   public previousItem: Project;
 
   public selected = 'lastModified';
 
+  private message;
+
+  private subscription;
+
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(
     private dialogService: DialogService,
     private crud: CRUDService,
-    private router: Router,
+    private trigger: TriggerSubjectService,
   ) {}
 
   ngOnInit(): void {
-    this.getProjects(this.selected, false);
-    if (this.router.url.match(/\/projects\/project\/(.+)/)) {
-      this.projectId = this.router.url.match(/\/projects\/project\/(.+)/)[1];
-      this.getProject();
-    }
+    this.getProjects(this.selected);
+    this.subscription = this.trigger.getMessage().subscribe((message) => {
+      this.message = message;
+      if (this.message.text === 'Window is closed') {
+        this.getProjects(this.selected);
+      }
+    });
   }
 
-  private getProjects(sortBy, orderAsc) {
+  private getProjects(sortBy) {
+    const orderAsc = sortBy === 'name';
     this.previousItem = null;
+    this.nextItem = null;
+    this.projects = null;
     this.crud
-      .getElementsWithLimit('projects', sortBy, orderAsc, 4)
+      .getElementsWithLimit('projects', sortBy, orderAsc, 3)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Project[]) => {
         this.projects = value.slice(0, 3);
         this.nextItem = value[3];
-      });
-  }
-
-  private getProject() {
-    this.crud
-      .getElementById('projects', this.projectId)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((value: Project) => {
-        if (value) {
-          this.project = { id: this.projectId, ...value };
-          this.openProject(this.project);
-        } else {
-          this.router.navigate(['/home/projects']);
-        }
       });
   }
 
@@ -108,16 +99,8 @@ export class ProjectsComponent implements OnInit, OnDestroy {
   }
 
   public changeSorting(event) {
-    this.previousItem = null;
-    if (event.value === 'name') {
-      this.getProjects(event.value, true);
-    } else {
-      this.getProjects(event.value, false);
-    }
-  }
-
-  private openProject(project) {
-    this.dialogService.updateProject(project);
+    this.selected = event.value;
+    this.getProjects(event.value);
   }
 
   public showDialog() {
@@ -128,5 +111,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     return item.lastModified;
   }
 
-  ngOnDestroy() {}
+  ngOnDestroy() {
+    this.subscription.unsubscribe();
+  }
 }

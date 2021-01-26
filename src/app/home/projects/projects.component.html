@@ -11,7 +11,7 @@
       </mat-select>
     </div>
     <app-project *ngFor="let project of projects; trackBy:trackByFn" class="no-outline"
-                 [project]="project" [routerLink]="['project', project.id]"></app-project>
+                 [project]="project"></app-project>
     <div class="projects__navigation" *ngIf="projects">
       <button class="projects__navigation-btn no-border no-outline"
               (click)="loadPreviousPage()"

@@ -39,6 +39,7 @@ import { ProjectDevComponent } from './projects/project-dev/project-dev.componen
 import { UploadService } from '../services/upload.service';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { StatisticsComponent } from './statistics/statistics.component';
+import { TriggerSubjectService } from './projects/trigger-subject';
 
 @NgModule({
   declarations: [
@@ -84,6 +85,6 @@ import { StatisticsComponent } from './statistics/statistics.component';
     SimpleNotificationsModule.forRoot(),
   ],
   exports: [CheckDueDateDirective, SetBackgroundDirective, HomeComponent],
-  providers: [DialogService, UploadService],
+  providers: [DialogService, UploadService, TriggerSubjectService],
 })
 export class HomeModule {}

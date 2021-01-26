@@ -1,4 +1,4 @@
-import { Component, DoCheck, Inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import firebase from 'firebase';
@@ -14,6 +14,7 @@ import { Task } from '../../board/tasks-block/task/task-interface';
 import { STATUSES } from '../../STATUSES';
 import { AutoUnsubscribe } from '../../../auto-unsubscribe';
 import { UploadService } from '../../../services/upload.service';
+import { TriggerSubjectService } from '../trigger-subject';
 
 @AutoUnsubscribe()
 @Component({
@@ -21,7 +22,7 @@ import { UploadService } from '../../../services/upload.service';
   templateUrl: './project-editor.component.html',
   styleUrls: ['./project-editor.component.css', '../../styles/editor-style.css'],
 })
-export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
+export class ProjectEditorComponent implements OnInit, OnDestroy {
   public project: Project = null;
 
   formGr: FormGroup;
@@ -38,8 +39,6 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
 
   public sortedTasks: object;
 
-  public projectLink: string;
-
   private unsubscribeStream$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -50,6 +49,7 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
     private storeService: StoreService,
     private notification: NotificationsService,
     private uploadService: UploadService,
+    private trigger: TriggerSubjectService,
   ) {
     this.project = { ...data.projectInfo };
   }
@@ -61,10 +61,6 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
     if (this.project.id) {
       this.getTasks();
     }
-  }
-
-  ngDoCheck() {
-    this.projectLink = window.location.href;
   }
 
   private getDevelopers() {
@@ -112,14 +108,25 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   public updateDevs(event) {
-    if (this.project.selectedDevs.length > event.value.length) {
-      this.project.selectedDevs.forEach((devId) => {
-        if (event.value.indexOf(devId) === -1) {
-          this.deleteProjectFromDev(devId, this.project.id);
-        }
-      });
+    if (this.project.id) {
+      if (this.project.selectedDevs.length > event.value.length) {
+        this.project.selectedDevs.forEach((devId) => {
+          if (event.value.indexOf(devId) === -1) {
+            this.deleteProjectFromDev(devId, this.project.id);
+          }
+        });
+      } else {
+        event.value.forEach((devId) => {
+          if (this.project.selectedDevs.indexOf(devId) === -1) {
+            this.setProjectToDev(devId, this.project.id);
+          }
+        });
+        this.crud
+          .updateObject('projects', this.project.id, this.project)
+          .pipe(takeUntil(this.unsubscribeStream$))
+          .subscribe();
+      }
     }
-    this.project.selectedDevs = event.value;
   }
 
   public dropNotification(content, type) {
@@ -165,17 +172,14 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
 
   private deleteProjectFromDev(devId: string, projectId: string) {
     let developer: User;
-    this.crud
-      .getElementById('users', devId)
-      .pipe(takeUntil(this.unsubscribeStream$))
-      .subscribe((value: User) => {
-        developer = value;
-        developer.projects.splice(developer.projects.indexOf(projectId), 1);
-        this.crud
-          .updateObject('users', devId, developer)
-          .pipe(takeUntil(this.unsubscribeStream$))
-          .subscribe();
-      });
+    this.crud.getElementById('users', devId).subscribe((value: User) => {
+      developer = value;
+      developer.projects.splice(developer.projects.indexOf(projectId), 1);
+      this.crud
+        .updateObject('users', devId, developer)
+        .pipe(takeUntil(this.unsubscribeStream$))
+        .subscribe();
+    });
   }
 
   public save(project) {
@@ -187,12 +191,12 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
         .pipe(takeUntil(this.unsubscribeStream$))
         .subscribe();
       projectID = this.project.id;
-      this.dialogRef.close();
       if (this.project.createdBy === this.currentUser.uid) {
         this.project.selectedDevs.forEach((devID) => {
           this.setProjectToDev(devID, projectID);
         });
       }
+      this.dialogRef.close();
     } else {
       this.crud.createEntity('projects', project).subscribe((value) => {
         projectID = value;
@@ -284,6 +288,14 @@ export class ProjectEditorComponent implements OnInit, DoCheck, OnDestroy {
     return this.developers.filter((option: firebase.User) =>
       option.displayName.toLowerCase().includes(filter),
     );
+  }
+
+  testSubject() {
+    this.trigger.sendMessage('Window is closed');
+  }
+
+  clearMessage(): void {
+    this.trigger.clearMessage();
   }
 
   ngOnDestroy(): void {}
