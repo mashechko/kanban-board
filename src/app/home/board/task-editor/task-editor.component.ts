@@ -338,6 +338,10 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
     );
   }
 
+  public saveDate(event) {
+    this.task.dueDate = event.value.getTime();
+  }
+
   public setDev(dev) {
     if (this.task.id) {
       let developer: User;
@@ -362,13 +366,16 @@ export class TaskEditorComponent implements OnInit, DoCheck, OnDestroy {
   }
 
   public setPriority(priority) {
-    const commentData = {
-      content: `${this.user.displayName} changed task priority to ${priority.target.value}`,
-      type: 'status',
-      taskId: this.task.id,
-      date: new Date().getTime(),
-    };
-    this.addComment(commentData);
+    if (this.task.id) {
+      const commentData = {
+        content: `${this.user.displayName} changed task priority to ${priority.target.value}`,
+        type: 'status',
+        taskId: this.task.id,
+        date: new Date().getTime(),
+      };
+      this.addComment(commentData);
+    }
+    this.task.priority = priority.target.value;
   }
 
   public toggle(window) {

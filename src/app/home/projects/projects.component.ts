@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { take, takeUntil } from 'rxjs/operators';
 import { DialogService } from '../../services/dialog.service';
 import { Project } from './project/project-interface';
 import { CRUDService } from '../../services/crudservice.service';
@@ -67,7 +67,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
     this.previousItem = this.projects[2];
     this.crud
       .getElementsWithLimit('projects', this.selected, orderAsc, 3, this.nextItem[this.selected])
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(take(1))
       .subscribe((value: Project[]) => {
         this.projects = value.slice(0, 3);
         this.nextItem = value[3];
@@ -86,7 +86,7 @@ export class ProjectsComponent implements OnInit, OnDestroy {
         undefined,
         this.nextItem[this.selected],
       )
-      .pipe(takeUntil(this.unsubscribeStream$))
+      .pipe(take(1))
       .subscribe((value: Project[]) => {
         if (value.length > 3) {
           this.projects = value.slice(1, 4);

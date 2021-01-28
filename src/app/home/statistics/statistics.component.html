@@ -1,16 +1,16 @@
 <div class="container">
+  <div class="options" >
+    <mat-select (selectionChange)="changeView($event)" [value]="selected" *ngIf="projects">
+      <mat-label>View</mat-label>
+      <mat-option value="all">All projects</mat-option>
+      <ng-container *ngFor="let project of projects">
+        <mat-option value="{{project.id}}">{{project.name}}</mat-option>
+      </ng-container>
+      <mat-option value="user">My tasks</mat-option>
+    </mat-select>
+    <mat-slide-toggle (change)="showPie($event)">Show Pie Diagram</mat-slide-toggle>
+  </div>
   <ng-container *ngIf="data; else noData">
-    <div class="options" >
-      <mat-select (selectionChange)="changeView($event)" [value]="selected" *ngIf="projects">
-        <mat-label>View</mat-label>
-        <mat-option value="all">All projects</mat-option>
-        <ng-container *ngFor="let project of projects">
-          <mat-option value="{{project.id}}">{{project.name}}</mat-option>
-        </ng-container>
-        <mat-option value="user">My tasks</mat-option>
-      </mat-select>
-      <mat-slide-toggle (change)="showPie($event)">Show Pie Diagram</mat-slide-toggle>
-    </div>
     <ngx-charts-bar-vertical *ngIf="!pie; else pieDiagram"
                              [view]="view"
                              [scheme]="colorScheme"

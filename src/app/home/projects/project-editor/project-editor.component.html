@@ -8,7 +8,7 @@
         <button class="navigation__button flaticon-193-cancel no-outline" (click)="onSubmit(); testSubject()"></button>
       </ng-container>
       <ng-template #saver>
-        <button class="navigation__button flaticon-060-diskette no-outline" (click)="onSubmit()"></button>
+        <button class="navigation__button flaticon-060-diskette no-outline" (click)="onSubmit(); testSubject()"></button>
         <button class="navigation__button flaticon-193-cancel no-outline" [mat-dialog-close]="true" ></button>
       </ng-template>
     </div>

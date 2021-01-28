@@ -79,7 +79,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       .getCollection('Tasks')
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value) => {
-        this.sortTasks(value);
+        if (value.length) {
+          this.sortTasks(value);
+        } else {
+          this.data = null;
+        }
       });
   }
 
@@ -88,7 +92,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       .getElementsByProperty('Tasks', 'projectId', projectID, 'lastModified')
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Task[]) => {
-        this.sortTasks(value);
+        if (value.length) {
+          this.sortTasks(value);
+        } else {
+          this.data = null;
+        }
       });
   }
 
@@ -97,7 +105,11 @@ export class StatisticsComponent implements OnInit, OnDestroy {
       .getElementsOfArray('Tasks', 'projectId', this.user.projects)
       .pipe(takeUntil(this.unsubscribeStream$))
       .subscribe((value: Task[]) => {
-        this.sortTasks(value);
+        if (value.length) {
+          this.sortTasks(value);
+        } else {
+          this.data = null;
+        }
       });
   }
 
